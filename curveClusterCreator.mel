@@ -1,0 +1,235 @@
+global proc curveClusterCreator(){
+	
+	if(`window -exists CCC_Win`) deleteUI -window CCC_Win ;
+	string $win_CCC = `window -title "Crv Cc Creator" -resizeToFitChildren on CCC_Win `;
+	
+	formLayout MainForm;
+		text -label "Direction of :" txt_e1 ;
+		radioCollection ;
+		radioButton -label "Head" rb_0 ;
+		radioButton -label "Tail" -sl rb_1 ;
+		intField if_0 ;
+		separator sprt1 ;
+		text -label "weight equation :" txt_e2 ;
+		text -label "Abort :" txt_e25 ;
+		radioCollection ;
+		radioButton -label "linear" -sl rb_2 ;
+		radioButton -label "power" rb_3 ;
+		radioButton -label "radical" rb_4 ;
+		radioButton -label "both" rb_4a ;
+		checkBox -label "adj. degree 3 2nd CV" -value 0 cb_d3 ;
+		separator sprt3 ;
+		text -label "deform form :" txt_e3 ;
+		radioCollection ;
+		radioButton -label "cluster" rb_5 ;
+		radioButton -label "cube curve" -sl rb_6 ;
+		checkBox -label "Constrain Head Joint" -value 1 cb_0 ;
+	floatSliderGrp -field true -minValue .05 -maxValue 100 -value .1 -fieldStep .05 -width 10 fs_0 ;
+		separator sprt4 ;
+		button -label "Perform" -height 36 -command "curveClusterCreator_exe();" btn_ex ;
+	setParent ..;
+	
+	formLayout -edit
+		-af txt_e1 "top" 3
+		-af txt_e1 "left" 5
+		-ac rb_0 "top" 2 txt_e1
+		-af rb_0 "left" 5
+		-ac rb_1 "top" 2 txt_e1
+		-ac rb_1 "left" 1 rb_0
+
+		-ac sprt1 "top" 1 rb_0
+		-af sprt1 "left" 5
+		-af sprt1 "right" 5
+		-ac txt_e2 "top" 3 sprt1
+		-af txt_e2 "left" 5
+
+		-ac if_0 "top" 0 sprt1
+		-af if_0 "right" 5
+
+		-ac txt_e25 "top" 3 sprt1
+		-ac txt_e25 "right" 0 if_0
+
+		-ac rb_2 "top" 3 txt_e2
+		-af rb_2 "left" 5
+		-ac rb_3 "top" 3 txt_e2
+		-ac rb_3 "left" 1 rb_2
+		-ac rb_4 "top" 3 txt_e2
+		-ac rb_4 "left" 1 rb_3
+
+		-ac rb_4a "top" 0 rb_2
+		-af rb_4a "left" 5
+		-ac cb_d3 "top" 0 rb_2
+		-ac cb_d3 "left" 1 rb_4a
+
+		-ac sprt3 "top" 0 rb_4a
+		-af sprt3 "left" 5
+		-af sprt3 "right" 5
+		-ac txt_e3 "top" 3 sprt3
+		-af txt_e3 "left" 5
+		-ac rb_5 "top" 2 txt_e3
+		-af rb_5 "left" 5
+		-ac rb_6 "top" 2 txt_e3
+		-ac rb_6 "left" 1 rb_5
+
+		-ac cb_0 "top" 0 rb_5
+		-af cb_0 "right" 3
+
+		-ac  fs_0 "top" 0 cb_0
+		-af  fs_0 "left" 5
+		-af  fs_0 "right" 5
+		-ac sprt4 "top" 0 fs_0
+		-af sprt4 "left" 5
+		-af sprt4 "right" 5
+		-ac btn_ex "top" 2 sprt4
+		-af btn_ex "left" 5
+		-af btn_ex "right" 5
+	MainForm;
+	
+	window -e -widthHeight 185 220 CCC_Win ;
+	showWindow $win_CCC ;
+}
+
+global proc curveClusterCreator_exe(){
+
+$r0 = ` radioButton -q -sl rb_0 ` ;
+$r3 = ` radioButton -q -sl rb_3 ` ;
+$r4 = ` radioButton -q -sl rb_4 ` ;
+$r4a = ` radioButton -q -sl rb_4a ` ;
+$r5 = ` radioButton -q -sl rb_5 ` ;
+$av = ` intField -q -value if_0 ` ;
+$cb = ` checkBox -q -value cb_0 ` ;
+$d3 = ` checkBox -q -value cb_d3 ` ;
+
+$sl = ` ls -sl ` ;
+$sll = ` ls -long -sl ` ;
+int $tv[]; clear $tv ;
+string $hv[]; clear $hv ;
+
+$i = 0 ;
+while($i<size($sl)){
+ $s = ` listRelatives -shapes -noIntermediate -path $sll[$i] ` ;
+ $sl[$i] = $s[0] ;
+ $tv[$i] = ` getAttr ($sl[$i]+".spans") ` + ` getAttr ($sl[$i]+".degree") ` -1 ;
+ if($r0==0) $hv[$i] = ($sl[$i]+".cv["+$tv[$i]+"]") ;
+ else $hv[$i] = ($sl[$i]+".cv[0]") ;
+ $i++ ;
+}
+
+string $thisName = "" ;
+$i = 0 ;
+while($i<365){
+ if( `objExists ("cccc"+$i)`){
+  $i++ ;
+ }else{
+  $thisName = ("cccc"+$i) ;
+  $i = 365 ;
+ }
+}
+
+$cc = ` cluster -relative -name $thisName $hv ` ;
+$ccs = ` listConnections -type objectSet $cc[0] ` ;
+
+string $cc2[] ; clear $cc2 ;
+string $ccs2[] ; clear $ccs2 ;
+if($r4a==1){
+ $cc2 = ` cluster -relative -name ($thisName+"_2") $hv ` ;
+ $ccs2 = ` listConnections -type objectSet $cc2[0] ` ;
+}
+
+$i = 0 ;
+while($i<size($sl)){
+ $tvm = $tv[$i] - 1 ;
+ sets -fe $ccs ($sl[$i]+".cv[1:"+$tvm+"]") ;
+ if($r4a==1) sets -fe $ccs2 ($sl[$i]+".cv[1:"+$tvm+"]") ;
+ $j = 0 ;
+ while($j<$tvm){
+  $r = 1.0 / ($tvm+1-$av) ;
+  if($d3==1) $r = 1.0 / ($tvm+1-$av-2) ;
+  float $v = $j+1-$av ;
+  if($v>0){
+   if($d3==1){
+    $v = $j-$av ;
+    if($j==0) $v = 1.0 / 3 ;
+    if($j==($tvm-1)) $v = $v - ( 1.0 / 3 ) ;
+   }
+   $v = $v * $r ;
+  }
+  else $v = 0 ;
+  if($r0==0){
+   percent -v $v $cc[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+   if($r4a==1) percent -v $v $cc2[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+  }else{
+   percent -v (1- $v ) $cc[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+   if($r4a==1) percent -v (1- $v ) $cc2[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+  }
+
+  float $gv[] ; clear $gv;
+  if($r3==1){
+   $gv = `percent -q -v $cc[0] ($sl[$i]+".cv["+($j+1)+"]")` ;
+   percent -v (1-sin(deg_to_rad((1-$gv[0])*90))) $cc[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+  }
+  if($r4==1){
+   $gv = `percent -q -v $cc[0] ($sl[$i]+".cv["+($j+1)+"]")` ;
+   percent -v (sin(deg_to_rad($gv[0]*90))) $cc[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+  }
+  if($r4a==1){
+   $gv = `percent -q -v $cc[0] ($sl[$i]+".cv["+($j+1)+"]")` ;
+   percent -v (1-sin(deg_to_rad((1-$gv[0])*90))) $cc[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+   percent -v (sin(deg_to_rad($gv[0]*90))) $cc2[0] ($sl[$i]+".cv["+($j+1)+"]") ;
+  }
+  $j++ ;
+ }
+ $i++ ;
+}
+
+if($r5==0){
+ $s = ` floatSliderGrp -q -value fs_0` ; $m = $s * -1 ;
+ $ctrl = ` curve -d 1 -p $m $s $s -p $m $m $s -p $s $m $s -p $s $s $s -p $m $s $s -p $m $s $m -p $s $s $m -p $s $s $s -p $s $m $s -p $s $m $m -p $s $s $m -p $s $m $m -p $m $m $m -p $m $s $m -p $m$m $m -p $m $m $s -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15 -name ($thisName+"_Ctrl") ` ;
+ $ctrl_g = ` createNode "transform" -name ($thisName+"_Ctrl_ax") ` ;
+ parent $ctrl $ctrl_g ;
+ $pc = ` pointConstraint -offset 0 0 0 -weight 1 $cc[1] $ctrl_g ` ;
+ delete $pc ;
+ parentConstraint -weight 1 $ctrl $cc[1] ;
+ if($r4a==1) parentConstraint -weight 1 $ctrl $cc2[1] ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".rx") ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".ry") ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".rz") ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".sx") ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".sy") ;
+ setAttr -lock true -keyable false -channelBox false ($ctrl+".sz") ;
+ setAttr -keyable false -channelBox true ($ctrl+".v") ;
+
+ $ccg = ` group $cc[1] ` ;
+ if($r4a==1) parent $cc2[1] $ccg ;
+ setAttr ($ccg+".v") 0 ;
+ parent $ccg $ctrl_g ;
+
+ if($r4a==1){
+  addAttr -ln "Weight" -keyable true -at double -hasMaxValue 1 -maxValue 1 -hasMinValue 1 -minValue 0 $ctrl ;
+  $r = ` createNode reverse ` ;
+  connectAttr -f ($ctrl+".Weight") ($r+".inputX") ;
+  connectAttr -f ($r+".outputX") ($cc[0]+".envelope") ;
+  connectAttr -f ($ctrl+".Weight") ($cc2[0]+".envelope") ;
+ }
+
+ if(size($sl)==1){
+  addAttr -ln "Length" -keyable true -at double $ctrl ;
+  $ci = ` createNode curveInfo ` ;
+  connectAttr -f ($sl[0]+".worldSpace[0]") ($ci+".inputCurve") ;
+  connectAttr -f ($ci+".arcLength") ($ctrl +".Length") ;
+}
+
+if($cb==1){
+ $sla = stringToStringArray($sl[0], ":") ;
+ string $head = $sla[0] + ":headJT" ;
+ if( `objExists $head` ) {
+  parentConstraint -mo -skipRotate x -skipRotate y -skipRotate z -weight 1 $head $ctrl_g ;
+ }
+
+
+ }
+
+ select -r $ctrl ;
+}
+
+}

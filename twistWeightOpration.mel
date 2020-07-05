@@ -1,0 +1,533 @@
+﻿global proc twistWeightOpration(){
+        
+if(`window -exists TWO_Win`) deleteUI -window TWO_Win ;
+window -title "Twist Weight Opration" -resizeToFitChildren on TWO_Win ;
+
+
+formLayout MainForm;
+textField -font "fixedWidthFont" -height 25 -text " twist need bind,only for twist" -editable 0 tf_1 ;
+radioCollection ;
+radioButton -label "Adv.Skeleton 3 joints" -onCommand "two_radioSelect3();" rb_0 ;
+radioButton -label "warRig 5 joints" -onCommand "two_radioSelect5();" -sl rb_1 ;
+
+
+button -label "L_shoulder" -command ("two_defaultJointSet(\"L_shoulder\")") btn_twoLS ;
+button -label "L_wrist" -command ("two_defaultJointSet(\"L_wrist\")") btn_twoLW ;
+button -label "L_hip" -command ("two_defaultJointSet(\"L_hip\")") btn_twoLH ;
+button -label "L_ankle" -command ("two_defaultJointSet(\"L_ankle\")") btn_twoLA ;
+button -label "R_shoulder" -command ("two_defaultJointSet(\"R_shoulder\")") btn_twoRS ;
+button -label "R_wrist" -command ("two_defaultJointSet(\"R_wrist\")") btn_twoRW ;
+button -label "R_hip" -command ("two_defaultJointSet(\"R_hip\")") btn_twoRH ;
+button -label "R_ankle" -command ("two_defaultJointSet(\"R_ankle\")") btn_twoRA ;
+
+
+separator sprt1 ;
+text -label "Insert twist joint :" txt_e2 ;
+
+
+text -label "twist0" txt_twoT1 ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoT1\")") btn_twoT1 ;
+textField tf_twoT1 ;
+
+
+text -label "twist1" txt_twoT2 ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoT2\")") btn_twoT2 ;
+textField tf_twoT2 ;
+
+
+text -label "twist2" txt_twoT3 ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoT3\")") btn_twoT3 ;
+textField tf_twoT3 ;
+
+
+text -label "twist3" txt_twoT4 ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoT4\")") btn_twoT4 ;
+textField tf_twoT4 ;
+
+
+text -label "twist4" txt_twoT5 ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoT5\")") btn_twoT5 ;
+textField tf_twoT5 ;
+
+
+text -label "twist Direction" txt_twoTD ;
+button -label ">" -width 21 -height 21 -command ("two_source(\"tf_twoTD\")") btn_twoTD ;
+textField tf_twoTD ;
+
+
+floatSliderGrp -label "Head Start" -columnWidth 1 55 -columnWidth 2 35 -columnWidth 3 100 -field true -minValue 0 -maxValue 1.0 -fieldMinValue -.5 -fieldMaxValue 1.0 -precision 2 -value 0 fsg_hs ;
+floatSliderGrp -label "Tail End" -columnWidth 1 55 -columnWidth 2 35 -columnWidth 3 100 -field true -minValue 0.0 -maxValue 1.0 -fieldMinValue 0.0 -fieldMaxValue 1.5 -precision 2 -value 1 fsg_te ;
+floatSliderGrp -label "Head Smooth" -columnWidth 1 67 -columnWidth 2 35 -columnWidth 3 100 -field true -minValue 0.0 -maxValue 1.0 -fieldMinValue -0.0 -fieldMaxValue 1.0 -precision 2 -value 0 fsg_hsm ;
+floatSliderGrp -label "Tail Smooth" -columnWidth 1 67 -columnWidth 2 35 -columnWidth 3 100 -field true -minValue 0.0 -maxValue 1.0 -fieldMinValue -0.0 -fieldMaxValue 1.0 -precision 2 -value 0 fsg_tsm ;
+
+
+button -label "Select Vertexs ( select model )" -height 25 -command "two_selVertex();" btn_twoSel ;
+button -label "Executive" -height 30 -command "two_execute();" btn_ex ;
+        setParent ..;
+        
+ formLayout -edit
+  -af tf_1 "top" 3
+  -af tf_1 "left" 5
+  -af tf_1 "right" 5
+  -ac rb_0 "top" 2 tf_1
+  -af rb_0 "left" 5
+  -ac rb_1 "top" 2 tf_1
+  -ac rb_1 "left" 1 rb_0
+
+
+ -ac btn_twoLS "top" 3 rb_0
+ -ac btn_twoLW "top" 3 rb_0
+ -ac btn_twoLH "top" 3 rb_0
+ -ac btn_twoLA "top" 3 rb_0
+ -ac btn_twoRS "top" 3 btn_twoLS
+ -ac btn_twoRW "top" 3 btn_twoLS
+ -ac btn_twoRH "top" 3 btn_twoLS
+ -ac btn_twoRA "top" 3 btn_twoLS
+
+
+ -af btn_twoLS "left" 5
+ -ap btn_twoLS "right" 0 31
+ -ap btn_twoLW "left" 0 31
+ -ap btn_twoLW "right" 0 54
+ -ap btn_twoLH "left" 0 54
+ -ap btn_twoLH "right" 0 77
+ -ap btn_twoLA "left" 0 77
+ -af btn_twoLA "right" 5
+
+
+ -af btn_twoRS "left" 5
+ -ap btn_twoRS "right" 0 31
+ -ap btn_twoRW "left" 0 31
+ -ap btn_twoRW "right" 0 54
+ -ap btn_twoRH "left" 0 54
+ -ap btn_twoRH "right" 0 77
+ -ap btn_twoRA "left" 0 77
+ -af btn_twoRA "right" 5
+
+
+  -ac sprt1 "top" 1 btn_twoRS
+  -af sprt1 "left" 5
+  -af sprt1 "right" 5
+  -ac txt_e2 "top" 3 sprt1
+  -af txt_e2 "left" 5
+
+
+  -ac txt_twoT1 "top" 4 txt_e2
+  -af txt_twoT1 "left" 5
+  -ac btn_twoT1 "top" 1 txt_e2
+  -ac btn_twoT1 "left" 1 txt_twoT1
+  -ac tf_twoT1 "top" 1 txt_e2
+  -ac tf_twoT1 "left" 2 btn_twoT1
+  -af tf_twoT1 "right" 5
+
+
+  -ac txt_twoT2 "top" 4 btn_twoT1
+  -af txt_twoT2 "left" 5
+  -ac btn_twoT2 "top" 1 btn_twoT1
+  -ac btn_twoT2 "left" 1 txt_twoT1
+  -ac tf_twoT2 "top" 1 btn_twoT1
+  -ac tf_twoT2 "left" 2 btn_twoT1
+  -af tf_twoT2 "right" 5
+
+
+  -ac txt_twoT3 "top" 4 btn_twoT2
+  -af txt_twoT3 "left" 5
+  -ac btn_twoT3 "top" 1 btn_twoT2
+  -ac btn_twoT3 "left" 1 txt_twoT1
+  -ac tf_twoT3 "top" 1 btn_twoT2 
+  -ac tf_twoT3 "left" 2 btn_twoT1
+  -af tf_twoT3 "right" 5
+
+
+  -ac txt_twoT4 "top" 4 btn_twoT3
+  -af txt_twoT4 "left" 5
+  -ac btn_twoT4 "top" 1 btn_twoT3
+  -ac btn_twoT4 "left" 1 txt_twoT1
+  -ac tf_twoT4 "top" 1 btn_twoT3
+  -ac tf_twoT4 "left" 2 btn_twoT1
+  -af tf_twoT4 "right" 5
+
+
+  -ac txt_twoT5 "top" 4 btn_twoT4
+  -af txt_twoT5 "left" 5
+  -ac btn_twoT5 "top" 1 btn_twoT4
+  -ac btn_twoT5 "left" 1 txt_twoT1
+  -ac tf_twoT5 "top" 1 btn_twoT4
+  -ac tf_twoT5 "left" 2 btn_twoT1
+  -af tf_twoT5 "right" 5
+
+
+  -ac txt_twoTD "top" 4 btn_twoT5
+  -af txt_twoTD "left" 5
+  -ac btn_twoTD "top" 1 btn_twoT5
+  -ac btn_twoTD "left" 1 txt_twoTD
+  -ac tf_twoTD "top" 1 btn_twoT5
+  -ac tf_twoTD "left" 2 btn_twoTD
+  -af tf_twoTD "right" 5
+
+
+-ac fsg_hs top 2 btn_twoTD
+-ac fsg_te top 1 fsg_hs
+-ac fsg_hsm top 1 fsg_te
+-ac fsg_tsm top 1 fsg_hsm
+-af fsg_hs "left" 5 
+-af fsg_te "left" 5 
+-af fsg_hs "right" 5 
+-af fsg_te "right" 5
+-af fsg_hsm "left" 5 
+-af fsg_tsm "left" 5 
+-af fsg_hsm "right" 5 
+-af fsg_tsm "right" 5
+
+
+
+
+  -ac btn_twoSel "top" 2 fsg_tsm
+  -af btn_twoSel "left" 5
+  -af btn_twoSel "right" 5
+
+
+  -ac btn_ex "top" 2 btn_twoSel
+  -af btn_ex "left" 5
+  -af btn_ex "right" 5
+  -af btn_ex "bottom" 5
+
+
+ MainForm;
+        
+        window -e -widthHeight 250 410 TWO_Win ;
+        showWindow TWO_Win ;
+}
+
+
+global proc two_source(string $s){
+        $sl = ` ls -sl ` ;        
+        textField -e -tx $sl[0] $s  ;
+}
+
+
+global proc two_radioSelect3(){
+ text -e -enable 0 txt_twoT4 ;
+ button -e -enable 0 btn_twoT4 ;
+ textField -e -enable 0 tf_twoT4 ;
+ text -e -enable 0 txt_twoT5 ;
+ button -e -enable 0 btn_twoT5 ;
+ textField -e -enable 0 tf_twoT5 ;
+}
+
+
+global proc two_radioSelect5(){
+ text -e -enable 1 txt_twoT4 ;
+ button -e -enable 1 btn_twoT4 ;
+ textField -e -enable 1 tf_twoT4 ;
+ text -e -enable 1 txt_twoT5 ;
+ button -e -enable 1 btn_twoT5 ;
+ textField -e -enable 1 tf_twoT5 ;
+}
+
+
+global proc two_defaultJointSet(string $p){
+$r = ` radioButton -q -select rb_0 ` ;
+
+
+if($r==1){
+ switch($p){
+ case "L_shoulder": 
+  textField -e -text "Shoulder_L" tf_twoT1 ;
+  textField -e -text "ShoulderPart1_L" tf_twoT2 ;
+  textField -e -text "ShoulderPart2_L" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Elbow_L" tf_twoTD ;
+  break;
+ case "R_shoulder": 
+  textField -e -text "Shoulder_R" tf_twoT1 ;
+  textField -e -text "ShoulderPart1_R" tf_twoT2 ;
+  textField -e -text "ShoulderPart2_R" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Elbow_R" tf_twoTD ;
+  break;
+ case "L_wrist": 
+  textField -e -text "Elbow_L" tf_twoT1 ;
+  textField -e -text "ElbowPart1_L" tf_twoT2 ;
+  textField -e -text "ElbowPart2_L" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Wrist_L" tf_twoTD ;
+  break;
+ case "R_wrist": 
+  textField -e -text "Elbow_R" tf_twoT1 ;
+  textField -e -text "ElbowPart1_R" tf_twoT2 ;
+  textField -e -text "ElbowPart2_R" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Wrist_R" tf_twoTD ;
+  break;
+ case "L_hip": 
+  textField -e -text "Hip_L" tf_twoT1 ;
+  textField -e -text "HipPart1_L" tf_twoT2 ;
+  textField -e -text "HipPart2_L" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Knee_L" tf_twoTD ;
+  break;
+ case "R_hip": 
+  textField -e -text "Hip_R" tf_twoT1 ;
+  textField -e -text "HipPart1_R" tf_twoT2 ;
+  textField -e -text "HipPart2_R" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Knee_R" tf_twoTD ;
+  break;
+ case "L_ankle": 
+  textField -e -text "Knee_L" tf_twoT1 ;
+  textField -e -text "KneePart1_L" tf_twoT2 ;
+  textField -e -text "KneePart2_L" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Ankle_L" tf_twoTD ;
+  break;
+ case "R_ankle": 
+  textField -e -text "Knee_R" tf_twoT1 ;
+  textField -e -text "KneePart1_R" tf_twoT2 ;
+  textField -e -text "KneePart2_R" tf_twoT3 ;
+  textField -e -text "" tf_twoT4 ;
+  textField -e -text "" tf_twoT5 ;
+  textField -e -text "Ankle_R" tf_twoTD ;
+  break;
+ }
+}else{
+ switch($p){
+ case "L_shoulder": 
+  textField -e -text "jlN01_armTw0L" tf_twoT1 ;
+  textField -e -text "jlN25_armTw1L" tf_twoT2 ;
+  textField -e -text "jlN30_armTw2L" tf_twoT3 ;
+  textField -e -text "jlN35_armTw3L" tf_twoT4 ;
+  textField -e -text "jlN40_armTw4L" tf_twoT5 ;
+  textField -e -text "jlP00_elbowL" tf_twoTD ;
+  break;
+ case "R_shoulder": 
+  textField -e -text "jrN01_armTw0R" tf_twoT1 ;
+  textField -e -text "jrN25_armTw1R" tf_twoT2 ;
+  textField -e -text "jrN30_armTw2R" tf_twoT3 ;
+  textField -e -text "jrN35_armTw3R" tf_twoT4 ;
+  textField -e -text "jrN40_armTw4R" tf_twoT5 ;
+  textField -e -text "jrP00_elbowR" tf_twoTD ;
+  break;
+ case "L_wrist": 
+  textField -e -text "jlP01_elbowTw0L" tf_twoT1 ;
+  textField -e -text "jlP25_elbowTw1L" tf_twoT2 ;
+  textField -e -text "jlP30_elbowTw2L" tf_twoT3 ;
+  textField -e -text "jlP35_elbowTw3L" tf_twoT4 ;
+  textField -e -text "jlP40_elbowTw4L" tf_twoT5 ;
+  textField -e -text "jlQ00_wristL" tf_twoTD ;
+  break;
+ case "R_wrist": 
+  textField -e -text "jrP01_elbowTw0R" tf_twoT1 ;
+  textField -e -text "jrP25_elbowTw1R" tf_twoT2 ;
+  textField -e -text "jrP30_elbowTw2R" tf_twoT3 ;
+  textField -e -text "jrP35_elbowTw3R" tf_twoT4 ;
+  textField -e -text "jrP40_elbowTw4R" tf_twoT5 ;
+  textField -e -text "jrQ00_wristR" tf_twoTD ;
+  break;
+ case "L_hip": 
+  textField -e -text "jlG20_hipTw0L" tf_twoT1 ;
+  textField -e -text "jlG30_hipTw1L" tf_twoT2 ;
+  textField -e -text "jlG40_hipTw2L" tf_twoT3 ;
+  textField -e -text "jlG50_hipTw3L" tf_twoT4 ;
+  textField -e -text "jlG60_hipTw4L" tf_twoT5 ;
+  textField -e -text "jlH00_kneeL" tf_twoTD ;
+  break;
+ case "R_hip": 
+  textField -e -text "jrG20_hipTw0R" tf_twoT1 ;
+  textField -e -text "jrG30_hipTw1R" tf_twoT2 ;
+  textField -e -text "jrG40_hipTw2R" tf_twoT3 ;
+  textField -e -text "jrG50_hipTw3R" tf_twoT4 ;
+  textField -e -text "jrG60_hipTw4R" tf_twoT5 ;
+  textField -e -text "jrH00_kneeR" tf_twoTD ;
+  break;
+ case "L_ankle": 
+  textField -e -text "jlH20_kneeTw0L" tf_twoT1 ;
+  textField -e -text "jlH30_kneeTw1L" tf_twoT2 ;
+  textField -e -text "jlH40_kneeTw2L" tf_twoT3 ;
+  textField -e -text "jlH50_kneeTw3L" tf_twoT4 ;
+  textField -e -text "jlH60_kneeTw4L" tf_twoT5 ;
+  textField -e -text "jlJ00_ankleL" tf_twoTD ;
+  break;
+ case "R_ankle": 
+  textField -e -text "jrH20_kneeTw0R" tf_twoT1 ;
+  textField -e -text "jrH30_kneeTw1R" tf_twoT2 ;
+  textField -e -text "jrH40_kneeTw2R" tf_twoT3 ;
+  textField -e -text "jrH50_kneeTw3R" tf_twoT4 ;
+  textField -e -text "jrH60_kneeTw4R" tf_twoT5 ;
+  textField -e -text "jrJ00_ankleR" tf_twoTD ;
+  break;
+ }
+}
+
+
+}
+
+
+global proc two_selVertex(){
+ $tw1 = ` textField -q -text tf_twoT1 ` ;
+ $tw2 = ` textField -q -text tf_twoT2 ` ;
+ $tw3 = ` textField -q -text tf_twoT3 ` ;
+ $tw4 = ` textField -q -text tf_twoT4 ` ;
+ $tw5 = ` textField -q -text tf_twoT5 ` ;
+
+
+ $slo = `ls -objectsOnly -sl` ;
+ $sk = findRelatedSkinCluster($slo[0]) ;
+ skinCluster -e -selectInfluenceVerts $tw1 $sk ;
+ $sl1 = ` ls -fl -sl ` ;
+ skinCluster -e -selectInfluenceVerts $tw2 $sk ;
+ $sl2 = ` ls -fl -sl ` ;
+ skinCluster -e -selectInfluenceVerts $tw3 $sk ;
+ $sl3 = ` ls -fl -sl ` ;
+ skinCluster -e -selectInfluenceVerts $tw4 $sk ;
+ $sl4 = ` ls -fl -sl ` ;
+ skinCluster -e -selectInfluenceVerts $tw5 $sk ;
+ $sl5 = ` ls -fl -sl ` ;
+ $sl = stringArrayCatenate($sl1,$sl2);
+ $sl = stringArrayCatenate($sl,$sl3);
+ $sl = stringArrayCatenate($sl,$sl4);
+ $sl = stringArrayCatenate($sl,$sl5);
+ $sl = stringArrayRemoveDuplicates($sl);
+ select -r $sl ;
+
+
+}
+
+
+
+
+global proc two_execute(){
+
+
+ $tw1 = ` textField -q -text tf_twoT1 ` ;
+ $tw2 = ` textField -q -text tf_twoT2 ` ;
+ $tw3 = ` textField -q -text tf_twoT3 ` ;
+ $tw4 = ` textField -q -text tf_twoT4 ` ;
+ $tw5 = ` textField -q -text tf_twoT5 ` ;
+ $twD = ` textField -q -text tf_twoTD ` ;
+
+
+ float $hs = ` floatSliderGrp -q -value fsg_hs ` ;
+ float $te = ` floatSliderGrp -q -value fsg_te ` ;
+ float $hsm = ` floatSliderGrp -q -value fsg_hsm ` ;
+ float $tsm = ` floatSliderGrp -q -value fsg_tsm ` ;
+ $hsm = 2 + ( $hsm * 4 ) ;
+ $tsm = 2 + ( $tsm * 4 ) ;
+
+
+ $sl = ` ls -fl -sl ` ;
+ $slo = `ls -objectsOnly -sl` ;
+ $sk = findRelatedSkinCluster($slo[0]) ;
+ $x = ` xform -q -worldSpace -translation  $twD ` ;
+ $tw1s = ` createNode transform ` ;
+ pointConstraint -offset 0 0 0 -weight 1 $tw1 $tw1s ;
+ aimConstraint -offset 0 0 0 -weight 1 -aimVector 1 0 0 -upVector 0 1 0 -worldUpType "none" -worldUpVector 0 1 0 $twD $tw1s ;
+ $loc = ` createNode transform ` ;
+ setAttr ($loc+".tx") $x[0] ;
+ setAttr ($loc+".ty") $x[1] ;
+ setAttr ($loc+".tz") $x[2] ; 
+ parent $loc $tw1s ;
+ float $mx =  `getAttr ($loc+".tx")` ;
+
+
+ $jo = ` ls -type "joint" ` ;
+ $i = 0 ;
+ while($i<size($jo)){
+  if(`attributeExists "lockInfluenceWeights" $jo[$i]`) setAttr ($jo[$i]+".lockInfluenceWeights") 1 ;
+  $i++;
+ }
+
+
+ if(`attributeExists "lockInfluenceWeights" $tw1`) setAttr ($tw1+".lockInfluenceWeights") 0 ;
+ if(`attributeExists "lockInfluenceWeights" $tw2`) setAttr ($tw2+".lockInfluenceWeights") 0 ;
+ if(`attributeExists "lockInfluenceWeights" $tw3`) setAttr ($tw3+".lockInfluenceWeights") 0 ;
+ if(`attributeExists "lockInfluenceWeights" $tw4`) setAttr ($tw4+".lockInfluenceWeights") 0 ;
+ if(`attributeExists "lockInfluenceWeights" $tw5`) setAttr ($tw5+".lockInfluenceWeights") 0 ;
+
+
+ progressWindow -title "Processing.." -progress 0 -isInterruptable 1 ;
+ $i = 0 ;
+ while($i<size($sl)){
+  $x = ` xform -q -worldSpace -translation $sl[$i] ` ;
+  xform -absolute -worldSpace -translation $x[0] $x[1] $x[2] $loc ;
+  $v = `getAttr ($loc+".tx")` ;
+  float $rate = $v / $mx ; 
+  $rate = linstep($hs,$te,$rate) ;
+
+
+  $tf4 = ` textField -q -enable tf_twoT4 ` ;
+
+
+  if($tf4==1){
+   $tw1v = ` skinPercent -transform  $tw1 -q -value $sk $sl[$i] ` ;
+   $tw2v = ` skinPercent -transform  $tw2 -q -value $sk $sl[$i] ` ;
+   $tw3v = ` skinPercent -transform  $tw3 -q -value $sk $sl[$i] ` ;
+   $tw4v = ` skinPercent -transform  $tw4 -q -value $sk $sl[$i] ` ;
+   $tw5v = ` skinPercent -transform  $tw5 -q -value $sk $sl[$i] ` ;
+   $twAv = $tw1v + $tw2v + $tw3v + $tw4v + $tw5v ;
+   $rate = sqrt(pow($rate,$hsm)) * (1-$rate) + (1-sqrt(pow((1-$rate),$tsm))) * $rate ;
+   float $t1 = 0.0, $t2 = 0.0, $t3 = 0.0, $t4 = 0.0, $t5 = 0.0  ;
+
+
+   $t3 = $rate-0.5 ;
+   $t3 = 1 - abs($t3)*2 ;
+   $t3 = $t3 * 0.5 ;
+   if($t3>$twAv) $t3 = $twAv ;
+
+
+   if($rate>=0.75) $t4 = (1-linstep(0.75,1.0,$rate))*0.5 ;
+   else $t4 = linstep(0.25,0.75,$rate) * 0.5 ;
+   if($t4>$twAv) $t4 = $twAv ;
+
+
+   if($rate>=0.25) $t2 = (1-linstep(0.25,0.75,$rate))*0.5 ;
+   else $t2 = linstep(0,0.25,$rate) * 0.5 ;
+   if($t2>$twAv) $t2 = $twAv ;
+
+
+   if($rate>=0.5) $t5 = $twAv - ( $t2 + $t3 + $t4) ;
+   if($rate<0.5) $t1 = $twAv - ( $t2 + $t3 + $t4) ;
+
+
+   skinPercent -tv $tw1 $t1 -tv $tw2 $t2 -tv $tw3 $t3 -tv $tw4 $t4 -tv $tw5 $t5 $sk $sl[$i] ;
+  }else{
+
+
+   $rateAdj = sqrt(pow($rate,$hsm)) * (1-$rate) + (1-sqrt(pow((1-$rate),$tsm))) * $rate ;
+   $tw1w = sin(deg_to_rad($rateAdj*90+180))+1 ;
+   $tw3w = sin(deg_to_rad($rateAdj*90-90))+1 ;
+   $tw2w = 1 - $tw1w - $tw3w ;
+
+
+   if($rate>=0.5){
+    skinPercent -tv $tw3 1 $sk $sl[$i] ;
+    skinPercent -tv $tw2 $tw2w $sk $sl[$i] ;
+    setAttr ($tw2+".lockInfluenceWeights") 1 ;
+    skinPercent -tv $tw1 $tw1w $sk $sl[$i] ;
+   }else{
+    skinPercent -tv $tw1 1 $sk $sl[$i] ;
+    skinPercent -tv $tw2 $tw2w $sk $sl[$i] ;
+    setAttr ($tw2+".lockInfluenceWeights") 1 ;
+    skinPercent -tv $tw3 $tw3w $sk $sl[$i] ;
+   }
+  }
+  $amount = 100 * ( float($i) / size($sl) ) ;
+  $amount = ceil($amount) ;
+  progressWindow -e -progress $amount -status ("Total "+size($sl)+", processing number "+$i) ;
+  $i++ ;
+ }
+ progressWindow -endProgress ;
+ delete $loc ;
+ delete $tw1s ;
+
+
+ select -r $sl ;
+ print ("Process " + size($sl) + " vertexs.") ;
+}

@@ -1,0 +1,383 @@
+global proc selectInfluenceVerts(){
+
+	if(`window -exists SIV_Win`) deleteUI -window SIV_Win ;
+	string $win_SIV = `window -title "Select Influence Vertexs+" -resizeToFitChildren on SIV_Win `;
+
+	formLayout MainForm;
+		text -label "Shape" txt_S ;
+		button -label ">" -width 21 -height 21 -command "LoadSource();" btn_S ;
+		textField tf_S ;
+
+		text -label "Skin" txt_SK ;
+		textField -enable 0 tf_SK ;
+
+		textScrollList -ams 0 -selectCommand("selInfluenceVerts;") tsl_IL ;
+		popupMenu -parent tsl_IL -postMenuCommand ("ppm_IL_menu") ppm_IL ;
+
+		text -label "Mirror Target Joint" txt_MTJ ;
+		button -label ">" -width 21 -height 21 -command "LoadMirrorTargetJoint();" btn_MTJ ;
+		textField tf_MTJ ;
+
+ checkBox -label "Replace keyword for opposite joint" sInf_cb_kws ;
+ textField sInf_tf_to1 ;
+ text -label "to" sInf_txt_to ;
+ textField sInf_tf_to2 ;
+
+		button -label "Mirror Weight" -height 30 -command "mirrorInfluenceWeight();" btn_MW ;
+
+		button -label "Check Left Right Influence" -height 30 -command "checkLeftRightInfluence();" btn_CLRI ;
+		button -label "Average Left Right Weight" -height 30 -command "averageLeftRightWeight();" btn_ALRW ;
+		button -label "Increase 1.1" -height 30 -command "SIV_increase11();" btn_I11 ;
+		button -label "Average Current Weight" -height 30 -command "averageCurrentWeight();" btn_ACW ;
+
+	setParent ..;
+	
+	formLayout -edit
+		-af txt_S "top" 7
+		-af txt_S "left" 5
+		-af btn_S "top" 4
+		-ac btn_S "left" 1 txt_S
+		-af tf_S "top" 4
+		-ac tf_S "left" 2 btn_S
+		-af tf_S "right" 5
+
+		-ac txt_SK "top" 7 tf_S
+		-af txt_SK "left" 5
+		-ac tf_SK "top" 4 tf_S
+		-ac tf_SK "left" 1 txt_SK
+		-af tf_SK "right" 5
+
+		-ac tsl_IL "top" 2 tf_SK
+		-af tsl_IL "right" 5
+		-af tsl_IL "left" 5
+		-ac tsl_IL "bottom" 5 btn_MTJ
+
+		-af txt_MTJ "left" 5
+		-ac txt_MTJ "bottom" 8 sInf_cb_kws
+		-ac btn_MTJ "left" 1 txt_MTJ
+		-ac btn_MTJ "bottom" 4 sInf_cb_kws
+		-ac tf_MTJ "left" 2 btn_MTJ
+		-af tf_MTJ "right" 5
+		-ac tf_MTJ "bottom" 4 sInf_cb_kws
+
+ -af sInf_cb_kws left 5
+ -ac sInf_cb_kws bottom 5 sInf_tf_to1
+
+ -af sInf_tf_to1 "left" 5
+ -ac sInf_tf_to1 "right" 5 sInf_txt_to
+ -ac sInf_tf_to1 "bottom" 5 btn_MW
+
+ -ap sInf_txt_to "left" 0 48
+ -ac sInf_txt_to "bottom" 8 btn_MW
+
+ -ac sInf_tf_to2 "left" 5 sInf_txt_to
+ -af sInf_tf_to2 "right" 5
+ -ac sInf_tf_to2 "bottom" 5 btn_MW
+
+		-af btn_MW "left" 5
+		-af btn_MW "right" 5
+		-ac btn_MW "bottom" 5 btn_CLRI
+
+		-af btn_CLRI "left" 5
+		-af btn_CLRI "right" 5
+		-ac btn_CLRI "bottom" 5 btn_ALRW
+
+		-af btn_ALRW "left" 5
+		-af btn_ALRW "right" 5
+		-ac btn_ALRW "bottom" 5 btn_I11
+
+		-af btn_I11 "left" 5
+		-af btn_I11 "right" 5
+		-ac btn_I11 "bottom" 5 btn_ACW
+
+		-af btn_ACW "left" 5
+		-af btn_ACW "right" 5
+		-af btn_ACW "bottom" 5
+
+	MainForm;
+	
+	window -e -widthHeight 220 450 SIV_Win ;
+	showWindow $win_SIV ;
+}
+
+global proc LoadSource(){
+ $sl = ` ls -l -sl ` ;
+ if(size($sl)!=1) warning "Only insert first selection." ;
+ $sls = ` listRelatives -shapes $sl[0] ` ;
+ $sks = $sls[0] ;
+
+ for($x in  $sls){
+  $ch = ` getChain $x ` ;
+  if(size($ch)>0) $sks = $x ;
+ }
+
+ textField -e -tx $sks tf_S ;
+ $oc = findRelatedSkinCluster($sks) ;
+ textField -e -tx $oc tf_SK ;
+ textScrollList -e -removeAll tsl_IL ;
+ $jl = ` skinCluster -q -influence $oc ` ;
+ $jl = sort($jl) ;
+
+ int $i=0;
+ while($i<size($jl)){
+  textScrollList -e -append $jl[$i] tsl_IL ;
+  $i++;
+ }
+
+if(size($oc)==0) warning "This object havn't been deform." ;
+}
+
+global proc selInfluenceVerts(){
+	$j =  ` textScrollList -q -selectItem tsl_IL ` ;
+	$sk = ` textField -q -tx tf_SK ` ;
+	skinCluster -e -selectInfluenceVerts $j $sk ;
+}
+
+global proc ppm_IL_menu(){
+	menu -e -deleteAllItems ppm_IL ;
+	setParent -menu ppm_IL ;
+	$j =  ` textScrollList -q -selectItem tsl_IL ` ;
+	menuItem -label "Select Influence" -c ("select -r "+$j[0]) ;
+}
+
+global proc LoadMirrorTargetJoint(){
+	$sls = ` ls -l -sl ` ;
+	textField -e -tx $sls[0] tf_MTJ ;
+}
+
+global proc mirrorInfluenceWeight(){
+	$s = ` textField -q -tx tf_S ` ;
+	$st = ` listRelatives -parent $s ` ;
+	$j =  ` textScrollList -q -selectItem tsl_IL ` ;
+	$sk = ` textField -q -tx tf_SK ` ;
+	$mtj = ` textField -q -tx tf_MTJ ` ;
+
+	skinCluster -e -selectInfluenceVerts $j $sk ;
+	$jv = ` ls -selection -flatten ` ;
+
+	$i = 0 ;
+	while($i<size($jv)){
+		$x = ` xform -q -worldSpace -translation $jv[$i] ` ;
+		$x[0] = $x[0] * -1 ;
+		select -r $s ;
+		polySelectConstraint -mode 3 -type 1 -dist 1 -distbound 0 0.001 -distpoint $x[0] $x[1] $x[2] ;
+		$slv = ` ls -flatten -sl ` ;
+		polySelectConstraint -mode 0 ;
+
+		float $w = ` skinPercent -transform $j -query $sk $jv[$i] ` ;
+		if(size($slv)>0) skinPercent -tv $mtj $w $sk $slv[0] ;
+		$i++;
+	}
+
+}
+
+global proc checkLeftRightInfluence(){
+$inf = ` skinCluster -q -inf ` ;
+string $ls[] ; clear $ls ;
+string $rs[] ; clear $rs ;
+string $rsh[] ; clear $rsh ;
+string $rsn[] ; clear $rsn ;
+$i = 0 ;
+while($i<size($inf)){
+ $sa = stringToStringArray($inf[$i], "_");
+ if($sa[0]=="L"||$sa[0]=="LF"||$sa[0]=="LB"){
+  $ls[size($ls)] = $inf[$i] ;
+ }
+ if($sa[0]=="R"||$sa[0]=="RF"||$sa[0]=="RB"){
+  $rs[size($rs)] = $inf[$i] ;
+ }
+ $i++ ;
+}
+$i = 0 ;
+while($i<size($ls)){
+ $sa2 = stringToStringArray($ls[$i], "_");
+ string $ro = "R" ;
+ if($sa2[0]=="LF") $ro = "RF" ;
+ if($sa2[0]=="LB") $ro = "RB" ;
+ $j = 1 ;
+ while($j<size($sa2)){
+  $ro = $ro + "_" + $sa2[$j] ;
+  $j++;
+  }
+ $rsh[size($rsh)] = $ro ;
+ $i++ ;
+}
+$rsn = stringArrayRemove($rs,$rsh) ;
+
+string $rst = "" ;
+for($x in $rsn){
+ $os = `objExists $x ` ;
+ if($os==0){
+  string $rsa[] = {$x} ;
+  $rsn = stringArrayRemove($rsa,$rsn) ;
+  $rst = $rst + $x + " " ;
+ }
+}
+if($rst!=""){
+ $rst = $rst + "no exist." ;
+ warning $rst ;
+}
+select -r $rsn ;
+}
+
+global proc averageLeftRightWeight(){
+
+ $svn = ` polyEvaluate -vertexComponent ` ;
+ $sk = ` textField -q -tx tf_SK ` ;
+ $kws = ` checkBox -q -value sInf_cb_kws ` ;
+
+ if($kws==0){	// if don't use replace word
+  string $ljo[] ;	// opposite joint find start
+  string $rjo[] ;
+  clear $ljo ;
+  clear $rjo ;
+  string $iRt[] ;
+  clear $iRt ;
+
+  $ai = ` skinCluster -q -influence $sk ` ;
+  $i = 0 ;
+  while($i<size($ai)){
+   $t = ` xform -q -worldSpace -translation $ai[$i] ` ;
+   if($t[0]>0.0001) $ljo[size($ljo)] = $ai[$i] ;
+   if($t[0]<-.0001) $iRt[size($iRt)] = $ai[$i] ;
+   $i++;
+  }
+
+  $i = 0 ;
+  while($i<size($ljo)){
+   float $lx[] = ` xform -q -worldSpace -translation $ljo[$i] ` ;
+   $lx[0] = $lx[0] * -1 ;
+   $j = 0 ;
+   while($j<size($iRt)){
+    float $rx[] = ` xform -q -worldSpace -translation $iRt[$j] ` ;
+    float $dis = sqrt(pow($lx[0]-$rx[0],2) + pow($lx[1]-$rx[1],2) + pow($lx[2]-$rx[2],2)) ;
+    if($dis<0.0001) $rjo[$i] = $iRt[$j] ;
+    $j++;
+   }
+   $i++;
+  }	// opposite joint find end
+
+  $sl = ` ls -fl -sl ` ;
+  $i = 0 ;
+  while($i<size($sl)){	// i : vertex loop
+   $wi = ` skinPercent -ignoreBelow 0.0000000001 -query -transform $sk $sl[$i] ` ;
+   $wt = ` skinPercent -ignoreBelow 0.0000000001 -query -value $sk $sl[$i] ` ;
+   $j = 0 ;
+   while($j<size($wi)){	// j : vertex weighted influence loop
+    $iL = stringArrayFind($wi[$j],0,$ljo) ;
+    if($iL>=0&&$rjo[$iL]!=""){
+     $iR = stringArrayFind($rjo[$iL],0,$wi);
+     float $v = $wt[$j] / 2 ;
+     if($iR>=0) $v = ( $wt[$j] + $wt[$iR] ) / 2 ;
+     $wt[$j] = $v ;
+     if($iR>=0){
+      $wt[$iR] = $v ;
+     }else{
+      $wi[size($wi)] = $rjo[$iL] ;
+      $wt[size($wt)] = $v ;
+     }
+    }
+    $j++;
+   }
+   string $ex = "skinPercent " ;
+   for($j=0;$j<size($wi);$j++) $ex = $ex + "-transformValue " + $wi[$j] + " " + $wt[$j] + " " ;
+   $ex = $ex + $sk + " " ;
+   $ex = $ex + $sl[$i] ;
+   eval($ex) ;
+   $i++;
+  }
+ }
+
+ if($kws==1){
+  $to1 = ` textField -q -tx sInf_tf_to1 ` ;
+  $to2 = ` textField -q -tx sInf_tf_to2 ` ;
+  $sl = ` ls -fl -sl ` ;
+  $i = 0 ;
+  while($i<size($sl)){	// i : vertex loop
+   $wi = ` skinPercent -ignoreBelow 0.0000000001 -query -transform $sk $sl[$i] ` ;
+   $wt = ` skinPercent -ignoreBelow 0.0000000001 -query -value $sk $sl[$i] ` ;
+   $j = 0 ;
+   while($j<size($wi)){	// j : vertex weighted influence loop
+    string $gm1 = $wi[$j] ;
+    string $gm2 = ("*"+$to1+"*") ;
+    $gm = ` gmatch $gm1 $gm2 ` ;
+    if($gm==1){
+     $r = python("'"+$wi[$j]+"'.replace('"+$to1+"','"+$to2+"')") ;
+     if($r!=$wi[$j]&&`objExists $r`==1){
+      $iR = stringArrayFind($r,0,$wi) ;
+      float $v = $wt[$j] / 2 ;
+      if($iR>=0) $v = ( $wt[$j] + $wt[$iR] ) / 2 ;
+      $wt[$j] = $v ;
+      if($iR>=0){
+       $wt[$iR] = $v ;
+      }else{
+       $wi[size($wi)] = $r ;
+       $wt[size($wt)] = $v ;
+      }
+     }
+    }
+    $j++ ;
+   }
+   string $ex = "skinPercent " ;
+   for($j=0;$j<size($wi);$j++) $ex = $ex + "-transformValue " + $wi[$j] + " " + $wt[$j] + " " ;
+   $ex = $ex + $sk + " " ;
+   $ex = $ex + $sl[$i] ;
+   eval($ex) ;
+   $i++ ;
+  }
+ }
+}
+
+
+global proc SIV_increase11(){
+$sl = ` ls -fl -sl ` ;
+$s = ` textField -q -tx tf_S ` ;
+$st = ` listRelatives -parent $s ` ;
+$j =  ` textScrollList -q -selectItem tsl_IL ` ;
+$sk = ` textField -q -tx tf_SK ` ;
+$mtj = ` textField -q -tx tf_MTJ ` ;
+
+for($x in $sl){
+ float $w = ` skinPercent -transform $j -query $sk $x ` ;
+ $w = min(1,($w*1.1)) ;
+ skinPercent -tv $j $w $sk $x ;
+}
+}
+
+global proc averageCurrentWeight(){
+
+$sk = ` textField -q -tx tf_SK ` ;
+$sl = ` ls -fl -sl ` ;
+string $inf[] ;
+clear $inf ;
+for($x in $sl){
+ $xInf = ` skinPercent -ignoreBelow 0.0000000001 -q -transform $sk $x ` ;
+ $inf = stringArrayCatenate($inf,$xInf);
+}
+$inf = stringArrayRemoveDuplicates($inf);
+float $v[] ;
+clear $v ;
+for($x in $inf){
+ float $av = 0.0 ;
+ for($y in $sl){
+  $tv = ` skinPercent -transform $x -q -v $sk $y ` ;
+  $av = $av + $tv ;
+ }
+ $av = $av / size($sl) ;
+ $v[size($v)] = $av ;
+}
+string $ext = "skinPercent " ;
+$i = 0 ;
+for($x in $inf){
+ $ext = $ext + "-transformValue " + $x + " " + $v[$i] + " " ;
+ $i++ ;
+}
+$ext = $ext + $sk + " " ;
+for($x in $sl){
+ $ext = $ext + $x + " " ;
+}
+$ext = $ext + ";" ;
+eval($ext) ;
+
+}
+
