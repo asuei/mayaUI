@@ -1,0 +1,590 @@
+global proc utilityCreatorAfter(){ 
+
+ if(`window -ex win_UCA`) deleteUI win_UCA ;
+ window -t "utilityCreator After" -maximizeButton off -in "*utlCreator*" win_UCA ;
+
+ scrollLayout scroll_UCA ;
+  formLayout form_UCA ;
+
+   formLayout -width 150 -backgroundColor .45 .3 .3 form_MDL ;
+    text -label "multiDoubleLinear" -font "boldLabelFont" txt_MDL0 ;
+    text -label "Input first attribute" txt_MDL1 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"MDL1\")" btn_MDL1 ;
+    textField tf_MDL1 ;
+    text -label "Input secend attribute" txt_MDL2 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"MDL2\")" btn_MDL2 ;
+    textField tf_MDL2 ;
+    separator sprt_MDL ;
+    text -label "Result attribute" txt_MDL3 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"MDL3\")" btn_MDL3 ;
+    textField tf_MDL3 ;
+    button -label "Execute" -command "uca_multi;" btn_MDL4 ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_MDL0 "top" 5
+   -ap txt_MDL0 "left" 0 15
+   -ac txt_MDL1 "top" 5 txt_MDL0
+   -af txt_MDL1 "left" 5
+   -af btn_MDL1 "left" 5
+   -ac btn_MDL1 "top" 5 txt_MDL1
+   -ac tf_MDL1 "top" 5 txt_MDL1
+   -ac tf_MDL1 "left" 0 btn_MDL1
+   -af tf_MDL1 "right" 5
+   -ac txt_MDL2 "top" 5 tf_MDL1
+   -af txt_MDL2 "left" 5
+   -af btn_MDL2 "left" 5
+   -ac btn_MDL2 "top" 5 txt_MDL2
+   -ac tf_MDL2 "top" 5 txt_MDL2
+   -ac tf_MDL2 "left" 0 btn_MDL2
+   -af tf_MDL2 "right" 5
+   -ac sprt_MDL "top" 5 tf_MDL2
+   -af sprt_MDL "left" 5
+   -af sprt_MDL "right" 5
+   -ac txt_MDL3 "top" 5 sprt_MDL
+   -af txt_MDL3 "left" 5
+   -af btn_MDL3 "left" 5
+   -ac btn_MDL3 "top" 5 txt_MDL3
+   -ac tf_MDL3 "top" 5 txt_MDL3
+   -ac tf_MDL3 "left" 0 btn_MDL3
+   -af tf_MDL3 "right" 5
+   -ac btn_MDL4 "top" 5 tf_MDL3
+   -af btn_MDL4 "left" 5
+   -af btn_MDL4 "right" 5
+   -af btn_MDL4 "bottom" 5 form_MDL ;
+
+   formLayout -width 150 -backgroundColor .4 .35 .3 form_ADL ;
+    text -label "addDoubleLinear" -font "boldLabelFont" txt_ADL0 ;
+    text -label "Input attribute be sum" txt_ADL1 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL1\")" btn_ADL1 ;
+    textField  tf_ADL1 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL2\")" btn_ADL2 ;
+    textField  tf_ADL2 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL3\")" btn_ADL3 ;
+    textField  tf_ADL3 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL4\")" btn_ADL4 ;
+    textField  tf_ADL4 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL5\")" btn_ADL5 ;
+    textField  tf_ADL5 ;
+    separator sprt_ADL ;
+    text -label "Result attribute" txt_ADL3 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"ADL6\")" btn_ADL6 ;
+    textField  tf_ADL6 ;
+    button -label "Execute" -command "uca_add;" btn_ADLR ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_ADL0 "top" 5
+   -ap txt_ADL0 "left" 0 18
+   -ac txt_ADL1 "top" 5 txt_ADL0
+   -af txt_ADL1 "left" 5
+   -ac btn_ADL1 "top" 5 txt_ADL1
+   -af btn_ADL1 "left" 5
+   -ac tf_ADL1 "top" 5 txt_ADL1
+   -ac tf_ADL1 "left" 0 btn_ADL1
+   -af tf_ADL1 "right" 5
+   -ac btn_ADL2 "top" 5 btn_ADL1
+   -af btn_ADL2 "left" 5
+   -ac tf_ADL2 "top" 5 tf_ADL1
+   -ac tf_ADL2 "left" 0 btn_ADL2
+   -af tf_ADL2 "right" 5
+   -ac btn_ADL3 "top" 5 btn_ADL2
+   -af btn_ADL3 "left" 5
+   -ac tf_ADL3 "top" 5 tf_ADL2
+   -ac tf_ADL3 "left" 0 btn_ADL3
+   -af tf_ADL3 "right" 5
+   -ac btn_ADL4 "top" 5 btn_ADL3
+   -af btn_ADL4 "left" 5
+   -ac tf_ADL4 "top" 5 tf_ADL3
+   -ac tf_ADL4 "left" 0 btn_ADL4
+   -af tf_ADL4 "right" 5
+   -ac btn_ADL5 "top" 5 btn_ADL4
+   -af btn_ADL5 "left" 5
+   -ac tf_ADL5 "top" 5 tf_ADL4
+   -ac tf_ADL5 "left" 0 btn_ADL5
+   -af tf_ADL5 "right" 5
+   -ac sprt_ADL "top" 5 tf_ADL5
+   -af sprt_ADL "left" 5
+   -af sprt_ADL "right" 5
+   -ac txt_ADL3 "top" 5 sprt_ADL
+   -af txt_ADL3 "left" 5
+   -ac btn_ADL6 "top" 5 txt_ADL3
+   -af btn_ADL6 "left" 5
+   -ac tf_ADL6 "top" 5 txt_ADL3
+   -ac tf_ADL6 "left" 0 btn_ADL6
+   -af tf_ADL6 "right" 5
+   -ac btn_ADLR "top" 5 tf_ADL6
+   -af btn_ADLR "left" 5
+   -af btn_ADLR "right" 5
+   -af btn_ADLR "bottom" 5
+   form_ADL ;
+
+   formLayout -width 150 -backgroundColor .35 .4 .3 form_RV ;
+    text -label "reverse" -font "boldLabelFont" txt_RV0 ;
+    text -label "Input input attribute" txt_RV1 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"RV1\")" btn_RV1 ;
+    textField tf_RV1 ;
+    text -label "Input secend attribute" txt_RV2 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"RV2\")" btn_RV2 ;
+    textField tf_RV2 ;
+    separator sprt_RV ;
+    button -label "Execute" -command "uca_reverse;" btn_RV3 ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_RV0 "top" 5
+   -ap txt_RV0 "left" 0 34
+   -ac txt_RV1 "top" 5 txt_RV0
+   -af txt_RV1 "left" 5
+   -af btn_RV1 "left" 5
+   -ac btn_RV1 "top" 5 txt_RV1
+   -ac tf_RV1 "top" 5 txt_RV1
+   -ac tf_RV1 "left" 0 btn_RV1
+   -af tf_RV1 "right" 5
+   -ac txt_RV2 "top" 5 tf_RV1
+   -af txt_RV2 "left" 5
+   -af btn_RV2 "left" 5
+   -ac btn_RV2 "top" 5 txt_RV2
+   -ac tf_RV2 "top" 5 txt_RV2
+   -ac tf_RV2 "left" 0 btn_RV2
+   -af tf_RV2 "right" 5
+   -ac sprt_RV "top" 5 btn_RV2
+   -af sprt_RV "left" 5
+   -af sprt_RV "right" 5
+   -ac btn_RV3 "top" 5 sprt_RV
+   -af btn_RV3 "left" 5
+   -af btn_RV3 "right" 5
+   -af btn_RV3 "bottom" 5
+   form_RV ;
+
+   formLayout -width 150 -backgroundColor .3 .4 .35 form_CI ;
+    text -label "curveInfo" -font "boldLabelFont" txt_CI0 ;
+    separator sprt_CI ;
+    button -height 30 -label "Execute" -command "uca_crvInfo;" btn_CI3 ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_CI0 "top" 5
+   -ap txt_CI0 "left" 0 16
+   -ac sprt_CI "top" 5 txt_CI0
+   -af sprt_CI "left" 5
+   -af sprt_CI "right" 5
+   -ac btn_CI3 "top" 5 sprt_CI
+   -af btn_CI3 "left" 5
+   -af btn_CI3 "right" 5
+   -af btn_CI3 "bottom" 5
+   form_CI ;
+
+   formLayout -width 150 -backgroundColor .3 .35 .4 form_POC ;
+    text -label "pointOnCurve" -font "boldLabelFont" txt_POC0 ;
+    text -label "Input put on number" txt_POC1 ;
+    button -label ">" -width 25 -height 20 -command "uca_inputText(\"POC1\")" btn_POC1 ;
+    intField -value 1 -minValue 1 if_POC ;
+    separator sprt_POC ;
+    text -label "than Select curve and" txt_POC2 ;
+    button -height 30 -label "Execute" -command "uca_poc" btn_POC3 ;
+    button -height 25 -label "Snap POC position" -command "uca_pocSnap" btn_POC4 ;
+	button -height 25 -label "Execute by CV" -command "uca_pocByCv" btn_POC5 ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_POC0 "top" 5
+   -ap txt_POC0 "left" 0 25
+   -ac txt_POC1 "top" 5 txt_POC0
+   -af txt_POC1 "left" 5
+   -af btn_POC1 "left" 5
+   -ac btn_POC1 "top" 5 txt_POC1
+   -ac if_POC "top" 5 txt_POC1
+   -ac if_POC "left" 0 btn_POC1
+   -af if_POC "right" 5
+   -ac sprt_POC "top" 5 if_POC
+   -af sprt_POC "left" 5
+   -af sprt_POC "right" 5
+   -ac txt_POC2 "top" 5 sprt_POC
+   -af txt_POC2 "left" 5
+   -ac btn_POC3 "top" 5 txt_POC2
+   -af btn_POC3 "left" 5
+   -af btn_POC3 "right" 5
+   -ac btn_POC4 "top" 5 btn_POC3
+   -af btn_POC4 "left" 5
+   -af btn_POC4 "right" 5
+   -ac btn_POC5 "top" 5 btn_POC4
+   -af btn_POC5 "left" 5
+   -af btn_POC5 "right" 5
+   -af btn_POC5 "bottom" 5
+   form_POC ;
+
+   formLayout -width 150 -backgroundColor .3 .3 .45 form_DL ;
+    text -label "distanceLength" -font "boldLabelFont" txt_DL ;
+    separator sprt_DL ;
+    button -height 30 -label "Execute" -command "uca_dLength(0);" btn_DL3 ;
+    button -height 30 -label "Plus Rate" -command "uca_dLength(1);" btn_DL4 ;
+    button -height 30 -label "Plus Switch" -command "uca_dLength(2);" btn_DL5 ;
+    setParent ..;
+
+   formLayout -e 
+   -af txt_DL "top" 5
+   -af txt_DL "left" 5
+   -af txt_DL "right" 5
+   -ac sprt_DL "top" 5 txt_DL
+   -af sprt_DL "left" 5
+   -af sprt_DL "right" 5
+   -ac btn_DL3 "top" 5 sprt_DL
+   -af btn_DL3 "left" 5
+   -af btn_DL3 "right" 5
+   -ac btn_DL4 "top" 5 btn_DL3
+   -af btn_DL4 "left" 5
+   -af btn_DL4 "right" 5
+   -ac btn_DL5 "top" 5 btn_DL4
+   -af btn_DL5 "left" 5
+   -af btn_DL5 "right" 5
+   -af btn_DL5 "bottom" 5
+   form_DL ;
+
+   formLayout -width 150 -backgroundColor .35 .3 .4 form_QR ;
+    text -label "Quaternions Rotate" -font "boldLabelFont" txt_QR0 ;
+    separator sprt_QR ;
+    button -height 30 -label "Rotate X" -command "uca_quatRot(\"X\");" btn_QR0 ;
+    button -height 30 -label "Rotate Y" -command "uca_quatRot(\"Y\");" btn_QR1 ;
+    button -height 30 -label "Rotate Z" -command "uca_quatRot(\"Z\");" btn_QR2 ;
+    button -height 30 -label "Zeroing Attributes" -command "uca_quatRotZero;" btn_QRZ ;
+    setParent ..;
+
+   formLayout -e
+   -af txt_QR0 "top" 5
+   -ap txt_QR0 "left" 0 17
+   -ac sprt_QR "top" 5 txt_QR0
+   -af sprt_QR "left" 5
+   -af sprt_QR "right" 5
+   -ac btn_QR0 "top" 5 sprt_QR
+   -af btn_QR0 "left" 5
+   -af btn_QR0 "right" 5
+   -ac btn_QR1 "top" 5 btn_QR0
+   -af btn_QR1 "left" 5
+   -af btn_QR1 "right" 5
+   -ac btn_QR2 "top" 5 btn_QR1
+   -af btn_QR2 "left" 5
+   -af btn_QR2 "right" 5
+   -ac btn_QRZ "top" 5 btn_QR2
+   -af btn_QRZ "left" 5
+   -af btn_QRZ "right" 5
+   -af btn_QRZ "bottom" 5 form_QR ;
+
+   formLayout -width 150 -backgroundColor .40 .3 .35 form_MXE ;
+    text -label "Matrix Expression" -font "boldLabelFont" txt_MXE0 ;
+    separator sprt_MXE ;
+    button -height 30 -label "Multi Add" -command "uca_mMultiCons()" btn_MXE0 ;
+    setParent ..;
+	
+   formLayout -e
+   -af txt_MXE0 "top" 5
+   -ap txt_MXE0 "left" 0 17
+   -ac sprt_MXE "top" 5 txt_MXE0
+   -af sprt_MXE "left" 5
+   -af sprt_MXE "right" 5
+   -ac btn_MXE0 "top" 5 sprt_MXE
+   -af btn_MXE0 "left" 5
+   -af btn_MXE0 "right" 5 form_MXE ;
+	
+   formLayout -e
+   -af form_MDL "top" 5
+   -af form_MDL "left" 5
+   -ac form_ADL "top" 5 form_MDL
+   -af form_ADL "left" 5
+   -ac form_RV "top" 5 form_ADL
+   -af form_RV "left" 5
+   -af form_CI "left" 5
+   -ac form_CI "top" 5 form_RV
+   -af form_POC "left" 5
+   -ac form_POC "top" 5 form_CI
+   -af form_DL "left" 5
+   -ac form_DL "top" 5 form_POC
+   -af form_QR "left" 5
+   -ac form_QR "top" 5 form_DL
+   -af form_MXE "left" 5
+   -ac form_MXE "top" 5 form_QR form_UCA ;
+
+ window -e -widthHeight 180 300 -backgroundColor .1 .1 .1 win_UCA ;
+ showWindow win_UCA ;
+}
+
+global proc uca_inputText(string $is){
+ $sl = ` ls -sl ` ;
+ $cb = ` channelBox -q -selectedMainAttributes mainChannelBox ` ;
+ if(size($sl)>0&&size($cb)>0){
+  textField -e -text ($sl[0]+"."+$cb[0]) ("tf_"+$is) ;
+  setFocus win_UCA ;
+ }
+}
+
+global proc uca_inputText2(string $is){
+ $sl = ` ls -sl ` ;
+ if(size($sl)>0){
+  textField -e -text $sl[0] ("tf_"+$is) ;
+  setFocus win_UCA ;
+ }
+}
+
+global proc uca_multi(){
+$tf1 = ` textField -q -text tf_MDL1 ` ;
+$tf2 = ` textField -q -text tf_MDL2 ` ;
+$tf3 = ` textField -q -text tf_MDL3 ` ;
+$dml = ` createNode multDoubleLinear ` ;
+if(`objExists $tf1`) connectAttr -f $tf1 ($dml+".input1") ;
+else setAttr ($dml+".input1") $tf1 ;
+if(`objExists $tf2`) connectAttr -f $tf2 ($dml+".input2") ;
+else { float $n=$tf2 ; setAttr ($dml+".input2") $n ; }
+connectAttr -f ($dml+".output") $tf3 ;
+select -r $dml ;
+}
+
+global proc uca_add(){
+$i = 1 ; int $count = 0 ;
+string $dml,$dmlUp ;
+while($i<=5){
+ $tf = ` textField -q -text ("tf_ADL"+$i) ` ;
+ if($tf!=""){
+  $count++;
+  if($count!=2){
+   $dml = ` createNode addDoubleLinear ` ;
+   if(`objExists $tf`) connectAttr -f $tf ($dml+".input1") ;
+   else{ float $f = $tf ; setAttr ($dml+".input1") $f ; }
+  }else{
+   if(`objExists $tf`) connectAttr -f $tf ($dml+".input2") ;
+   else{ float $f = $tf ; setAttr ($dml+".input2") $f ; }
+  }
+  if($count>2) connectAttr ($dmlUp+".output") ($dml+".input2") ;
+  $dmlUp = $dml ;
+ }
+ $i++;
+}
+
+$tf6 = ` textField -q -text tf_ADL6 ` ;
+connectAttr -f ($dml+".output") $tf6 ;
+select -r $dml ;
+}
+
+global proc uca_reverse(){
+$tf1 = ` textField -q -text tf_RV1 ` ;
+$tf2 = ` textField -q -text tf_RV2 ` ;
+$rv = ` createNode reverse ` ;
+connectAttr -f $tf1 ($rv+".inputX") ;
+connectAttr -f ($rv+".outputX") $tf2 ;
+select -r $rv ;
+}
+
+global proc uca_crvInfo(){
+$sl = ` ls -sl ` ;
+for($x in $sl){
+ $xs = `listRelatives -shapes $x` ;
+ for($y in $xs){
+  $yt = ` nodeType $y `;
+  $im = ` getAttr ($y+".intermediateObject") ` ;
+  if($yt=="nurbsCurve"&&$im==0){
+   $ci = ` createNode curveInfo ` ;
+   connectAttr -f ($y+".worldSpace[0]") ($ci+".inputCurve") ;
+   $ae = ` attributeExists "length" $x ` ;
+   if($ae==0){
+    addAttr -ln "length" -at double $x ;
+    setAttr -e -keyable true ($x+".length") ;
+   }
+   connectAttr -f ($ci+".arcLength") ($x+".length") ;
+  }
+ }
+}
+select -r $sl ;
+}
+
+global proc uca_poc(){
+ if(size(`ls -selection`)>0){
+ $n = ` intField -q -value if_POC ` ;
+ $sls = ` ls -selection ` ;
+ $sll = ` ls -selection -long ` ;
+ $nt = ` nodeType $sll[0] ` ;
+ if($nt=="transform"){
+  $lr = ` listRelatives -noIntermediate -shapes -fullPath -type nurbsCurve $sll[0] ` ;
+  if(size($lr)>0) $sll[0] = $lr[0] ;
+  else $sll[0]= "" ;
+ }else if($nt=="nurbsCurve") $sll[0] = $sll[0] ;
+ else $sll[0]= "" ;
+ if($sll[0]!=""){
+  $i = 0 ;
+  while($i<$n){
+   $pocN = ("poc_"+$sls[0]+$i) ;
+   createNode -name $pocN pointOnCurveInfo ;
+   connectAttr ($sll[0]+".worldSpace[0]") ($pocN+".inputCurve") ;
+   setAttr ($pocN+".turnOnPercentage") 1 ;
+   if($n==1) setAttr ($pocN+".parameter") ((1.0 /($n))*$i) ;
+   else setAttr ($pocN+".parameter") ((1.0 /($n-1))*$i) ;
+   $loc = ` spaceLocator ` ; 
+   connectAttr ($pocN+".position") ($loc[0]+".translate") ;
+   $i++ ;
+  }
+ }
+ }
+}
+
+global proc uca_pocByCv(){
+ if(size(`ls -selection`)>0){
+ //$n = ` intField -q -value if_POC ` ;
+ $sls = ` ls -selection ` ;
+ $sll = ` ls -selection -long ` ;
+ $nt = ` nodeType $sll[0] ` ;
+ if($nt=="transform"){
+  $lr = ` listRelatives -noIntermediate -shapes -fullPath -type nurbsCurve $sll[0] ` ;
+  if(size($lr)>0) $sll[0] = $lr[0] ;
+  else $sll[0]= "" ;
+ }else if($nt=="nurbsCurve") $sll[0] = $sll[0] ;
+ else $sll[0]= "" ;
+ if($sll[0]!=""){
+  $i = 0 ;
+  $s = ` getAttr ($sll[0]+".spans") ` ;
+  $d = ` getAttr ($sll[0]+".degree") ` ;
+  $n = $s + $d ;
+  while($i<$n){
+   $pocN = ("poc_"+$sls[0]+$i) ;
+   createNode -name $pocN pointOnCurveInfo ;
+   connectAttr ($sll[0]+".worldSpace[0]") ($pocN+".inputCurve") ;
+   setAttr ($pocN+".turnOnPercentage") 1 ;
+   //if($n==1) setAttr ($pocN+".parameter") ((1.0 /($n))*$i) ;
+   //else setAttr ($pocN+".parameter") ((1.0 /($n-1))*$i) ;
+   $loc = ` spaceLocator ` ; 
+   connectAttr ($pocN+".position") ($loc[0]+".translate") ;
+   $npoc = ` createNode nearestPointOnCurve ` ;
+   connectAttr ($sll[0]+".worldSpace[0]") ($npoc+".inputCurve") ;
+   $x = ` xform -q -ws -t ($sll[0]+".cv["+$i+"]") ` ;
+   setAttr ($npoc+".inPosition") -type "double3" $x[0] $x[1] $x[2] ;
+   $ga = ` getAttr ($npoc+".parameter") ` ;
+   setAttr ($pocN+".parameter") $ga ;
+   delete $npoc ;
+   $i++ ;
+  }
+ }
+ }
+}
+
+global proc uca_pocSnap(){
+ $sel = ` ls -selection ` ;
+ $poci = ` listConnections -type pointOnCurveInfo ($sel[1]+".translate") ` ;
+ $cAttr = ` listConnections -plugs 1 ($poci[0]+".inputCurve") ` ;
+ $npoc = ` createNode nearestPointOnCurve ` ;
+ connectAttr $cAttr[0] ($npoc+".inputCurve") ;
+ $x = ` xform -q -ws -rp $sel[0] ` ;
+ setAttr ($npoc+".inPosition") -type "double3" $x[0] $x[1] $x[2] ;
+ $ga = ` getAttr ($npoc+".parameter") ` ;
+ setAttr ($poci[0]+".parameter") $ga ;
+ delete $npoc ;
+ select -r $sel ;
+}
+
+global proc uca_dLength(int $method){
+ $sll = ` ls -selection -long -tail 1 ` ; $ol = $sll[0] ;
+ $sls = ` ls -selection -shortNames -tail 1 ` ; $os = $sls[0] ;
+ addAttr -ln "length" -at double -keyable true $ol ;
+ createNode -name ("power_"+$os+"Length") multiplyDivide ;
+ setAttr ("power_"+$os+"Length.operation") 3 ;
+ connectAttr ($ol+".translate") ("power_"+$os+"Length.input1") ;
+ setAttr ("power_"+$os+"Length.input2X") 2 ;
+ setAttr ("power_"+$os+"Length.input2Y") 2 ;
+ setAttr ("power_"+$os+"Length.input2Z") 2 ;
+
+ createNode -name ("plus_"+$os+"Length") plusMinusAverage ;
+ connectAttr ("power_"+$os+"Length.outputX") ("plus_"+$os+"Length.input1D[0]") ;
+ connectAttr ("power_"+$os+"Length.outputY") ("plus_"+$os+"Length.input1D[1]") ;
+ connectAttr ("power_"+$os+"Length.outputZ") ("plus_"+$os+"Length.input1D[2]") ;
+
+ createNode -name ("radical_"+$os+"Length") multiplyDivide ;
+ setAttr("radical_"+$os+"Length.operation") 3 ;
+ connectAttr ("plus_"+$os+"Length.output1D") ("radical_"+$os+"Length.input1X") ;
+ setAttr ("radical_"+$os+"Length.input2X") 0.5 ;
+ connectAttr ("radical_"+$os+"Length.outputX") ($ol+".length") ;
+
+ if($method>=1){
+  addAttr -ln "default" -at double -keyable true -defaultValue (`getAttr ($ol+".length")`) $ol ;
+  addAttr -ln "rate" -at double -keyable true $ol ;
+  createNode -name ("divide_"+$os+"Rate") multiplyDivide ;
+  setAttr ("divide_"+$os+"Rate.operation") 2 ;
+  connectAttr ($os+".length") ("divide_"+$os+"Rate.input1X") ;
+  connectAttr ($os+".default") ("divide_"+$os+"Rate.input2X") ;
+  connectAttr ("divide_"+$os+"Rate.outputX") ($ol+".rate") ;
+ }
+ if($method>=2){
+  addAttr -ln "switch" -at double -keyable true -minValue 0 -maxValue 1 $ol ;
+  addAttr -ln "result" -at double -keyable true $ol ;
+  createNode -name ("adl_"+$os+"SwitchA") addDoubleLinear ;
+  connectAttr ($ol+".rate") ("adl_"+$os+"SwitchA.input1") ;
+  setAttr ("adl_"+$os+"SwitchA.input2") -1 ;
+  createNode -name ("mdl_"+$os+"Switch") multDoubleLinear ;
+  connectAttr ("adl_"+$os+"SwitchA.output") ("mdl_"+$os+"Switch.input1") ;
+  connectAttr ($ol+".switch") ("mdl_"+$os+"Switch.input2") ;
+  createNode -name ("adl_"+$os+"SwitchB") addDoubleLinear ;
+  connectAttr ("mdl_"+$os+"Switch.output") ("adl_"+$os+"SwitchB.input1") ;
+  setAttr ("adl_"+$os+"SwitchB.input2") 1 ;
+  connectAttr ("adl_"+$os+"SwitchB.output") ($ol+".result") ;
+ }
+
+ select -r $ol ;
+}
+
+global proc uca_quatRot(string $axis){
+ if(`pluginInfo -query -loaded quatNodes`){
+ }else{ loadPlugin quatNodes; }
+ $ls = ` ls -selection ` ;
+ $s = "X" ;
+ if($axis=="Y") $s = "Y" ;
+ if($axis=="Z") $s = "Z" ;
+ for($x in $ls){
+  createNode -name ("e2q_"+$x+$axis) eulerToQuat ;
+  createNode -name ("q2e_"+$x+$axis) quatToEuler ;
+  if($axis=="Y") setAttr ("q2e_"+$x+$axis+".inputRotateOrder") 1 ;
+  connectAttr ($x+".rotate") ("e2q_"+$x+$axis+".inputRotate") ;
+  connectAttr ("e2q_"+$x+$axis+".outputQuat"+$axis) ("q2e_"+$x+$axis+".inputQuat"+$axis) ;
+  connectAttr ("e2q_"+$x+$axis+".outputQuatW") ("q2e_"+$x+$axis+".inputQuatW") ;
+  addAttr -ln ("quat"+$axis) -at double -keyable true $x ;
+  connectAttr ("q2e_"+$x+$axis+".outputRotate"+$axis) ($x+".quat"+$axis) ;
+ }
+ select -r $ls ;
+}
+
+global proc uca_quatRotZero(){
+ $ls = ` ls -selection ` ;
+ $attr = {"quatX","quatY","quatZ"} ;
+ for($x in $ls){
+  for($y in $attr){
+   if (`attributeExists $y $x`) {
+    $v = ` getAttr($x+"."+$y) ` ;
+    if($v >= 5 || $v <= -5){
+     addAttr -longName ($y+"0") -attributeType double -keyable true $x ;
+     createNode -name ("adl_"+$x+$y) "addDoubleLinear" ;
+	 connectAttr ($x+"."+$y) ("adl_"+$x+$y+".input1") ;
+	 setAttr ("adl_"+$x+$y+".input2") ($v*-1) ;
+	 connectAttr ("adl_"+$x+$y+".output") ($x+"."+$y+"0") ;
+    }
+   }
+  }
+ select -r $ls ;
+ }
+}
+
+global proc uca_mMultiCons(){
+ $ls = ` ls -selection -type transform -type joint` ;
+ if(size($ls)>=3){
+  $i = 0 ;
+  $n = ` createNode wtAddMatrix ` ;
+  while($i<size($ls)){
+   if($i!=(size($ls)-1)){
+    connectAttr ($ls[$i]+".worldMatrix[0]") ($n+".wtMatrix["+$i+"].matrixIn") ;
+    setAttr ($n+".wtMatrix["+$i+"].weightIn") (1.0/(size($ls)-1)) ;
+   }else{
+    $dm = ` createNode decomposeMatrix ` ;
+    connectAttr ($n+".matrixSum") ($dm+".inputMatrix") ;
+    connectAttr ($dm+".outputTranslate") ($ls[$i]+".translate") ;
+    connectAttr ($dm+".outputRotate") ($ls[$i]+".rotate") ;
+    connectAttr ($dm+".outputScale") ($ls[$i]+".scale") ;
+    connectAttr ($dm+".outputShear") ($ls[$i]+".shear") ;
+   }
+   $i++;
+  }
+ }
+}
+
