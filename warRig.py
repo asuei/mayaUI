@@ -20,7 +20,8 @@ class warRig:
   jobNum = cmds.scriptJob(conditionFalse=["SomethingSelected",self.limbDisable],parent='win_warRig')
 
 # UI Layout
-  cmds.gridLayout(numberOfColumns=1,cellWidth=320)
+  tab = cmds.tabLayout(innerMarginWidth=5, innerMarginHeight=5)
+  grid1 = cmds.gridLayout(numberOfColumns=1,cellWidth=320)
   cmds.optionMenu('aMenu',label='  Phase 1 : Adjuster                                        ',)
   cmds.menuItem( label='Biped')
   cmds.menuItem( label='Quadruped')
@@ -56,7 +57,7 @@ class warRig:
 
   cmds.text(label='Phase 2 : Joint                                                                             ')
   cmds.button(label='Create Hierachy',command=self.createHierachy,backgroundColor=[0.15,0.15,0.15])
-  cmds.button(label='Create Joint  or  Re-locating joints',command=self.createJoint,backgroundColor=[0.15,0.15,0.15])
+  cmds.button(label='Create Joint  or  Re-locating joints',command=self.createSkeleton,backgroundColor=[0.15,0.15,0.15])
   cmds.gridLayout(numberOfRowsColumns=[1,3],cellWidth=106)
   #cmds.text(label='               Fix Joint')
   cmds.optionMenu('j2Menu',label='',changeCommand=self.j2MenuCmd)
@@ -102,7 +103,26 @@ class warRig:
   cmds.button(label='mocap',command=self.mocapJoint)
   cmds.button(label='delete ctrl',enable=1,command=self.deleteCtrl)
   cmds.setParent( '..' )
+  cmds.setParent( '..' )
+  form2 = cmds.formLayout()
+  grid2 = cmds.gridLayout(numberOfColumns=2,cellWidth=160)
+  cmds.checkBox(label='tail')
+  cmds.checkBox(label='ear')
+  cmds.checkBox(label='tongue')
+  cmds.checkBox(label='extra arm')
+  cmds.checkBox(label='extra leg')
+  cmds.checkBox(label='downBelow')
+  cmds.checkBox(label='back wing')
+  cmds.checkBox(label='arm2 wing')
+  cmds.checkBox(label='third eye')
+  cmds.checkBox(label='extra body&leg')
+  cmds.setParent( '..' )
+  cmds.formLayout( form2, edit=True, attachForm=((grid2, 'top',10), (grid2, 'left',10), (grid2, 'bottom',10), (grid2, 'right',10)) )
+  cmds.setParent( '..' )
+  grid3 = cmds.gridLayout(numberOfColumns=1,cellWidth=320)
+  cmds.iconTextButton( style='iconAndTextHorizontal', image1='sphere.png', label='sphere' )
 
+  cmds.tabLayout(tab,e=1,tabLabel=((grid1,'Main'), (form2,'Extra Rigs'),(grid3,'Test Animation')) )
   cmds.showWindow('win_warRig')
   self.defineJoint()
 
@@ -967,38 +987,54 @@ class warRig:
 ############################################## Joint Create Phase ############################################
 ##############################################################################################################
  def defineJoint(self,*a):
-  self.rootJo = 'jcA00_root'
-  self.pelvisJo = 'jcA10_pelvis'
-  self.pelvisSplitJo = 'jlA12_pelvisL'
+  self.joId = {'root':13000,'pelvis':13200,'pelvisL':13500
+  ,'head':1500,'face':2000,'jaw':2800
+  ,'neck':3500,'neck1':3510,'neck2':3520
+  ,'chest':4200,'shoulderL':5200
+  ,'spine2':12300,'spine1':12400,'spine0':12500
+  ,'armL':7200,'armTw0L':7250,'armTw1L':7260,'armTw2L':7270,'armTw3L':7280,'armTw4L':7290
+  ,'elbowL':7700,'elbowTw0L':7750,'elbowTw1L':7760,'elbowTw2L':7770,'elbowTw3L':7780,'elbowTw4L':7790
+  ,'wristL':8200,'thumb0L':8400,'thumb1L':8410,'thumb2L':8420
+  ,'index0L':8500,'index1L':8510,'index2L':8520,'index3L':8530
+  ,'middle0L':8600,'middle1L':8610,'middle2L':8620,'middle3L':8630
+  ,'ring0L':8700,'ring1L':8710,'ring2L':8720,'ring3L':8730
+  ,'little0L':8800,'little1L':8810,'little2L':8820,'little3L':8830
+  ,'hipL':14200,'hipTw0L':14250,'hipTw1L':14260,'hipTw2L':14270,'hipTw3L':14280,'hipTw4L':14290
+  ,'kneeL':14700,'kneeTw0L':14750,'kneeTw1L':14760,'kneeTw2L':14770,'kneeTw3L':14780,'kneeTw4L':14790
+  ,'ankleL':15200,'ballL':15450
+  }
+  
+  self.rootJo = 'jo_root'
+  self.pelvisJo = 'jo_pelvis'
+  self.pelvisSplitJo = 'jo_pelvisL'
   self.downBelong = ['jcA90_penis','jcA92_penisTip','jlA94_scrotumL','jlA96_scrotumTipL']
-  self.spineJo = ['jcB00_spine0','jcB10_spine1','jcB20_spine2','jcB30_spine3','jcB40_spine4','jcB50_spine5','jcB60_spine6','jcB70_spine7','jcB80_spine8','jcB90_spine9']
+  self.spineJo = ['jo_spine0','jo_spine1','jo_spine2','jo_spine3','jo_spine4','jo_spine5','jo_spine6','jo_spine7','jo_spine8','jo_spine9']
   self.spineFront = [ 'jcB02_spine0F','jcB12_spine1F','jcB22_spine2F','jcB32_spine3F','jcB42_spine4F','jcB52_spine5F','jcB62_spine6F','jcB72_spine7F','jcB82_spine8F','jcB92_spine9F' ]
   self.spineSide = [ 'jlB04_spine0L','jlB14_spine1L','jlB24_spine2L','jlB34_spine3L','jlB44_spine4L','jlB54_spine5L','jlB64_spine6L','jlB74_spine7L','jlB84_spine8L','jlB94_spine9L' ]
-  self.tailJo = ['jcB10_tail0','jcB11_tail1','jcB12_tail2','jcB13_tail3','jcB14_tail4','jcB15_tail5','jcB16_tail6','jcB17_tail7','jcC18_tail8','jcC19_tail9']
-  self.tailTip = 'jcB20_tailTip'
-  self.chestJo = 'jcC00_chest'
+  self.tailJo = ['jo_tail0','jo_tail1','jo_tail2','jo_tail3','jo_tail4','jo_tail5','jo_tail6','jo_tail7','jo_tail8','jo_tail9']
+  self.tailTip = 'jo_tailTip'
+  self.chestJo = 'jo_chest'
   self.chestJoList = [self.chestJo]
   self.chestRound = ['jcC02_chestF','jlC04_chestL']
-  self.neckJo = ['jcD00_neck','jcD10_neck1','jcD20_neck2','jcD30_neck3','jcD40_neck4','jcD50_neck5','jcD60_neck6','jcD70_neck7','jcD80_neck8','jcD90_neck9']
-  self.headJo = 'jcE00_head'
-  self.topJo = 'jcE99_top'
-  self.faceJo = 'jcF00_face'
+  self.neckJo = ['jo_neck','jo_neck1','jo_neck2','jo_neck3','jo_neck4','jo_neck5','jo_neck6','jo_neck7','jo_neck8','jo_neck9']
+  self.headJo = 'jo_head'
+  self.topJo = 'jo_top'
+  self.faceJo = 'jo_face'
   self.browJo = ['jcF05_browM','jlF10_browL','jlF15_browMidL']
   
-  self.eyeJo = 'jlF20_eyeL'
+  self.eyeJo = 'jo_eyeL'
   self.specJo = ['jlF21_specAL','jlF22_specBL']
   self.uplidJo = ['jlF23_upLidRotL','jlF24_upLidL','jlF25_upLidHalfRotL','jlF26_upLidHalfL']
   self.lolidJo = ['jlF27_loLidRotL','jlF28_loLidL','jlF29_loLidHalfRotL','jlF30_loLidHalfL']
   self.thirdEyeJo = 'jcF20_thirdeye'
 
 
-  self.lidJo = [['jlF23_upLidRotL','jlF24_upLidL','jlF27_loLidRotL','jlF28_loLidL'],[]]
+  self.lidJo = ['jo_upLidRotL','jo_upLidL','jo_loLidRotL','jo_loLidL']
   self.thirdLidJo = ['jcF23_thirdUpLidRot','jcF24_thirdUpLid','jcF27_thirdLoLidRotL','jcF28_thirdLoLidL']
-  for x in self.lidJo[0] : self.lidJo[1].append(self.L2R(x))
   self.lidHalfJo = [['jlF25_upLidHalfRotL','jlF26_upLidHalfL','jlF29_loLidHalfRotL','jlF30_loLidHalfL'],[]]
   
   self.cheekJo = ['jlF35_cheekL','jlF40_nasalisL','jlF45_gillL']
-  self.jawJo = ['jcF50_jaw','jcF51_jawTip']
+  self.jawJo = ['jo_jaw','jo_jawTip']
   self.lipJo = ['jcF60_lipUp','jlF65_lipUpBL','jlF70_CornerL','jlF75_lipLoBL','jcF80_lipLo']
   self.tongueJo = ['jcF90_tongue0','jcF91_tongue1','jcF92_tongue2','jcF93_tongue3','jcF94_tongue4','jcF95_tongue5','jcF96_tongue6','jcF97_tongue7','jcF98_tongue8','jcF99_tongue9']
   self.tongueLJo = ['jcF90_tongue0L','jcF91_tongue1L','jcF92_tongue2L','jcF93_tongue3L','jcF94_tongue4L','jcF95_tongue5L','jcF96_tongue6L','jcF97_tongue7L','jcF98_tongue8L','jcF99_tongue9L']
@@ -1015,21 +1051,21 @@ class warRig:
   self.rearHipTwist = ['jlG20_rearHipTw0L','jlG30_rearHipTw1L','jlG40_rearHipTw2L','jlG50_rearHipTw3L','jlG60_rearHipTw4L']
   self.rearKneeTwist = ['jlH20_rearKneeTw0L','jlH30_rearKneeTw1L','jlH40_rearKneeTw2L','jlH50_rearKneeTw3L','jlH60_rearKneeTw4L']
   
-  self.hipJo = ['jlG00_hipL','jrG00_hipR']
+  self.hipJo = ['jo_hipL','jo_hipR']
   self.hip2Jo = ['jlG50_hip2L','jrG50_hip2R']
-  self.hipTwist = ['jlG20_hipTw0L','jlG30_hipTw1L','jlG40_hipTw2L','jlG50_hipTw3L','jlG60_hipTw4L']
+  self.hipTwist = ['jo_hipTw0L','jo_hipTw1L','jo_hipTw2L','jo_hipTw3L','jo_hipTw4L']
   
-  self.kneeJo = ['jlH00_kneeL','jrH00_kneeR']
+  self.kneeJo = ['jo_kneeL','jo_kneeR']
   self.kneeOutJo = 'jlH10_kneeOutL'
-  self.kneeTwist = ['jlH20_kneeTw0L','jlH30_kneeTw1L','jlH40_kneeTw2L','jlH50_kneeTw3L','jlH60_kneeTw4L']
+  self.kneeTwist = ['jo_kneeTw0L','jo_kneeTw1L','jo_kneeTw2L','jo_kneeTw3L','jo_kneeTw4L']
   self.kneeFixJo = ['jlH10_kneeOutL','jlG90_kneePullL','jlH15_kneePushL']
   self.knee2Jo = ['jlH50_knee2L','jrH50_knee2R']
   
-  self.ankleJo = ['jlJ00_ankleL','jrJ00_ankleR']
+  self.ankleJo = ['jo_ankleL','jo_ankleR']
   self.ankle2Jo = ['jlJ50_ankle2L','jrJ50_ankle2R']
   
-  self.ballJo = ['jlK00_ballL','jrK00_ballR']
-  self.toeJo = ['jlL00_toeL','jrL00_toeR']
+  self.ballJo = ['jo_ballL','jo_ballR']
+  self.toeJo = ['jo_toeL','jo_toeR']
   self.shoe2Jo = ['jlK00_ball2L','jlL00_toe2L']
   self.bigToeJo = ['jlL10_bigToe0L','jlL13_bigToe1L','jlL16_bigToe2L','jlL19_bigToe3L']
   self.indexToeJo = ['jlL20_toeIndex0L','jlL22_toeIndex1L','jlL24_toeIndex2L','jlL26_toeIndex3L','jlL28_toeIndex4L']
@@ -1042,16 +1078,16 @@ class warRig:
   
   self.midLimbJo = ['jlL80_midHipL','jlL85_midKneeL','jlL90_midAnkleL']
   
-  self.shoulderJo = ['jlM00_shoulderL','jrM00_shoulderR']
+  self.shoulderJo = ['jo_shoulderL','jo_shoulderR']
   self.shoulderTwist = 'jlM01_shoulderTwL'
-  self.armJo = ['jlN00_armL','jrN00_armR']
-  self.armTwist = ['jlN20_armTw0L','jlN30_armTw1L','jlN40_armTw2L','jlN50_armTw3L','jlN60_armTw4L']
+  self.armJo = ['jo_armL','jo_armR']
+  self.armTwist = ['jo_armTw0L','jo_armTw1L','jo_armTw2L','jo_armTw3L','jo_armTw4L']
   self.armFix = ['jlN05_armUpL','jlN06_armDnL','jlN07_armFtL','jlN08_armBkL','jlN09_armInL','jlN10_armOtL']
-  self.elbowJo = ['jlP00_elbowL','jrP00_elbowR']
-  self.elbowTwist = ['jlP20_elbowTw0L','jlP30_elbowTw1L','jlP40_elbowTw2L','jlP50_elbowTw3L','jlP60_elbowTw4L']
+  self.elbowJo = ['jo_elbowL','jo_elbowR']
+  self.elbowTwist = ['jo_elbowTw0L','jo_elbowTw1L','jo_elbowTw2L','jo_elbowTw3L','jo_elbowTw4L']
   self.elbowOutJo = 'jlP10_elbowOutL'
   self.elbowFixJo = ['jlP10_elbowOutL','jlN95_elbowPullL','jlP15_elbowPushL']
-  self.wristJo = ['jlQ00_wristL','jrQ00_wristR']
+  self.wristJo = ['jo_wristL','jo_wristR']
   self.fShoeJo = ['jlR00_palmL','jlR50_fingerL']
   self.fHoofJo = ['jlR00_palmL','jlR50_fingerL','jlR90_frontHoofL']
 
@@ -1065,11 +1101,11 @@ class warRig:
   self.fShoe2Jo = ['jlR60_palm2L','jlR70_finger2L']
   self.fHoof2Jo = ['jlR50_palm2L','jlR70_finger2L','jlR90_frontHoof2L']
 
-  self.thumbJo = ['jlR00_thumb0L','jlR10_thumb1L','jlR20_thumb2L','jlR30_thumb3L']
-  self.indexJo = ['jlS00_index0L','jlS10_index1L','jlS20_index2L','jlS30_index3L','jlS40_index4L']
-  self.middleJo = ['jlT00_middle0L','jlT10_middle1L','jlT20_middle2L','jlT30_middle3L','jlT40_middle4L']
-  self.ringJo = ['jlU00_ring0L','jlU10_ring1L','jlU20_ring2L','jlU30_ring3L','jlU40_ring4L']
-  self.littleJo = ['jlV00_little0L','jlV10_little1L','jlV20_little2L','jlV30_little3L','jlV40_little4L']
+  self.thumbJo =  ['jo_thumb0L','jo_thumb1L','jo_thumb2L','jo_thumb3L']
+  self.indexJo =  ['jo_index0L','jo_index1L','jo_index2L','jo_index3L','jo_index4L']
+  self.middleJo = ['jo_middle0L','jo_middle1L','jo_middle2L','jo_middle3L','jo_middle4L']
+  self.ringJo =   ['jo_ring0L','jo_ring1L','jo_ring2L','jo_ring3L','jo_ring4L']
+  self.littleJo = ['jo_little0L','jo_little1L','jo_little2L','jo_little3L','jo_little4L']
   
   self.thumb2Jo = ['jlR60_thumb20L','jlR65_thumb21L','jlR70_thumb22L','jlR90_thumb23L']
   self.index2Jo = ['jlS60_index20L','jlS65_index21L','jlS70_index22L','jlS75_index23L','jlS80_index24L']
@@ -1093,6 +1129,7 @@ class warRig:
 
 # create base hierachy
  def createHierachy(self,*a):
+  self.defineCtrlAttr()
   if cmds.objExists('here') :
    sys.stderr.write('Hierachy exist.')
   else :
@@ -1135,7 +1172,7 @@ class warRig:
     cmds.parent('rootAdj','grp_temp')
 
 # Create amd Posing joints
- def createJoint(self,*a):
+ def createSkeleton(self,*a):
   topPos = 0.0
   if cmds.objExists('rootAdj') == 0 :
    sys.stderr.write('No adjsuter.')
@@ -1168,8 +1205,8 @@ class warRig:
   #self.thirdEyeJo = 'jcF20_thirdeye'
   #self.thirdLidJo = ['jcF23_thirdUpLidRot','jcF24_thirdUpLid','jcF27_thirdLoLidRotL','jcF28_thirdLoLidL']
   allList += [ ('eyeAdj',self.eyeJo,self.faceJo,['sightAdj',[0,0,1]]) , ('thirdEyeAdj',self.thirdEyeJo,self.faceJo,['thirdSightAdj',[0,0,1]]) ]
-  allList += [ ('uplidMainAdj',{self.lidJo[0][0]:self.faceJo,self.lidJo[0][1]:self.lidJo[0][0]},self.rootJo) ]
-  allList += [ ('lowlidMainAdj',{self.lidJo[0][2]:self.faceJo,self.lidJo[0][3]:self.lidJo[0][2]},self.rootJo) ]
+  allList += [ ('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyeAdj') ] 
+  allList += [ ('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj') ]
   allList += [ ('thirdUplidMainAdj',{self.thirdLidJo[0]:self.faceJo,self.thirdLidJo[1]:self.thirdLidJo[0]},self.rootJo) ]
   allList += [ ('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo) ]
   allList += [ ('cheekAdj',self.cheekJo[0],self.faceJo) , ('nasalisAdj',self.cheekJo[1],self.faceJo) , ('gillAdj',self.cheekJo[2],self.faceJo) ]
@@ -1242,7 +1279,6 @@ class warRig:
   allList += [ ('ball2Adj',self.shoe2Jo[0],self.ankle2Jo[0]) , ('toe2Adj',self.shoe2Jo[1],self.shoe2Jo[0]) , ('backHoof2Adj',self.bHoof2Jo,self.shoe2Jo[1]) ]
   
 
-
 # create joint loop
   exList = []
   for x in allList :
@@ -1251,13 +1287,13 @@ class warRig:
     exList.append(x)
     if type(x[1]) == str :
      if cmds.objExists(x[1]) == 0 :
-      if x[2] == '' : cmds.createNode('joint',name=x[1])
+      if x[2] == '' : self.createJoint(x[1])
       else :
-       if type(x[2]) != list : cmds.createNode('joint',name=x[1],parent=x[2])
+       if type(x[2]) != list : self.createJoint(x[1],x[2])
        else : # joint parent target will in order of exist joint in list
         for y in x[2] :
          if cmds.objExists(y) :
-          cmds.createNode('joint',name=x[1],parent=y)
+          self.createJoint(x[1],y)
           break
      else :
       xp = cmds.listRelatives(x[1],parent=1)[0]
@@ -1279,9 +1315,9 @@ class warRig:
       pList[pNum] = x[2][-1]
      for i in range(len(x[1])) :
       if i < pNum :
-       if cmds.objExists(x[1][i]) == 0 : cmds.createNode('joint',name=x[1][i],parent=pList[i])
+       if cmds.objExists(x[1][i]) == 0 : self.createJoint(x[1][i],pList[i])
 
-     if cmds.objExists(x[3]) == 0 : cmds.createNode('joint',name=x[3],parent=pList[pNum])
+     if cmds.objExists(x[3]) == 0 : self.createJoint(x[3],pList[pNum])
      elif cmds.objExists(x[3]) == 1 :
       xp = cmds.listRelatives(x[3],parent=1)[0]
       if xp != pList[pNum] :
@@ -1292,12 +1328,16 @@ class warRig:
        if cmds.objExists(x[1][i]) == 1 : cmds.delete(x[1][i])
 
     if type(x[1]) == tuple :
-     pass
+     self.createJoint(x[1][0],x[2])
+     self.createJoint(x[1][1],x[1][0])
+     
     if type(x[1]) == dict :
+     print x[1]
      kList = x[1].keys()
-     kList.sort()
+     #kList.sort()
+     print kList
      for i in range(len(x[1])) :
-      if cmds.objExists(kList[i]) == 0 : cmds.createNode('joint',name=kList[i],parent=x[1][kList[i]])
+      if cmds.objExists(kList[i]) == 0 : self.createJoint(kList[i],x[1][kList[i]])
 
    else :
     if type(x[1]) == str and cmds.objExists(x[1]) == 1 :
@@ -1408,6 +1448,14 @@ class warRig:
     else :
      pass
 
+   if type(x[1]) == tuple :
+    if cmds.objExists(x[3]) :
+     cmds.xform(x[1][0],t=cmds.xform('eyeAdj',q=1,ws=1,t=1),ws=1,a=1)
+     cmds.delete(cmds.aimConstraint(x[0],x[1][0],aimVector=[0,0,1],upVector=[0,-1,0],worldUpType='object',worldUpObject='lowlidMainAdj'))
+     self.freezeRotate(x[1][0])
+     cmds.xform(x[1][1],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
+     cmds.setAttr(x[1][0]+'.radius',0.25)
+
 # if joint what will be ikHandle and have no rotate value
   sJoCd = [ [self.elbowJo[0],'.ry','.tx',self.wristJo[0]] , [self.kneeJo[0],'.rx','.ty',self.ankleJo[0]] ]
   for x in sJoCd :
@@ -1422,6 +1470,7 @@ class warRig:
   leftParent = []
   rightParent = []
   matL = 'jl[A-Z]\d+_[a-zA-Z0-9]+L'
+  natL = 'jo+_[a-zA-Z0-9]+L'
   matC = 'jc[A-Z]\d+_[a-zA-Z0-9]+'
   matR = 'jr[A-Z]\d+_[a-zA-Z0-9]+R'
   aj = cmds.listRelatives(self.rootJo,allDescendents=1,type='joint')
@@ -1440,6 +1489,21 @@ class warRig:
     x = x[:-1]+'R'
     x = 'jr'+x[2:]
     rightJo.append(x)
+    
+   if len(re.findall(natL,x)) > 0 :
+    
+    leftJo.append(x)
+    xpj = cmds.listRelatives(x,parent=1)[0]
+    leftParent.append(xpj)
+    if len(re.findall(natL,xpj)) > 0 :
+     xpj = xpj[:-1]+'R'
+     rightParent.append(xpj)
+    else :
+     rightParent.append(xpj)
+    x = x[:-1]+'R'
+    rightJo.append(x)
+
+  print rightJo
   for i in range(len(leftJo)) :
    if leftParent[i] == rightParent[i] :
     self.rSideJoint(rightJo[i],rightParent[i],leftJo[i],'onRoot')
@@ -1567,7 +1631,7 @@ class warRig:
     cmds.createNode('transform',name='xCons_face',parent='grp_deformer')
     self.xCons(self.faceJo,'xCons_face')
    #list = [[self.uplidJo[2],self.uplidJo[3],self.uplidJo[0],'uplidHalfRotL','uplidHalfL',self.uplidJo[1]]]
-   list = [[self.lidHalfJo[0][0],self.lidHalfJo[0][1],self.lidJo[0][0],'uplidHalfRotL','uplidHalfL',self.lidJo[0][1]]]
+   list = [[self.lidHalfJo[0][0],self.lidHalfJo[0][1],self.lidJo[0],'uplidHalfRotL','uplidHalfL',self.lidJo[1]]]
    list += [[self.lolidJo[2],self.lolidJo[3],self.lolidJo[0],'lolidHalfRotL','lolidHalfL',self.lolidJo[1]]]
    list += [[self.L2R(self.uplidJo[2]),self.L2R(self.uplidJo[3]),self.L2R(self.uplidJo[0]),'uplidHalfRotR','uplidHalfR',self.L2R(self.uplidJo[1])]]
    list += [[self.L2R(self.lolidJo[2]),self.L2R(self.lolidJo[3]),self.L2R(self.lolidJo[0]),'lolidHalfRotR','lolidHalfR',self.L2R(self.lolidJo[1])]]
@@ -1970,7 +2034,9 @@ class warRig:
   transWeight = [0.025,0.25,0.5,0.75,0.975] ; ma = ['','X','Y','Z']
   for i,x in enumerate(jq) :
    jp = cmds.createNode('transform',name='cons_'+x[6:],parent='exp_'+n,skipSelect=1) # joint parent
-   cmds.createNode('joint',name=x,parent=jp,skipSelect=1)
+   #cmds.createNode('joint',name=x,parent=jp,skipSelect=1)
+   self.createJoint(x,jp)
+   
    cmds.setAttr(x+'.displayHandle',1)
    cmds.setAttr(x+handleAttr,axis[2]*3)
    pmv = cmds.createNode('plusMinusAverage',name='plus_'+x[6:],skipSelect=1) #new
@@ -2022,6 +2088,7 @@ class warRig:
  # 0.777 purple  : facial
  # 0.888 magenta : wing
   ov = cmds.optionMenu('oMenu',q=1,value=1)
+  self.defineCtrlAttr()
 
   if cmds.objExists(self.rootJo) == 0 :
    sys.stderr.write('No Joints.')
@@ -3042,7 +3109,7 @@ class warRig:
   eyeList = [self.eyeJo,self.L2R(self.eyeJo),self.thirdEyeJo]
   if self.anyCheck(eyeList):
    nList = ['eyeL','eyeR','eyeThird']
-   lidList = [[self.uplidJo[1],self.lolidJo[1]],[self.L2R(self.uplidJo[1]),self.L2R(self.lolidJo[1])],[self.thirdLidJo[1],self.thirdLidJo[3]]]
+   lidList = [[self.lidJo[1],self.lidJo[3]],[self.L2R(self.lidJo[1]),self.L2R(self.lidJo[3])],[self.thirdLidJo[1],self.thirdLidJo[3]]]
    rotX = [0,-180,0] ; aVec = [[0,0,1],[0,0,-1],[0,0,1]] ; aUp = [[0,1,0],[0,-1,0],[0,1,0]]
    for i in range(len(eyeList)):
     if self.exCheck(eyeList[i]):
@@ -3683,6 +3750,7 @@ class warRig:
 
    for i in range(2) :
     limbList = [] ; bTypeDict = {}
+    print self.L2R([self.pelvisJo,self.hipJo[0],self.kneeJo[0],self.ankleJo[0]],i)
     limbList.append([self.L2R([self.pelvisJo,self.hipJo[0],self.kneeJo[0],self.ankleJo[0]],i),['ctrl_pelvis','cons_limbsFollowPelvis','pelvis','thigh','shank','ankle','leg','knee'],0.0,'legCtrlScale'])
     limbList.append([self.L2R([self.shoulderJo[0],self.armJo[0],self.elbowJo[0],self.wristJo[0]],i),['grp_chestCons','cons_limbsFollowChest','shoulder','upperarm','forearm','wrist','hand','elbow'],0.666,'armCtrlScale'])
     limbList.append([self.L2R([self.pelvisJo,self.hip2Jo[0],self.knee2Jo[0],self.ankle2Jo[0]],i),['ctrl_pelvis','ctrlTrans_torso','pelvis2','thigh2','shank2','ankle2','leg2','knee2'],0.0,'leg2CtrlScale'])
@@ -4269,6 +4337,7 @@ class warRig:
   cmds.connectAttr('ctrlEnvv_'+pvCtrl+side+'.translate','ctrl_'+pvCtrl+side+'.controlPoints[9]')
   cmds.parent('ctrlTrans_'+pvCtrl+side,'ctrlTrans_'+fCtrl+side)
   cmds.createNode('transform',name='aimCons_'+pvCtrl+side,parent=pCtrl)
+  cmds.pointConstraint(sJo,'aimCons_'+pvCtrl+side)
   cmds.aimConstraint('pin_'+ikCtrl+side,'aimCons_'+pvCtrl+side,aimVector=[0,-1,0],upVector=[0,1,0],worldUpType='none')
   cmds.createNode('transform',name='followPin_'+pvCtrl+side,parent='aimCons_'+pvCtrl+side,skipSelect=1)
   cmds.matchTransform('followPin_'+pvCtrl+side,'ctrlTrans_'+pvCtrl+side)
@@ -4417,8 +4486,10 @@ class warRig:
   cmds.createNode('condition',name='cd_'+ikCtrl+side+'_len')
   cmds.connectAttr('mult_'+ikCtrl+side+'_len.outputX','cd_'+ikCtrl+side+'_len.firstTerm')
   cmds.connectAttr('mult_'+ikCtrl+side+'_len.outputX','cd_'+ikCtrl+side+'_len.colorIfTrueR')
+  cmds.connectAttr('mult_'+ikCtrl+side+'_len.outputX','cd_'+ikCtrl+side+'_len.colorIfFalseG')
   cmds.setAttr('cd_'+ikCtrl+side+'_len.secondTerm',1)
   cmds.setAttr('cd_'+ikCtrl+side+'_len.operation',3)
+  cmds.setAttr('cd_'+ikCtrl+side+'_len.colorIfTrueG',1)
   
   cmds.createNode('addDoubleLinear',name='adl_'+ikCtrl+side+'_len')
   cmds.connectAttr('cd_'+ikCtrl+side+'_len.outColorR','adl_'+ikCtrl+side+'_len.input1')
@@ -4436,10 +4507,10 @@ class warRig:
   cmds.connectAttr('mdl_'+ikCtrl+side+'_shrinkA.output','mdl_'+ikCtrl+side+'_shrinkB.input1')
   cmds.connectAttr('ctrl_'+ikCtrl+side+'.stretchShrink','mdl_'+ikCtrl+side+'_shrinkB.input2')
 
-  plusA = cmds.createNode('plusMinusAverage',name='plus_'+sJo[6:]+'Scale',skipSelect=1)
-  plusB = cmds.createNode('plusMinusAverage',name='plus_'+mJo[6:]+'Scale',skipSelect=1)
-  bca = cmds.createNode('blendColors',name='bColor_'+sJo[6:]+'Scale',skipSelect=1)
-  bcb = cmds.createNode('blendColors',name='bColor_'+mJo[6:]+'Scale',skipSelect=1)
+  plusA = cmds.createNode('plusMinusAverage',name='plus_'+sJo[3:]+'Scale',skipSelect=1)
+  plusB = cmds.createNode('plusMinusAverage',name='plus_'+mJo[3:]+'Scale',skipSelect=1)
+  bca = cmds.createNode('blendColors',name='bColor_'+sJo[3:]+'Scale',skipSelect=1)
+  bcb = cmds.createNode('blendColors',name='bColor_'+mJo[3:]+'Scale',skipSelect=1)
   cmds.connectAttr('ctrl_'+fCtrl+side+'.FKIK',bca+'.blender')
   cmds.connectAttr('ctrl_'+fCtrl+side+'.FKIK',bcb+'.blender')
   cmds.connectAttr('ctrl_'+sCtrl+side+'.scale',bca+'.color2')
@@ -4469,6 +4540,9 @@ class warRig:
   cmds.connectAttr(plusB+'.output3D',bcb+'.color1')
   cmds.connectAttr(bca+'.output',sJo+'.scale')
   cmds.connectAttr(bcb+'.output',mJo+'.scale')
+  
+  cmds.connectAttr('cd_'+ikCtrl+side+'_len.outColorG','aimCons_'+pvCtrl+side+'.scaleY') # connect to pivet ctrl aim constraint's scale
+
 
   # make ik pop function
   cmds.addAttr('ctrl_'+ikCtrl+side,longName='reduceIkPop',attributeType='double',minValue=0,maxValue=1.0,defaultValue=0,keyable=1)
@@ -5026,25 +5100,39 @@ class warRig:
    cmds.setAttr('ik_'+bCtrl[1]+side+'.v',0)
    cmds.setAttr('ik_'+bCtrl[2]+side+'.v',0)
    
-   rjo1 = cmds.createNode('joint',name='jo_'+bCtrl[0]+'3IK'+side,parent='ctrl_'+bCtrl[1]+side,skipSelect=1)
+   rjo0 = cmds.createNode('joint',name='jo_'+bCtrl[0]+'IkRoot'+side,parent='ctrl_'+bCtrl[1]+side,skipSelect=1)
+   rjoTip = cmds.createNode('joint',name='jo_'+bCtrl[0]+'IkTip'+side,parent=rjo0,skipSelect=1)
+   rjo1 = cmds.createNode('joint',name='jo_'+bCtrl[0]+'3IK'+side,parent=rjo0,skipSelect=1)
    rjo2 = cmds.createNode('joint',name='jo_'+eCtrl+'3IK'+side,parent=rjo1,skipSelect=1)
-   rjo3 = cmds.createNode('joint',name='jo_'+mCtrl+'3IK'+side,parent=rjo2,skipSelect=1)
-   rjo4 = cmds.createNode('joint',name='jo_'+sCtrl+'3IK'+side,parent=rjo3,skipSelect=1)
-   cmds.matchTransform(rjo1,bJo[0],position=1)
+   rjo4 = cmds.createNode('joint',name='jo_'+sCtrl+'3IK'+side,parent=rjo2,skipSelect=1)
+   cmds.matchTransform(rjo0,bJo[0],position=1)
+   cmds.matchTransform(rjoTip,sJo,position=1)
+   #cmds.matchTransform(rjo1,bJo[0],position=1)
+   cmds.delete(cmds.aimConstraint(mJo,rjo1,aimVector=[0,1,0],worldUpType='none'))
    cmds.matchTransform(rjo2,eJo,position=1)
-   cmds.matchTransform(rjo3,mJo,position=1)
+   #cmds.matchTransform(rjo3,mJo,position=1)
+   cmds.delete(cmds.aimConstraint(sJo,rjo2,aimVector=[0,1,0],worldUpType='none'))
    cmds.matchTransform(rjo4,sJo,position=1)
    cmds.ikHandle(startJoint=rjo1,endEffector=rjo4,p=2,w=1,solver='ikRPsolver',sticky='sticky',name='ik_'+eCtrl+side)
+   cmds.setAttr('ik_'+eCtrl+side+'.poleVector',0,0,-1)
+   cmds.ikHandle(startJoint=rjo0,endEffector=rjoTip,p=2,w=1,solver='ikSCsolver',sticky='sticky',name='ik_'+bCtrl[0]+'Root'+side)
+   cmds.parent('ik_'+bCtrl[0]+'Root'+side,'ctrl_'+fCtrl+side)
    cmds.parent('ik_'+eCtrl+side,'ctrl_'+fCtrl+side)
+   pin = cmds.createNode('transform',name='pin_'+bCtrl[0]+'Follow'+side,parent=rjo1,skipSelect=1)
+   cmds.matchTransform(pin,'ctrl_'+bCtrl[1]+side,rotation=1)
+   v = cmds.createNode('transform',name='v_'+bCtrl[0]+'Follow'+side,parent='ctrl_'+bCtrl[1]+side,skipSelect=1)
+   cmds.orientConstraint(rjo0,pin,v)
    tw = cmds.createNode('transform',name='oCons_'+eCtrl+'Twist'+side,parent=rjo1,skipSelect=1)
    cmds.orientConstraint('ctrl_'+ikCtrl+side,tw)
    cmds.setAttr(tw+'.rotateOrder',3)
-   cmds.setAttr(rjo1+'.v',0)
+   cmds.setAttr(rjo0+'.v',0)
    cmds.setAttr('ik_'+eCtrl+side+'.v',0)
+   cmds.setAttr('ik_'+bCtrl[0]+'Root'+side+'.v',0)
    self.ctrlAttrPara('ik_'+eCtrl+side,[3,3,3,3,3,3,1,1,1,1])
    
    fm = cmds.createNode('multiplyDivide',name='mult_'+bCtrl[0]+'Fol'+side)
-   cmds.connectAttr(rjo1+'.rotate',fm+'.input1')
+   #cmds.connectAttr(rjo1+'.rotate',fm+'.input1')
+   cmds.connectAttr(v+'.rotate',fm+'.input1')
    cmds.connectAttr('ctrl_'+bCtrl[0]+side+'.follow',fm+'.input2X')
    cmds.connectAttr('ctrl_'+bCtrl[0]+side+'.follow',fm+'.input2Y')
    cmds.connectAttr('ctrl_'+bCtrl[0]+side+'.follow',fm+'.input2Z')
@@ -5545,6 +5633,50 @@ class warRig:
 
   sys.stderr.write('Delete Ctrl Done.')
 
+ def defineCtrlAttr(self,*a):
+  self.ctrlPos = {
+  'torso':  ['rRect',0,0,0,3,1.2,[0.3,0.4,0.4]]
+  ,'waist': ['rect',0,42,0,2.5,1,self.colour(0.333,1)]
+  ,'chest': ['rect',0,80,0,2.5,1,self.colour(0.333,1)]
+  ,'neck':  ['rect',0,110,0,1.2,0.5,self.colour(0.333,2)]
+  ,'head':  ['circ',0,150,0,2.4,2.4,self.colour(0.333,1)]
+  ,'pelvis':['trig',0,-35,0,3,2,self.colour(0.333,1)]
+  ,'shoulderL':  ['rRect',60,80,0,3,1.5,self.colour(0.666,2)]
+  ,'upperarmL':  ['rect',105,60,0,1,3,self.colour(0.666,2)]
+  ,'forearmL':  ['rect',105,-5,0,1,3,self.colour(0.666,2)]
+  ,'wristL':  ['circ',105,-52,0,1.2,1.2,self.colour(0.666,2)]
+  ,'elbowL':  ['rect',135,25,45,1,1,self.colour(0.666,2)]
+  ,'handL':  ['rect',135,-52,0,1.5,1.5,self.colour(0.666,2)]
+  ,'fingerL': ['rect',120,-85,0,2,1,self.colour(0.222,2)]
+  ,'thumb0L': ['trig',90,-85,0,0.7,1.4,self.colour(0.222,2)]
+  ,'thumb1L': ['trig',90,-105,0,0.7,1.4,self.colour(0.222,2)]
+  ,'thumb2L': ['trig',90,-125,0,0.7,1.4,self.colour(0.222,2)]
+  ,'index1L': ['trig',108,-108,0,0.7,1.4,self.colour(0.222,2)]
+  ,'index2L': ['trig',108,-128,0,0.7,1.4,self.colour(0.222,2)]
+  ,'index3L': ['trig',108,-148,0,0.7,1.4,self.colour(0.222,2)]
+  ,'middle1L': ['trig',121,-108,0,0.7,1.4,self.colour(0.222,2)]
+  ,'middle2L': ['trig',121,-128,0,0.7,1.4,self.colour(0.222,2)]
+  ,'middle3L': ['trig',121,-148,0,0.7,1.4,self.colour(0.222,2)]
+  ,'ring1L': ['trig',135,-108,0,0.7,1.4,self.colour(0.222,2)]
+  ,'ring2L': ['trig',135,-128,0,0.7,1.4,self.colour(0.222,2)]
+  ,'ring3L': ['trig',135,-148,0,0.7,1.4,self.colour(0.222,2)]
+  ,'little1L': ['trig',149,-108,0,0.7,1.4,self.colour(0.222,2)]
+  ,'little2L': ['trig',149,-128,0,0.7,1.4,self.colour(0.222,2)]
+  ,'little3L': ['trig',149,-148,0,0.7,1.4,self.colour(0.222,2)]
+  ,'thighL':['rect',25,-75,0,1,3,self.colour(0.777,1)]
+  ,'shankL':['rect',25,-140,0,1,3,self.colour(0.777,1)]
+  ,'ankleL':['rect',25,-190,0,1.2,1.2,self.colour(0.777,1)]
+  ,'kneeL':['rect',55,-110,0,1,1,self.colour(0.777,1)]
+  ,'heelL':['rect',55,-162,0,0.8,0.8,self.colour(0.777,1)]
+  ,'legL':['rect',55,-190,0,1.5,1.5,self.colour(0,1)]
+  ,'toeL':['trig',40,-215,0,1,1,self.colour(0.777,1)]
+  }
+  for x,y in self.ctrlPos.items():
+   if x[-1] == 'L' :
+    r = x[:-1]+'R'
+    self.ctrlPos[r] = y[:]
+    self.ctrlPos[r][1] = self.ctrlPos[r][1] * -1
+
 ##############################################################################################################
 ################################################# Utility Module #############################################
 ##############################################################################################################
@@ -5634,6 +5766,17 @@ class warRig:
     if cmds.objExists(rem+'.'+x+y) == 0 :
      cmds.addAttr(rem,longName=x+y)
     cmds.setAttr(rem+'.'+x+y,cmds.getAttr(x+'.'+y))
+
+ def createJoint(self,name='joint',parent=None,*a):
+  print 'ready to create ' + name + '..'
+  if parent :
+   cmds.createNode('joint',name=name,parent=parent,skipSelect=1)
+  else :
+   cmds.createNode('joint',name=name)
+  print 'Create ' + name + '.'
+  if self.joId.get(name[3:]) != None :
+   cmds.addAttr(name,longName='orderID',attributeType='long',keyable=1)
+   cmds.setAttr(name+'.orderID',self.joId[name[3:]])
 
  def ctrlTransRem(self,x,*a):
   la = cmds.listAttr(x,userDefined=1)
@@ -5962,6 +6105,27 @@ class warRig:
      if aInput[0] == 3 : self.ctrlAttrPara(ctrl+'_P',aInput[1])
     if type(aInput[2]) == list : self.ctrlColor(ctrl,aInput[2])
   cmds.sets(ctrl,e=1,addElement='ctrlSet')
+  
+  if self.ctrlPos.get(ctrl[5:]) != None :
+   #['circ',0,0,0,1,1,[0.3,0.4,0.4]]
+   cmds.addAttr(ctrl,longName='warAnim_shape',dt='string')
+   cmds.addAttr(ctrl,longName='warAnim_x',attributeType='long',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_y',attributeType='long',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_ro',attributeType='double',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_sx',attributeType='double',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_sy',attributeType='double',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_r',attributeType='double',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_g',attributeType='double',keyable=1)
+   cmds.addAttr(ctrl,longName='warAnim_b',attributeType='double',keyable=1)
+   cmds.setAttr(ctrl+'.warAnim_shape',self.ctrlPos[ctrl[5:]][0],type='string')
+   cmds.setAttr(ctrl+'.warAnim_x',self.ctrlPos[ctrl[5:]][1])
+   cmds.setAttr(ctrl+'.warAnim_y',self.ctrlPos[ctrl[5:]][2])
+   cmds.setAttr(ctrl+'.warAnim_ro',self.ctrlPos[ctrl[5:]][3])
+   cmds.setAttr(ctrl+'.warAnim_sx',self.ctrlPos[ctrl[5:]][4])
+   cmds.setAttr(ctrl+'.warAnim_sy',self.ctrlPos[ctrl[5:]][5])
+   cmds.setAttr(ctrl+'.warAnim_r',self.ctrlPos[ctrl[5:]][6][0])
+   cmds.setAttr(ctrl+'.warAnim_g',self.ctrlPos[ctrl[5:]][6][1])
+   cmds.setAttr(ctrl+'.warAnim_b',self.ctrlPos[ctrl[5:]][6][2])
 
  def ctrlOffset(self,ctrl,value,*a):
   nc = cmds.listRelatives(ctrl,type='nurbsCurve')[0]
@@ -6255,6 +6419,7 @@ class warRig:
 
  def L2R(self,jo,*a): # \d is match the number
   ruleL = 'jl[A-Z]\d+_[a-zA-Z0-9]+L'
+  #ruleL = 'jo_[a-zA-Z0-9]+L'
   norL = '[a-zA-Z]+_[a-zA-Z0-9]+L'
   rjo = jo[:]
   if type(jo) == str :   
@@ -6275,8 +6440,10 @@ class warRig:
 
  def joBelong(self,jo,*a):
   ruleC = 'jc[A-Z]\d+_[a-zA-Z0-9]' 
-  ruleL = 'jl[A-Z]\d+_[a-zA-Z0-9]+L' 
-  ruleR = 'jr[A-Z]\d+_[a-zA-Z0-9]+R'
+  #ruleL = 'jl[A-Z]\d+_[a-zA-Z0-9]+L' 
+  #ruleR = 'jr[A-Z]\d+_[a-zA-Z0-9]+R'
+  ruleL = 'jo_[a-zA-Z0-9]+L'
+  ruleR = 'jo_[a-zA-Z0-9]+R'
   if len(re.findall(ruleL,jo)) > 0 : return 'L'
   elif len(re.findall(ruleR,jo)) > 0 : return 'R'
   elif len(re.findall(ruleC,jo)) > 0 : return 'C'
@@ -6616,4 +6783,3 @@ class warRig:
 ##############################################################################################################
 
 warRig()
-
