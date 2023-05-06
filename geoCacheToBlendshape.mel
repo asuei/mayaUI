@@ -1,0 +1,122 @@
+global proc geoCacheToBlendshape(){
+
+
+ if(`window -exists GCTB_Win`) deleteUI -window GCTB_Win ;
+ window -title "Geometry Cache to Blend Shape" -resizeToFitChildren on GCTB_Win ;
+
+
+ formLayout MainForm ;
+  text -label "Start Frame : " txt_e1 ;
+  intField -value 1 if_sd ;
+  text -label "End Frame : " txt_e2 ;
+  intField -value 10 if_ed ;
+  text -label "Target Geometry : " txt_e3 ;
+  button -label ">" -width 25 -c "geoCacheToBlendshapeI;" btn_ig ;
+  textField txt_ig ;
+  checkBox -label "Cycle Blend" cb_cb ;
+  intField -value 3 if_cb ;
+  button -label "Enforce" -c "geoCacheToBlendshapeC" btn_e ;
+
+
+ setParent ..;
+
+
+ formLayout -e
+  -af txt_e1 "top" 6
+  -af txt_e1 "left" 3
+  -af if_sd "top" 3
+  -ac if_sd "left" 3 txt_e1
+  -ap if_sd "right" 0 48
+  -af txt_e2 "top" 6
+  -ap txt_e2 "left" 0 50
+  -af if_ed "top" 3
+  -ac if_ed "left" 3 txt_e2
+  -af if_ed "right" 3
+  -ac txt_e3 "top" 9 if_sd
+  -af txt_e3 "left" 3
+  -ac btn_ig "top" 5 if_sd
+  -ac btn_ig "left" 1 txt_e3
+  -ac txt_ig "top" 6 if_sd
+  -ac txt_ig "left" 0 btn_ig
+  -af txt_ig "right" 3
+  -af cb_cb "left" 3
+  -ac cb_cb "top" 12 txt_e3
+  -ac if_cb "left" 6 cb_cb
+  -ac if_cb "top" 10 txt_e3
+  -ac btn_e "top" 10 cb_cb
+  -af btn_e "left" 3
+  -af btn_e "right" 3
+  -af btn_e "bottom" 3
+ MainForm;
+ 
+ intField -e -value (`playbackOptions -q -minTime`) if_sd ;
+ intField -e -value (`playbackOptions -q -maxTime`) if_ed ;
+
+ window -e -widthHeight 300 140 GCTB_Win ;
+ showWindow GCTB_Win ;
+
+
+}
+
+
+global proc geoCacheToBlendshapeI(){
+ $sl = ` ls -sl ` ;
+ textField -e -text $sl[0] txt_ig ;
+}
+
+
+global proc geoCacheToBlendshapeC(){
+
+
+int $sf = ` intField -q -v if_sd ` ;
+int $ef = ` intField -q -v if_ed ` ;
+int $fn = $ef - $sf + 1 ;
+string $tg = `  textField -q -text txt_ig ` ;
+
+
+$sl = ` ls -sl ` ;
+if ($tg=="") $tg = $sl[0] ;
+string $bss[]; clear $bss ;
+
+
+$i = $sf ;
+while($i<=$ef){
+ currentTime $i ;
+ if($i==$ef) $depli = ` duplicate -name ("cache_f"+$sf+"_f"+$i) $sl[0] ` ;
+ else $depli = ` duplicate -name ("cache_f"+$i) $sl[0] ` ;
+ $bss[$i] = $depli[0] ;
+ 
+ $cb = ` checkBox -q -value cb_cb ` ;
+ $cf = ` intField -q -v if_cb ` ;
+ if($cb==1){
+  if($i>($ef-$cf)){
+   $w = (1.0/($cf+1)*($cf-($ef-$i))) ;
+   $w = smoothstep(0.0,1.0,float($w)) ;
+   blendShape -weight 0 $w $bss[$sf] $depli[0] ;
+   //blendShape $bss[$sf] $depli[0] ;
+  }
+ }
+ 
+ $i++ ;
+}
+
+
+$i--;
+$bs = ` blendShape $bss[$i] $tg ` ;
+
+
+$j = 0 ;
+while($j<$fn){
+ $f = (1.0/$fn*($j+1)) ; $f = $f * 1000 ;
+ $f = trunc($f) ; $f = $f / 1000 ;
+ setKeyframe -v $f -time ($sf+$j) ($bs[0]+"."+$bss[$i]) ;
+ if($j<($fn-1)) blendShape -e -ib -t $tg 0 $bss[$sf+$j] $f $bs[0] ;
+ $j++;
+}
+
+
+$j = 0 ;
+while($j<$fn){ delete $bss[$sf+$j] ; $j++; }
+
+
+}
