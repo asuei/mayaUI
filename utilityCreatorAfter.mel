@@ -574,7 +574,10 @@ global proc uca_mMultiCons(){
   while($i<size($ls)){
    if($i!=(size($ls)-1)){
     connectAttr ($ls[$i]+".worldMatrix[0]") ($n+".wtMatrix["+$i+"].matrixIn") ;
-    setAttr ($n+".wtMatrix["+$i+"].weightIn") (1.0/(size($ls)-1)) ;
+	addAttr -longName $ls[$i] -attributeType "float" -keyable true $ls[size($ls)-1] ;
+	setAttr($ls[size($ls)-1]+"."+$ls[$i]) (1.0/(size($ls)-1)) ;
+    //setAttr ($n+".wtMatrix["+$i+"].weightIn") (1.0/(size($ls)-1)) ;
+	connectAttr ($ls[size($ls)-1]+"."+$ls[$i]) ($n+".wtMatrix["+$i+"].weightIn") ;
    }else{
     $dm = ` createNode decomposeMatrix ` ;
     connectAttr ($n+".matrixSum") ($dm+".inputMatrix") ;
@@ -585,6 +588,7 @@ global proc uca_mMultiCons(){
    }
    $i++;
   }
+ }else{
+  print "Select less than 3 transforms." ;
  }
 }
-
