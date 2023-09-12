@@ -4017,30 +4017,32 @@ class warRig:
       cmds.connectAttr(swList[i]+'.bendCtrl',trans+'.v')
 	 
       self.ctrlLocator('ctrl_'+bendCtrl[i][j],ch*1,0,[1,1,1,0,0,0,1,1,1,0],self.colour(cColor[i],2)) # create one of bend ctrl
+      print 'ctrl_'+bendCtrl[i][j]
       cmds.addAttr('ctrl_'+bendCtrl[i][j],longName='autoTwist',attributeType='double',minValue=0,maxValue=1.0,defaultValue=1,keyable=1)
 	
       twJo = x[0+j*5:5+j*5] ; po = []
       for k,z in enumerate(twJo) :
-       pc = cmds.createNode('transform',name='pinCons_'+z[6:],parent=sCons,skipSelect=1)
+       n = z.replace('jo_','')
+       pc = cmds.createNode('transform',name='pinCons_'+n,parent=sCons,skipSelect=1)
        p = cmds.listRelatives(z,parent=1)[0]
        cmds.connectAttr(p+'.translate',pc+'.translate')
-       cmds.createNode('multiplyDivide',name='mult_'+z[6:]+'Off')
-       cmds.connectAttr(p+'.rotate','mult_'+z[6:]+'Off.input1') # auto twist switch function
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[6:]+'Off.input2X')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[6:]+'Off.input2Y')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[6:]+'Off.input2Z')
-       cmds.connectAttr('mult_'+z[6:]+'Off.outputX',pc+'.rotateX')
-       cmds.connectAttr('mult_'+z[6:]+'Off.outputY',pc+'.rotateY')
-       cmds.connectAttr('mult_'+z[6:]+'Off.outputZ',pc+'.rotateZ')
-       cmds.disconnectAttr('mult_'+z[6:]+'Off.output'+axis,pc+'.rotate'+axis) # turn to connect ctrl rotate to twist value
-       cmds.createNode('addDoubleLinear',name='adl_'+z[6:],skipSelect=1)
-       cmds.createNode('multDoubleLinear',name='mdl_'+z[6:]+'Ramp',skipSelect=1)
-       cmds.connectAttr('mult_'+z[6:]+'Off.output'+axis,'adl_'+z[6:]+'.input1')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.rotate'+axis,'mdl_'+z[6:]+'Ramp.input1')
-       cmds.setAttr('mdl_'+z[6:]+'Ramp.input2',k*0.25)
-       cmds.connectAttr('mdl_'+z[6:]+'Ramp.output','adl_'+z[6:]+'.input2')
-       cmds.connectAttr('adl_'+z[6:]+'.output',pc+'.rotate'+axis) # pin constraint back to twist joint
-       pin = cmds.createNode('transform',name='pin_'+z[6:],parent=pc,skipSelect=1)
+       cmds.createNode('multiplyDivide',name='mult_'+n+'Off')
+       cmds.connectAttr(p+'.rotate','mult_'+n+'Off.input1') # auto twist switch function
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2X')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2Y')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2Z')
+       cmds.connectAttr('mult_'+n+'Off.outputX',pc+'.rotateX')
+       cmds.connectAttr('mult_'+n+'Off.outputY',pc+'.rotateY')
+       cmds.connectAttr('mult_'+n+'Off.outputZ',pc+'.rotateZ')
+       cmds.disconnectAttr('mult_'+n+'Off.output'+axis,pc+'.rotate'+axis) # turn to connect ctrl rotate to twist value
+       cmds.createNode('addDoubleLinear',name='adl_'+n,skipSelect=1)
+       cmds.createNode('multDoubleLinear',name='mdl_'+n+'Ramp',skipSelect=1)
+       cmds.connectAttr('mult_'+n+'Off.output'+axis,'adl_'+n+'.input1')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.rotate'+axis,'mdl_'+n+'Ramp.input1')
+       cmds.setAttr('mdl_'+n+'Ramp.input2',k*0.25)
+       cmds.connectAttr('mdl_'+n+'Ramp.output','adl_'+n+'.input2')
+       cmds.connectAttr('adl_'+n+'.output',pc+'.rotate'+axis) # pin constraint back to twist joint
+       pin = cmds.createNode('transform',name='pin_'+n,parent=pc,skipSelect=1)
        po += [pin]
        cmds.parentConstraint(pin,z)
        cmds.scaleConstraint(pin,z)
