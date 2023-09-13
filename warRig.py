@@ -1538,42 +1538,35 @@ class warRig:
    cmds.setAttr(x+'.preferredAngle',lock=1)
    self.ctrlTransRem(x)
 
-  #self.jawJo = ['jcF50_jaw','jcF51_jawTip']
-  fjo = []
-  #fjo += [self.eyeJo,self.eyeJo] # add facial blendShape attribute on grp_facial
-  #fjo += [self.uplidJo[1],self.uplidJo[1],self.uplidJo[1],self.uplidJo[1],self.uplidJo[1]]
-  #fjo += [self.lolidJo[1],self.lolidJo[1],self.lolidJo[1],self.lolidJo[1],self.lolidJo[1]]
-  fjo += [self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1]]
-  fjo += [self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3]]
-  fjo += [self.jawJo[0],self.jawJo[0],self.jawJo[0]]
-  fjo += [self.browJo[1],self.browJo[1]]
-  fjo += [self.lipJo[1],self.lipJo[2],self.lipJo[2],self.lipJo[2],self.lipJo[3]]
-  fjo += [self.cheekJo[0],self.cheekJo[1]]
-  attr = ['pupilDilated','pupilContract',]
-  attr += ['uplidClose','uplidOpen','uplidRaise','uplidIn','uplidOut']
-  attr += ['lolidTight','lolidOpen','lolidDepress','lolidIn','lolidOut']
-  attr += ['uplidCloseThird','uplidOpenThird','uplidRaiseThird','uplidInThird','uplidOutThird']
-  attr += ['lolidTightThird','lolidOpenThird','lolidDepressThird','lolidInThird','lolidOutThird']
-  attr += ['jawOpen','jawStretch','jawDrop']
-  attr += ['browRaise','browLower']
-  attr += ['upLipRaise','cornerPull','cornerStretch','cornerDepress','loLipDepress']
-  attr += ['cheekRaise','noseWrinkle']
+# add facial blendShape attribute on grp_facial
   fjoDict = {}
-  fjoDict[self.eyeJo] = ['pupilDilated','pupilContract',]
+  sList = ['L','R']
+  fjoDict[self.eyeJo] = ['pupilDilated','pupilContract']
   fjoDict[self.lidJo[1]] = ['uplidClose','uplidOpen','uplidRaise','uplidIn','uplidOut']
   fjoDict[self.lidJo[3]] = ['lolidTight','lolidOpen','lolidDepress','lolidIn','lolidOut']
-  for i,x in enumerate(fjo) :
-   if self.L2R(x) != x :
-    lrjo = [x,self.L2R(x)] ; s = ['L','R']
-    for j in range(2) :
-     if self.exCheck(lrjo[j]) and cmds.objExists('grp_facial.'+attr[i]+s[j])==0 :
-      cmds.addAttr('grp_facial',longName=attr[i]+s[j],attributeType='double',keyable=1)
-   else :
-    if self.exCheck(x) and cmds.objExists('grp_facial.'+attr[i])==0 :
-     cmds.addAttr('grp_facial',longName=attr[i],attributeType='double',keyable=1)
-     
-  for x in fjoDict.keys() :
-   print x
+  fjoDict[self.browJo[1]] = ['browRaise','browLower']
+  fjoDict[self.jawJo[0]] = ['jawOpen','jawStretch','jawDrop']
+  fjoDict[self.lipJo[1]] = ['upLipRaise']
+  fjoDict[self.lipJo[2]] = ['cornerPull','cornerStretch','cornerDepress']
+  fjoDict[self.lipJo[3]] = ['loLipDepress']
+  fjoDict[self.cheekJo[0]] = ['cheekRaise']
+  fjoDict[self.cheekJo[1]] = ['noseWrinkle']
+  
+  fjoDict[self.thirdLidJo[1]] = ['uplidCloseThird','uplidOpenThird','uplidRaiseThird','uplidInThird','uplidOutThird']
+  fjoDict[self.thirdLidJo[3]] = ['lolidTightThird','lolidOpenThird','lolidDepressThird','lolidInThird','lolidOutThird']
+  
+  for x in fjoDict.items() :
+   fjo = [x[0]]
+   if self.L2R(x[0]) != x[0]: fjo = [x[0],self.L2R(x[0])]
+   for xx in fjo :
+    if self.exCheck(xx):
+     print xx
+     for xxx in fjoDict[x[0]]:
+      for j,xxxx in enumerate(fjo):
+       s = ''
+       if len(fjo)>1: s = sList[j]
+       if cmds.objExists('grp_facial.'+xxx+s)==0:
+        cmds.addAttr('grp_facial',longName=xxx+s,attributeType='double',keyable=1)
 
   '''
 # lip joint interacte
