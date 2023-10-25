@@ -1,0 +1,253 @@
+global proc weightToWeight(){
+	
+	if(`window -exists win_aw2w`) deleteUI -window win_aw2w ;
+	window -title "Weight to Weight" -resizeToFitChildren on win_aw2w ;
+	
+	formLayout MainForm;
+		text -label "Search theory :" txt_e1 ;
+		radioCollection ;
+		radioButton -label "Vertex Index" -sl rb_0 ;
+		radioButton -label "Position" -enable 0 rb_1 ;
+		separator sprt1 ;
+		text -label "Please select insert source :" txt_e2 ;
+		text -label "Shape" txt_eSS ;
+		button -label ">" -width 21 -height 21 -command "aw2w_load(\"source\")" btn_SS ;
+		textField tf_SS ;
+		text -label "Deformer" txt_eSD ;
+		textField -enable 0 tf_SD ;
+		popupMenu -parent tf_SD -postMenuCommand "aw2w_ppmHistory(\"source\")" ppm_SD ;
+		text -label "Influence" txt_eSJ ;
+		textField -enable 0 tf_SJ ;
+		popupMenu -parent tf_SJ -postMenuCommand "aw2w_ppmInf(\"source\")" ppm_SJ ;
+		separator sprt2 ;
+		radioCollection ;
+		radioButton -label "Cluster" -enable 0 rb_2 ;
+		radioButton -label "Skin" -enable 0 rb_3 ;
+		radioButton -label "Select" -sl rb_4 ;
+		separator sprt3 ;
+		text -label "Please select target source :" txt_e3 ;
+		text -label "Shape" txt_eTS ;
+		button -label ">" -width 21 -height 21 -command "aw2w_load(\"target\")" btn_TS ;
+		textField tf_TS ;
+		text -label "Deformer" txt_eTD ;
+		textField -enable 0 tf_TD ;
+		popupMenu -parent tf_TD -postMenuCommand "aw2w_ppmHistory(\"target\")" ppm_TD ;
+		text -label "Influence" txt_eTJ ;
+		textField -enable 0 tf_TJ ;
+		popupMenu -parent tf_TJ -postMenuCommand "aw2w_ppmInf(\"target\")" ppm_TJ ;
+		button -label "Executive" -height 30 -command "Executive();" btn_ex ;
+	setParent ..;
+	
+	formLayout -edit
+		-af txt_e1 "top" 3
+		-af txt_e1 "left" 5
+		-ac rb_0 "top" 2 txt_e1
+		-af rb_0 "left" 5
+		-ac rb_1 "top" 2 txt_e1
+		-ac rb_1 "left" 1 rb_0
+		-ac sprt1 "top" 1 rb_0
+		-af sprt1 "left" 5
+		-af sprt1 "right" 5
+		-ac txt_e2 "top" 3 sprt1
+		-af txt_e2 "left" 5
+		-ac tf_SS "top" 1 txt_e2
+		-ac txt_eSS "top" 4 txt_e2
+		-af txt_eSS "left" 5
+		-ac btn_SS "top" 1 txt_e2
+		-ac btn_SS "left" 1 txt_eSS
+		-ac tf_SS "left" 2 btn_SS
+		-af tf_SS "right" 5
+		-ac tf_SD "top" 1 tf_SS
+		-ac txt_eSD "top" 4 tf_SS
+		-af txt_eSD "left" 5
+		-ac tf_SD "left" 2 txt_eSD
+		-af tf_SD "right" 5
+		-ac tf_SJ "top" 1 tf_SD
+		-ac txt_eSJ "top" 4 tf_SD
+		-af txt_eSJ "left" 5
+		-ac tf_SJ "left" 2 txt_eSJ
+		-af tf_SJ "right" 5
+		-ac sprt2 "top" 2 tf_SJ
+		-af sprt2 "left" 5
+		-af sprt2 "right" 5
+		-ac rb_4 "top" 3 sprt2
+		-af rb_4 "left" 5
+		-ac rb_2 "top" 3 sprt2
+		-ac rb_2 "left" 1 rb_4
+		-ac rb_3 "top" 3 sprt2
+		-ac rb_3 "left" 1 rb_2
+		-ac sprt3 "top" 0 rb_4
+		-af sprt3 "left" 5
+		-af sprt3 "right" 5
+		-ac txt_e3 "top" 3 sprt3
+		-af txt_e3 "left" 5
+		-ac tf_TS "top" 1 txt_e3
+		-ac txt_eTS "top" 4 txt_e3
+		-af txt_eTS "left" 5
+		-ac btn_TS "top" 1 txt_e3
+		-ac btn_TS "left" 1 txt_eTS
+		-ac tf_TS "left" 2 btn_TS
+		-af tf_TS "right" 5
+		-ac tf_TD "top" 1 tf_TS
+		-ac txt_eTD "top" 4 tf_TS
+		-af txt_eTD "left" 5
+		-ac tf_TD "left" 2 txt_eTD
+		-af tf_TD "right" 5
+		-ac tf_TJ "top" 1 tf_TD
+		-ac txt_eTJ "top" 4 tf_TD
+		-af txt_eTJ "left" 5
+		-ac tf_TJ "left" 2 txt_eTJ
+		-af tf_TJ "right" 5
+		-ac btn_ex "top" 2 tf_TJ
+		-af btn_ex "left" 5
+		-af btn_ex "right" 5
+	MainForm;
+	
+	window -e -widthHeight 185 305 win_aw2w ;
+	showWindow win_aw2w ;
+}
+
+// pps = purpose
+global proc aw2w_load(string $pps){
+ $tf1 = "tf_SS" ;
+ if($pps=="target") $tf1 = "tf_TS" ;
+ $tf2 = "tf_SD" ;
+ if($pps=="target") $tf2 = "tf_TD" ;
+
+ $sl = ` ls -l -sl ` ;
+ if(size($sl)!=1) warning "Only insert first selection." ;
+ $sls = ` listRelatives -shapes -noIntermediate $sl[0] ` ;
+ textField -e -tx $sls[0] $tf1 ;
+ $oc = ` listHistory -interestLevel 1 -pdo 1 $sls[0] ` ;
+ if(size($oc)!=0){
+  textField -e -enable 1 -tx $oc[0] $tf2 ;
+  aw2w_ppmHistoryPress($pps,$oc[0]) ;
+ }else warning "This Object no any deformation." ;
+}
+
+
+global proc aw2w_ppmHistory(string $pps){
+ $ppm = "ppm_SD" ;
+ $tf1 = "tf_SS" ;
+ $tf2 = "tf_SD" ;
+ if($pps=="target"){
+  $ppm = "ppm_TD" ;
+  $tf1 = "tf_TS" ;
+  $tf2 = "tf_TD" ;
+ }
+
+ menu -e -deleteAllItems $ppm ;
+ setParent -menu $ppm ;
+ $ss = ` textField -q -tx $tf1 ` ;
+ $oc = ` listHistory -interestLevel 1 -pdo 1 $ss ` ;
+ for ($g in $oc) menuItem -label $g -c ("textField -e -tx "+$g+" "+$tf2+" ; aw2w_ppmHistoryPress(\""+$pps+"\",\"" + $g + "\"); ") ;
+}
+
+
+global proc aw2w_ppmHistoryPress(string $pps,string $g){
+ $tf = "tf_SJ" ;
+ if($pps=="target") $tf = "tf_TJ" ;
+
+ $gt = ` nodeType $g ` ;
+ if($gt=="skinCluster"){
+  $oc = ` skinCluster -q -influence $g ` ;
+  textField -e -enable 1 -tx $oc[0] $tf ;
+ }else if($gt=="blendShape"){
+  $oc = ` aliasAttr -q $g ` ;
+  textField -e -enable 1 -tx $oc[0] $tf ;
+ }else{
+  textField -e -enable 0 -tx "" $tf ;
+ }
+}
+
+
+global proc aw2w_ppmInf(string $pps){
+ $ppm = "ppm_SJ" ;
+ if($pps=="target") $ppm = "ppm_TJ" ;
+ $tf1 = "tf_SD" ;
+ if($pps=="target") $tf1 = "tf_TD" ;
+ $tf2 = "tf_SJ" ;
+ if($pps=="target") $tf2 = "tf_TJ" ;
+
+ menu -e -deleteAllItems $ppm ;
+ setParent -menu $ppm ;
+
+ $sd = ` textField -q -tx $tf1 ` ;
+ $gt = ` nodeType $sd ` ;
+ if($gt=="skinCluster"){
+  $oc = ` skinCluster -q -influence $sd ` ;
+  string $g ;
+  for ($g in $oc) menuItem -label $g -c ("textField -e -tx "+$g+" "+$tf2+" ; ") ;
+ }else if($gt=="blendShape"){
+  $oc = ` aliasAttr -q $sd ` ;
+  for($i=0;$i<size($oc);$i=$i+2) menuItem -label $oc[$i] -c ("textField -e -tx "+$oc[$i]+" "+$tf2+" ; ") ;
+ }
+}
+
+
+global proc Executive(){
+ string $SourceShape = ` textField -q -tx tf_SS ` ;
+ string $SourceDeform = ` textField -q -tx tf_SD ` ;
+ string $SourceJo = ` textField -q -tx tf_SJ ` ;
+ string $TargetShape = ` textField -q -tx tf_TS ` ;
+ string $TargetDeform = ` textField -q -tx tf_TD ` ;
+ string $TargetJo = ` textField -q -tx tf_TJ ` ;
+	
+ $sst = ` listRelatives -parent $SourceShape ` ;
+ $tst = ` listRelatives -parent $TargetShape ` ;
+ $SwapTxt = $tst[0] + "." ;
+ string $sdt = ` nodeType $SourceDeform ` ;
+ string $tdt = ` nodeType $TargetDeform ` ;
+	
+ $sds = ` listConnections -s 0 -type "objectSet" $SourceDeform ` ;
+ select -r $sds[0] ;
+ $sdsq = ` ls -fl -sl ` ;
+
+ string $sdsqn[] ;
+ $i = 0 ;
+ while($i<size($sdsq)){
+  $cp = ` listRelatives -parent $sdsq[$i] ` ;
+  if($cp[0]==$SourceShape){
+   $sdsqn[size($sdsqn)] = $sdsq[$i] ;
+  }
+  $i++;
+ }
+ print $i ;
+ select -r -noExpand $sdsqn ;
+// vertex name array
+
+ int $fsi = 0 ;
+ if($sdt=="blendShape"){
+  $oc = ` aliasAttr -q $SourceDeform ` ;
+  $fsi = stringArrayFind($SourceJo,0,$oc);
+  $fsi = $fsi / 2 ;
+ }
+ int $fti = 0 ;
+ if($tdt=="blendShape"){
+  $oc = ` aliasAttr -q $TargetDeform ` ;
+  $fti = stringArrayFind($TargetJo,0,$oc);
+  $fti = $fti / 2 ;
+ }
+
+ $slv = ` ls -fl -sl ` ;
+ $sls = size($slv) ;
+ $i = 0 ;
+ while($i<$sls){
+  float $sv ;
+  if($sdt=="skinCluster") $sv = ` skinPercent -t $SourceJo -q -value $SourceDeform $slv[$i] ` ;
+  else if($sdt=="blendShape") $sv = ` getAttr ($SourceDeform+".inputTarget[0].inputTargetGroup["+$fsi+"].targetWeights["+$i+"]") ` ;
+  else{
+   $sva = ` percent -q -v $SourceDeform $slv[$i] ` ;
+   $sv = $sva[0] ;
+  }
+  string $on = $slv[$i] ;
+  string $separate[] ;
+  $sn = tokenize($on,".",$separate) ;
+  $nn = $SwapTxt + $separate[1] ;
+  if($tdt=="skinCluster") skinPercent -tv $TargetJo $sv $TargetDeform $nn ;
+  else if($tdt=="blendShape") setAttr ($TargetDeform+".inputTarget[0].inputTargetGroup["+($fti+1)+"].targetWeights["+$i+"]") $sv ;
+  else percent -v $sv $TargetDeform $nn ;
+  $i++;
+ }
+ select ` listConnections -d 0 -type "transform" $TargetDeform ` ;
+}
