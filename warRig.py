@@ -562,10 +562,7 @@ class warRig:
  def facialLevel(self,*a):
   sel = cmds.radioCollection('rbtnC_facial',q=1,select=1)
   fclv = int(sel[-1])
-  L1 = ['rbtn_f1','rbtn_f2','rbtn_f3','rbtn_f4'] ; L4 = ['rbtn_f4']
-  L2 = ['rbtn_f2','rbtn_f3','rbtn_f4'] ; L3 = ['rbtn_f3','rbtn_f4']
-  print sel
-  if cmds.objExists('faceAdj.level'): cmds.setAttr('faceAdj.level',int(sel[-1]))
+  if cmds.objExists('faceAdj.level'): cmds.setAttr('faceAdj.level',fclv)
   if cmds.objExists('headAdj') == 0 : return 0
   
   if cmds.objExists('faceAdj') == 0 :
@@ -617,7 +614,7 @@ class warRig:
   # eyebrow adj
   adjList = ['browAAdj','browBAdj'] # brow adj
   if self.exCheck(adjList) == 0 :
-   if sel in L2 :
+   if fclv >= 2 :
     self.createAdj('brow','headAdj',[0,0,0,0,0,0],'none')
     cmds.setAttr('browAdj.overrideDisplayType',1)
     cmds.createNode('transform',name='browAdj_cons',parent='browAdj')
@@ -639,14 +636,14 @@ class warRig:
     cmds.connectAttr('mdl_browMAdj.output','browMAdj.translateX')
     self.posingSet(adjList,'faceAdj')
   else :
-   if sel not in L2 :
+   if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('browAdj')
   
   # basic lip(mouth) adj
   adjList = ['upLidMAdj','upLidSAdj','cornerAdj','loLidSAdj','loLidMAdj']
   if self.exCheck(adjList) == 0 :
-   if sel in L2 :
+   if fclv >= 2 :
     grp = cmds.createNode('transform',name='lipAdj_cons',parent='jawAdj',skipSelect=1)
     cmds.parentConstraint('headAdj',grp)
     self.createAdj('upLidM',grp,[0,0,0,0,0,0],'faceSpot')
@@ -661,14 +658,14 @@ class warRig:
     crvCvList = [adjList[0],adjList[1],adjList[2],adjList[2],adjList[2],adjList[3],adjList[4],adjList[3]+'R',adjList[2]+'R',adjList[2]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
     self.guildCrv('crv_lipAdj',crvCvList,grp)
   else :
-   if sel not in L2 :
+   if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('lipAdj_cons')
 
   # chop adj
   adjList = ['cheekAdj','nasalisAdj','gillAdj']
   if self.exCheck(adjList) == 0 :
-   if sel in L3 :
+   if fclv >= 3 :
     self.createAdj('chop','headAdj',[0,0,0,0,0,0],'none')
     cmds.createNode('transform',name='chopAdj_cons',parent='chopAdj',skipSelect=1)
     cmds.parentConstraint('headAdj','chopAdj_cons')
@@ -683,7 +680,7 @@ class warRig:
     cmds.connectAttr(pmaChop+'.output3D','chopAdj.translate')
     self.posingSet(adjList,'faceAdj')
   else :
-   if sel not in L3 :
+   if fclv < 3 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('chopAdj')
   
@@ -692,11 +689,11 @@ class warRig:
   grp = 'grp_advLidAdj'
   adjList = [ x+'Adj' for x in advLid ]
   if self.exCheck(adjList) == 0 :
-   if sel in L3 :
+   if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='lidAdj_cons',skipSelect=1)
     for adj in advLid : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
   else :
-   if sel not in L3 :
+   if fclv < 3 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete(grp)
 
@@ -894,6 +891,7 @@ class warRig:
    av = cmds.optionMenu('aMenu',q=1,value=1) ; adjList = []
    adjList += [('rootAdj',(0,102.48,1.81)),('chestAdj',(0,24.4,-2.4)),('neckAdj',(0,17.568,-4.885)),('headAdj',(0,14.15,3.9)),('topAdj',(0,16.4,0))]
    adjList += [('eyeAdj',(3.05,5.4,7.24)),('sightAdj',(0,0,2)),('browAAdj',(1,6.84,10.48)),('browBAdj',(3,7.3,9.97)),('uplidMainAdj',(3.12,5.76,8.93)),('lowlidMainAdj',(3.16,4.78,8.8))]
+   adjList += [('canthusInAdj',(1.7,5,8.6)),('uplidIn1Adj',(2.3,5.5,8.8)),('uplidOut1Adj',(3.9,5.6,8.7)),('lowlidIn1Adj',(2.4,4.9,8.7)),('lowlidOut1Adj',(3.9,4.9,8.6)),('canthusOutAdj',(4.5,5.2,8.1))]
    adjList += [('thirdEyeAdj',(0,5.4,7.24)),('thirdSightAdj',(0,0,2)),('thirdUplidMainAdj',(0,5.76,8.93)),('thirdLowlidMainAdj',(0,4.78,8.8))]
    adjList += [('jawAdj',(0,0.24,1.52)),('jawTipAdj',(0,-5.1,8.4)),('upLidMAdj',(0,-.8,10.95)),('upLidSAdj',(1.77,-.95,10.14)),('cornerAdj',(2.44,-1.2,9.2)),('loLidSAdj',(1.77,-1.45,9.94)),('loLidMAdj',(0,-1.7,10.725))]
    adjList += [('tongueAdj',(0,-2.4,4.9)),('tongue1Adj',(0,0,0)),('tongueTipAdj',(0,0.8,3.6))]
