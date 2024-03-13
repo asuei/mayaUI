@@ -54,6 +54,12 @@ class warRig:
   cmds.radioButton('rbtn_f4',label='master')
   cmds.setParent( '..' )
 #  cmds.button(label='tail',command=self.tailAdjuster)
+  if cmds.objExists('faceAdj.level'):
+   fl = cmds.getAttr('faceAdj.level')
+   if fl==1 : cmds.radioButton('rbtn_f1',e=1,select=1)
+   elif fl==2 : cmds.radioButton('rbtn_f2',e=1,select=1)
+   elif fl==3 : cmds.radioButton('rbtn_f3',e=1,select=1)
+   elif fl==4 : cmds.radioButton('rbtn_f4',e=1,select=1)
 
   cmds.text(label='Phase 2 : Joint                                                                             ')
   cmds.button(label='Create Hierachy',command=self.createHierachy,backgroundColor=[0.15,0.15,0.15])
@@ -119,10 +125,12 @@ class warRig:
   cmds.setParent( '..' )
   cmds.formLayout( form2, edit=True, attachForm=((grid2, 'top',10), (grid2, 'left',10), (grid2, 'bottom',10), (grid2, 'right',10)) )
   cmds.setParent( '..' )
-  grid3 = cmds.gridLayout(numberOfColumns=1,cellWidth=320)
+  grid3 = cmds.gridLayout(numberOfColumns=2,cellWidth=160)
+  cmds.text(label='Ctrl Curve')
+  cmds.text(label='Test Animation')
   cmds.iconTextButton( style='iconAndTextHorizontal', image1='sphere.png', label='sphere' )
-
-  cmds.tabLayout(tab,e=1,tabLabel=((grid1,'Main'), (form2,'Extra Rigs'),(grid3,'Test Animation')) )
+  cmds.iconTextButton( style='iconAndTextHorizontal', image1='sphere.png', label='sphere' )
+  cmds.tabLayout(tab,e=1,tabLabel=((grid1,'Main'), (form2,'Extra Rigs'),(grid3,'Features')) )
   cmds.showWindow('win_warRig')
   self.defineJoint()
 
@@ -556,6 +564,7 @@ class warRig:
   L1 = ['rbtn_f1','rbtn_f2','rbtn_f3','rbtn_f4'] ; L4 = ['rbtn_f4']
   L2 = ['rbtn_f2','rbtn_f3','rbtn_f4'] ; L3 = ['rbtn_f3','rbtn_f4']
   print sel
+  if cmds.objExists('faceAdj.level'): cmds.setAttr('faceAdj.level',int(sel[-1]))
     
   if cmds.objExists('eyeAdj') == 0 :
    if sel in L1 :
@@ -576,6 +585,7 @@ class warRig:
    cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA')
    self.createAdj('face','faceAdj_consB',[0,0,0,0,0,0],'none')
    cmds.setAttr('faceAdj.overrideDisplayType',1)
+   cmds.addAttr('faceAdj',longName='level',attributeType='long',keyable=1)
    
    cmds.createNode('condition',name='cd_faceAdj')
    cmds.connectAttr('eyeAdj.tz','cd_faceAdj.firstTerm')
@@ -591,7 +601,8 @@ class warRig:
    cmds.connectAttr('adl_faceAdj.output','mdl_faceAdj.input1')
    cmds.setAttr('mdl_faceAdj.input2',0.5)
    cmds.connectAttr('mdl_faceAdj.output','faceAdj.ty')
-
+  
+  # basic eyelid adj
   if cmds.objExists('uplidMainAdj') == 0 :
    if cmds.objExists('lidAdj_cons') == 0 :
     cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj')
@@ -604,6 +615,7 @@ class warRig:
     cmds.parentConstraint('headAdj','lidAdj_cons')
    self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
 
+  # eyebrow adj
   adjList = ['browAAdj','browBAdj'] # brow adj
   if self.exCheck(adjList) == 0 :
    if sel in L2 :
@@ -632,25 +644,32 @@ class warRig:
     self.posingRem(adjList,'faceAdj')
     cmds.delete('browAdj')
   
-  adjList = ['upLidMAdj','upLidSAdj','cornerAdj','loLidSAdj','loLidMAdj'] # lip adj
+  # basic lip(mouth) adj
+  adjList = ['upLidMAdj','upLidSAdj','cornerAdj','loLidSAdj','loLidMAdj']
   if self.exCheck(adjList) == 0 :
    if sel in L2 :
-    cmds.createNode('transform',name='lipAdj_cons',parent='jawAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj','lipAdj_cons')
-    self.createAdj('upLidM','lipAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('upLidS','lipAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('corner','lipAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('loLidS','lipAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('loLidM','lipAdj_cons',[0,0,0,0,0,0],'faceSpot')
+    grp = cmds.createNode('transform',name='lipAdj_cons',parent='jawAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    self.createAdj('upLidM',grp,[0,0,0,0,0,0],'faceSpot')
+    self.createAdj('upLidS',grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode('upLidSAdj')
+    self.createAdj('corner',grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode('cornerAdj')
+    self.createAdj('loLidS',grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode('loLidSAdj')
+    self.createAdj('loLidM',grp,[0,0,0,0,0,0],'faceSpot')
     self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[2],adjList[2],adjList[3],adjList[4],adjList[3]+'R',adjList[2]+'R',adjList[2]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
+    self.guildCrv('crv_lipAdj',crvCvList,grp)
   else :
    if sel not in L2 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('lipAdj_cons')
 
-  adjList = ['cheekAdj','nasalisAdj','gillAdj'] # chop adj
+  # chop adj
+  adjList = ['cheekAdj','nasalisAdj','gillAdj']
   if self.exCheck(adjList) == 0 :
-   if sel in L2 :
+   if sel in L3 :
     self.createAdj('chop','headAdj',[0,0,0,0,0,0],'none')
     cmds.createNode('transform',name='chopAdj_cons',parent='chopAdj',skipSelect=1)
     cmds.parentConstraint('headAdj','chopAdj_cons')
@@ -665,42 +684,55 @@ class warRig:
     cmds.connectAttr(pmaChop+'.output3D','chopAdj.translate')
     self.posingSet(adjList,'faceAdj')
   else :
-   if sel not in L2 :
+   if sel not in L3 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('chopAdj')
   
+  # Advance eyelid adj
+  advLid = ['uplidI','uplidO','lowlidI','lowlidO']
+  grp = 'grp_advLidAdj'
+  adjList = [ x+'Adj' for x in advLid ]
+  if self.exCheck(adjList) == 0 :
+   if sel in L3 :
+    cmds.createNode('transform',name=grp,parent='lidAdj_cons',skipSelect=1)
+    for adj in advLid : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+  else :
+   if sel not in L3 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
+  
  def faceSimpleAdjuster(self,*a):
-  cmds.createNode('transform',name='faceAdj_consA',parent='headAdj')
-  cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA')
+  cmds.createNode('transform',name='faceAdj_consA',parent='headAdj',skipSelect=1)
+  cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA',skipSelect=1)
   self.createAdj('face','faceAdj_consB',[0,0,0,0,0,0],'none')
   cmds.setAttr('faceAdj.overrideDisplayType',1)
 
-  cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj')
+  cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj',skipSelect=1)
   cmds.parentConstraint('headAdj','eyeAdj_cons')
   self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
   self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
 
-  cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj')
+  cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj',skipSelect=1)
   cmds.parentConstraint('headAdj','jawAdj_cons')
   self.createAdj('jaw','jawAdj_cons',[0,0,0,0,0,0],'jaw')
   self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
 
-  cmds.createNode('condition',name='cd_faceAdj')
+  cmds.createNode('condition',name='cd_faceAdj',skipSelect=1)
   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.firstTerm')
   cmds.connectAttr('jawAdj.tz','cd_faceAdj.secondTerm')
   cmds.setAttr('cd_faceAdj.operation',5)
   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.colorIfTrueR')
   cmds.connectAttr('jawAdj.tz','cd_faceAdj.colorIfFalseR')
   cmds.connectAttr('cd_faceAdj.outColorR','faceAdj.tz')
-  cmds.createNode('addDoubleLinear',name='adl_faceAdj')
+  cmds.createNode('addDoubleLinear',name='adl_faceAdj',skipSelect=1)
   cmds.connectAttr('eyeAdj.ty','adl_faceAdj.input1')
   cmds.connectAttr('jawAdj.ty','adl_faceAdj.input2')
-  cmds.createNode('multDoubleLinear',name='mdl_faceAdj')
+  cmds.createNode('multDoubleLinear',name='mdl_faceAdj',skipSelect=1)
   cmds.connectAttr('adl_faceAdj.output','mdl_faceAdj.input1')
   cmds.setAttr('mdl_faceAdj.input2',0.5)
   cmds.connectAttr('mdl_faceAdj.output','faceAdj.ty')
 
-  cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj')
+  cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj',skipSelect=1)
   cmds.parentConstraint('headAdj','lidAdj_cons')
   self.createAdj('uplidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
   self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
@@ -1538,35 +1570,42 @@ class warRig:
    cmds.setAttr(x+'.preferredAngle',lock=1)
    self.ctrlTransRem(x)
 
-# add facial blendShape attribute on grp_facial
+  #self.jawJo = ['jcF50_jaw','jcF51_jawTip']
+  fjo = []
+  #fjo += [self.eyeJo,self.eyeJo] # add facial blendShape attribute on grp_facial
+  #fjo += [self.uplidJo[1],self.uplidJo[1],self.uplidJo[1],self.uplidJo[1],self.uplidJo[1]]
+  #fjo += [self.lolidJo[1],self.lolidJo[1],self.lolidJo[1],self.lolidJo[1],self.lolidJo[1]]
+  fjo += [self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1],self.thirdLidJo[1]]
+  fjo += [self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3],self.thirdLidJo[3]]
+  fjo += [self.jawJo[0],self.jawJo[0],self.jawJo[0]]
+  fjo += [self.browJo[1],self.browJo[1]]
+  fjo += [self.lipJo[1],self.lipJo[2],self.lipJo[2],self.lipJo[2],self.lipJo[3]]
+  fjo += [self.cheekJo[0],self.cheekJo[1]]
+  attr = ['pupilDilated','pupilContract',]
+  attr += ['uplidClose','uplidOpen','uplidRaise','uplidIn','uplidOut']
+  attr += ['lolidTight','lolidOpen','lolidDepress','lolidIn','lolidOut']
+  attr += ['uplidCloseThird','uplidOpenThird','uplidRaiseThird','uplidInThird','uplidOutThird']
+  attr += ['lolidTightThird','lolidOpenThird','lolidDepressThird','lolidInThird','lolidOutThird']
+  attr += ['jawOpen','jawStretch','jawDrop']
+  attr += ['browRaise','browLower']
+  attr += ['upLipRaise','cornerPull','cornerStretch','cornerDepress','loLipDepress']
+  attr += ['cheekRaise','noseWrinkle']
   fjoDict = {}
-  sList = ['L','R']
-  fjoDict[self.eyeJo] = ['pupilDilated','pupilContract']
+  fjoDict[self.eyeJo] = ['pupilDilated','pupilContract',]
   fjoDict[self.lidJo[1]] = ['uplidClose','uplidOpen','uplidRaise','uplidIn','uplidOut']
   fjoDict[self.lidJo[3]] = ['lolidTight','lolidOpen','lolidDepress','lolidIn','lolidOut']
-  fjoDict[self.browJo[1]] = ['browRaise','browLower']
-  fjoDict[self.jawJo[0]] = ['jawOpen','jawStretch','jawDrop']
-  fjoDict[self.lipJo[1]] = ['upLipRaise']
-  fjoDict[self.lipJo[2]] = ['cornerPull','cornerStretch','cornerDepress']
-  fjoDict[self.lipJo[3]] = ['loLipDepress']
-  fjoDict[self.cheekJo[0]] = ['cheekRaise']
-  fjoDict[self.cheekJo[1]] = ['noseWrinkle']
-  
-  fjoDict[self.thirdLidJo[1]] = ['uplidCloseThird','uplidOpenThird','uplidRaiseThird','uplidInThird','uplidOutThird']
-  fjoDict[self.thirdLidJo[3]] = ['lolidTightThird','lolidOpenThird','lolidDepressThird','lolidInThird','lolidOutThird']
-  
-  for x in fjoDict.items() :
-   fjo = [x[0]]
-   if self.L2R(x[0]) != x[0]: fjo = [x[0],self.L2R(x[0])]
-   for xx in fjo :
-    if self.exCheck(xx):
-     print xx
-     for xxx in fjoDict[x[0]]:
-      for j,xxxx in enumerate(fjo):
-       s = ''
-       if len(fjo)>1: s = sList[j]
-       if cmds.objExists('grp_facial.'+xxx+s)==0:
-        cmds.addAttr('grp_facial',longName=xxx+s,attributeType='double',keyable=1)
+  for i,x in enumerate(fjo) :
+   if self.L2R(x) != x :
+    lrjo = [x,self.L2R(x)] ; s = ['L','R']
+    for j in range(2) :
+     if self.exCheck(lrjo[j]) and cmds.objExists('grp_facial.'+attr[i]+s[j])==0 :
+      cmds.addAttr('grp_facial',longName=attr[i]+s[j],attributeType='double',keyable=1)
+   else :
+    if self.exCheck(x) and cmds.objExists('grp_facial.'+attr[i])==0 :
+     cmds.addAttr('grp_facial',longName=attr[i],attributeType='double',keyable=1)
+     
+  for x in fjoDict.keys() :
+   print x
 
   '''
 # lip joint interacte
@@ -2038,14 +2077,14 @@ class warRig:
 
   transWeight = [0.025,0.25,0.5,0.75,0.975] ; ma = ['','X','Y','Z']
   for i,x in enumerate(jq) :
-   jp = cmds.createNode('transform',name='cons_'+x[6:],parent='exp_'+n,skipSelect=1) # joint parent
+   jp = cmds.createNode('transform',name='cons_'+x[3:],parent='exp_'+n,skipSelect=1) # joint parent
    #cmds.createNode('joint',name=x,parent=jp,skipSelect=1)
    self.createJoint(x,jp)
    
    cmds.setAttr(x+'.displayHandle',1)
    cmds.setAttr(x+handleAttr,axis[2]*3)
-   pmv = cmds.createNode('plusMinusAverage',name='plus_'+x[6:],skipSelect=1) #new
-   mult = cmds.createNode('multiplyDivide',name='mult_'+x[6:]+'Trans',skipSelect=1) #new
+   pmv = cmds.createNode('plusMinusAverage',name='plus_'+x[3:],skipSelect=1) #new
+   mult = cmds.createNode('multiplyDivide',name='mult_'+x[3:]+'Trans',skipSelect=1) #new
    cmds.connectAttr(dir+'.translate',mult+'.input1') #new
    cmds.setAttr(mult+'.input2',transWeight[i],transWeight[i],transWeight[i],type='double3') # new
    cmds.connectAttr(mult+'.output',jp+'.translate')
@@ -2056,8 +2095,8 @@ class warRig:
    if i in [1,2,3]:
     cmds.connectAttr(n+'.rotate'+axis[0],'mult_'+n+'Rot.input1'+ma[i])
     cmds.setAttr('mult_'+n+'Rot.input2'+ma[i],transWeight[i])
-    cmds.connectAttr('mult_'+n+'Rot.output'+ma[i],'cons_'+x[6:]+'.rotate'+axis[0])
-   if i == 4 : cmds.connectAttr(n+'.rotate'+axis[0],'cons_'+x[6:]+'.rotate'+axis[0])
+    cmds.connectAttr('mult_'+n+'Rot.output'+ma[i],'cons_'+x[3:]+'.rotate'+axis[0])
+   if i == 4 : cmds.connectAttr(n+'.rotate'+axis[0],'cons_'+x[3:]+'.rotate'+axis[0])
 
 ##############################################################################################################
 ############################################## Generate Controller ###########################################
@@ -2093,56 +2132,61 @@ class warRig:
  # 0.777 purple  : facial
  # 0.888 magenta : wing
   self.ctrlPos = {
-  'torso':  ['rRect',0,0,0,4,1.6,[0.3,0.4,0.4]]
-  ,'waist': ['rect',0,42,0,2.5,1,self.colour(0.333,1)]
-  ,'chest': ['rect',0,80,0,2.5,1,self.colour(0.333,1)]
-  ,'neck':  ['rect',0,110,0,1.2,0.5,self.colour(0.333,2)]
-  ,'head':  ['moon',0,150,180,2.4,2.4,self.colour(0.333,1)]
-  ,'pelvis':['trig',0,-35,0,3,2,self.colour(0.333,1)]
-  ,'shoulderL':  ['rRect',60,80,0,3,1.5,self.colour(0.666,2)]
-  ,'upperarmL':  ['rect',105,60,0,1,3,self.colour(0.666,2)]
-  ,'forearmL':  ['rect',105,-5,0,1,3,self.colour(0.666,2)]
-  ,'wristL':  ['circ',105,-52,0,1.2,1.2,self.colour(0.666,2)]
-  ,'elbowL':  ['rect',135,25,45,1,1,self.colour(0.666,2)]
-  ,'handL':  ['rect',135,-52,0,1.5,1.5,self.colour(0.666,2)]
-  ,'fingerL': ['rect',120,-85,0,2,1,self.colour(0.222,2)]
-  ,'thumb0L': ['trig',90,-85,0,0.7,1.4,self.colour(0.222,2)]
-  ,'thumb1L': ['trig',90,-105,0,0.7,1.4,self.colour(0.222,2)]
-  ,'thumb2L': ['trig',90,-125,0,0.7,1.4,self.colour(0.222,2)]
-  ,'index1L': ['trig',108,-108,0,0.7,1.4,self.colour(0.222,2)]
-  ,'index2L': ['trig',108,-128,0,0.7,1.4,self.colour(0.222,2)]
-  ,'index3L': ['trig',108,-148,0,0.7,1.4,self.colour(0.222,2)]
-  ,'middle1L': ['trig',121,-108,0,0.7,1.4,self.colour(0.222,2)]
-  ,'middle2L': ['trig',121,-128,0,0.7,1.4,self.colour(0.222,2)]
-  ,'middle3L': ['trig',121,-148,0,0.7,1.4,self.colour(0.222,2)]
-  ,'ring1L': ['trig',135,-108,0,0.7,1.4,self.colour(0.222,2)]
-  ,'ring2L': ['trig',135,-128,0,0.7,1.4,self.colour(0.222,2)]
-  ,'ring3L': ['trig',135,-148,0,0.7,1.4,self.colour(0.222,2)]
-  ,'little1L': ['trig',149,-108,0,0.7,1.4,self.colour(0.222,2)]
-  ,'little2L': ['trig',149,-128,0,0.7,1.4,self.colour(0.222,2)]
-  ,'little3L': ['trig',149,-148,0,0.7,1.4,self.colour(0.222,2)]
-  ,'thighL':['rect',25,-75,0,1,3,self.colour(0.777,1)]
-  ,'shankL':['rect',25,-140,0,1,3,self.colour(0.777,1)]
-  ,'ankleL':['rect',25,-190,0,1.2,1.2,self.colour(0.777,1)]
-  ,'kneeL':['rect',55,-110,0,1,1,self.colour(0.777,1)]
-  ,'heelL':['rect',55,-162,0,0.8,0.8,self.colour(0.777,1)]
-  ,'legL':['rect',55,-190,0,1.5,1.5,self.colour(0,1)]
-  ,'toeL':['trig',40,-215,0,1,1,self.colour(0.777,1)]
+  'torso':     ['rRect',0,0,0,4,1.6]
+  ,'waist':    ['rect',0,42,0,2.5,1]
+  ,'chest':    ['chest',0,80,0,2,2]
+  ,'neck':     ['rect',0,110,0,1.2,0.5]
+  ,'head':     ['moon',0,160,0,1.2,2.4]
+  ,'pelvis':   ['trig',0,-35,0,3,2,0]
+  ,'shoulderL':['trig',40,92,0,1.8,1.7]
+  ,'upperarmL':['rect',85,85,0,3,0.75]
+  ,'forearmL': ['rect',150,85,0,3,0.75]
+  ,'wristL':   ['circ',105,-52,0,1.2,1.2]
+  ,'elbowL':   ['rect',135,25,45,1,1]
+  ,'handL':    ['rect',135,-52,0,1.5,1.5]
+  ,'thighL':   ['rect',25,-75,0,1,3]
+  ,'shankL':   ['rect',25,-140,0,1,3]
+  ,'ankleL':   ['rect',25,-190,0,1.2,1.2]
+  ,'kneeL':    ['rect',55,-110,0,1,1]
+  ,'heelL':    ['rect',55,-162,0,0.8,0.8]
+  ,'legL':     ['rect',55,-190,0,1.5,1.5]
+  ,'toeL':     ['trig',40,-215,0,1,1]
   
-  ,'jaw':['rect',0,120,0,0.25,0.2,self.colour(0.777,1)]
-  ,'eyeL':['rect',8,140,0,0.25,0.2,self.colour(0.777,1)]
-  ,'browL':['rect',8,155,0,0.25,0.2,self.colour(0.777,1)]
-  ,'glabella':['rect',0,155,0,0.25,0.2,self.colour(0.777,1)]
-  ,'upLidL':['rect',8,150,0,0.25,0.2,self.colour(0.777,1)]
-  ,'loLidL':['rect',8,145,0,0.25,0.2,self.colour(0.777,1)]
-  ,'cheekL':['rect',12,135,0,0.25,0.2,self.colour(0.777,1)]
-  ,'nasalisL':['rect',4,135,0,0.25,0.2,self.colour(0.777,1)]
-  ,'gillL':['rect',0,140,0,0.25,0.2,self.colour(0.777,1)]
-  ,'upLip':['rect',0,130,0,0.25,0.2,self.colour(0.777,1)]
-  ,'uplipL':['rect',4,130,0,0.25,0.2,self.colour(0.777,1)]
-  ,'cornerL':['rect',8,125,0,0.25,0.2,self.colour(0.777,1)]
-  ,'loLipL':['rect',4,120,0,0.25,0.2,self.colour(0.777,1)]
-  ,'loLip':['rect',0,120,0,0.25,0.2,self.colour(0.777,1)]
+  ,'fingerL': ['rect',120,-85,0,2,1]
+  ,'thumb0L': ['trig',90,-85,0,0.7,1.4]
+  ,'thumb1L': ['trig',90,-105,0,0.7,1.4]
+  ,'thumb2L': ['trig',90,-125,0,0.7,1.4]
+  ,'index1L': ['trig',108,-108,0,0.7,1.4]
+  ,'index2L': ['trig',108,-128,0,0.7,1.4]
+  ,'index3L': ['trig',108,-148,0,0.7,1.4]
+  ,'middle1L': ['trig',121,-108,0,0.7,1.4]
+  ,'middle2L': ['trig',121,-128,0,0.7,1.4]
+  ,'middle3L': ['trig',121,-148,0,0.7,1.4]
+  ,'ring1L': ['trig',135,-108,0,0.7,1.4]
+  ,'ring2L': ['trig',135,-128,0,0.7,1.4]
+  ,'ring3L': ['trig',135,-148,0,0.7,1.4]
+  ,'little1L': ['trig',149,-108,0,0.7,1.4]
+  ,'little2L': ['trig',149,-128,0,0.7,1.4]
+  ,'little3L': ['trig',149,-148,0,0.7,1.4]
+  
+  ,'jaw':['moon',0,160,0,1,1.2]
+  ,'eyeL':['rect',20,195,0,0.25,0.2]
+  ,'browL':['rect',20,210,0,0.25,0.2]
+  ,'glabella':['rect',0,155,0,0.25,0.2]
+  ,'upLidL':['moon',20,200,180,1,1]
+  ,'loLidL':['moon',20,190,0,1,1]
+  ,'cheekL':['rect',12,135,0,0.25,0.2]
+  ,'nasalisL':['rect',4,135,0,0.25,0.2]
+  ,'gillL':['rect',0,140,0,0.25,0.2]
+  ,'upLip':['rect',0,130,0,0.25,0.2]
+  ,'uplipL':['rect',4,130,0,0.25,0.2]
+  ,'cornerL':['rect',8,125,0,0.25,0.2]
+  ,'loLipL':['rect',4,120,0,0.25,0.2]
+  ,'loLip':['rect',0,120,0,0.25,0.2]
+  
+  ,'ribcage':['rect',0,-250,0,1,1]
+  ,'belly':['rect',0,-275,0,1,1]
+  ,'rearPelvis':['rect',0,-300,0,1,1]
   }
   for x,y in self.ctrlPos.items():
    if x[-1] == 'L' :
@@ -2181,6 +2225,10 @@ class warRig:
    cmds.matchTransform('ctrl_torso',self.rootJo,rotation=1)
    cmds.parentConstraint('ctrl_torso',self.rootJo)
    self.ctrlAttrPara('ctrlTrans_torso',[3,3,3,3,3,3,3,3,3,1])
+   cmds.createNode('transform',name='ctrlConsY_torse',parent='ctrlCons_torso',skipSelect=1)
+   cmds.setAttr('ctrlConsY_torse.rotateOrder',2)
+   cmds.pointConstraint('ctrl_torso','ctrlConsY_torse')
+   cmds.orientConstraint('ctrl_torso','ctrlConsY_torse',skip=['x','z'])
    cmds.connectAttr('ctrl_move.bodyCtrlVisibility','ctrlTrans_torso.v')
 
 # Pelvis Controller
@@ -2193,7 +2241,7 @@ class warRig:
    #self.ctrlOffset('ctrl_pelvis',[0,ga[1],ga[2]])
    cmds.createNode('transform',name='pin_pelvis',parent='ctrl_pelvis',skipSelect=1)
    cmds.setAttr('pin_pelvis.ty', cmds.getAttr(self.pelvisJo+'.ty'))
-   cmds.parent('ctrl_pelvis','ctrl_torso',relative=1)
+   cmds.parent('ctrl_pelvis','ctrlConsY_torse',relative=1)
    cmds.parentConstraint('pin_pelvis',self.pelvisJo)
    cmds.createNode('transform',name='cons_limbsFollowPelvis',parent='ctrlTrans_torso')
    cmds.setAttr("cons_limbsFollowPelvis.rotateOrder",3)
@@ -2403,7 +2451,7 @@ class warRig:
     if cmds.objExists(x) == 0 :
      exJoNum = self.bodyJo.index(x)
      break
-   self.spineCtrl(ch,['pelvis','ribcage','belly','rearPelvis'],2,'ctrl_torso',exJoNum,self.bodyJo,self.rearPelvisJo) # ctrlDir=2
+   self.spineCtrl(ch,['pelvis','ribcage','belly','rearPelvis'],2,'ctrlConsY_torse',exJoNum,self.bodyJo,self.rearPelvisJo) # ctrlDir=2
    cmds.createNode('transform',name='grp_rearPelvisCons',parent='ctrl_asset')
    cmds.addAttr('ctrl_rearPelvis',longName='follow',attributeType='double',minValue=0,maxValue=1.0,defaultValue=1,keyable=1)
    cmds.createNode('transform',name='followPin_rearPelvis',parent='ctrlTrans_torso',skipSelect=1)
@@ -4010,32 +4058,30 @@ class warRig:
       cmds.connectAttr(swList[i]+'.bendCtrl',trans+'.v')
 	 
       self.ctrlLocator('ctrl_'+bendCtrl[i][j],ch*1,0,[1,1,1,0,0,0,1,1,1,0],self.colour(cColor[i],2)) # create one of bend ctrl
-      print 'ctrl_'+bendCtrl[i][j]
       cmds.addAttr('ctrl_'+bendCtrl[i][j],longName='autoTwist',attributeType='double',minValue=0,maxValue=1.0,defaultValue=1,keyable=1)
 	
       twJo = x[0+j*5:5+j*5] ; po = []
       for k,z in enumerate(twJo) :
-       n = z.replace('jo_','')
-       pc = cmds.createNode('transform',name='pinCons_'+n,parent=sCons,skipSelect=1)
+       pc = cmds.createNode('transform',name='pinCons_'+z[3:],parent=sCons,skipSelect=1)
        p = cmds.listRelatives(z,parent=1)[0]
        cmds.connectAttr(p+'.translate',pc+'.translate')
-       cmds.createNode('multiplyDivide',name='mult_'+n+'Off')
-       cmds.connectAttr(p+'.rotate','mult_'+n+'Off.input1') # auto twist switch function
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2X')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2Y')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+n+'Off.input2Z')
-       cmds.connectAttr('mult_'+n+'Off.outputX',pc+'.rotateX')
-       cmds.connectAttr('mult_'+n+'Off.outputY',pc+'.rotateY')
-       cmds.connectAttr('mult_'+n+'Off.outputZ',pc+'.rotateZ')
-       cmds.disconnectAttr('mult_'+n+'Off.output'+axis,pc+'.rotate'+axis) # turn to connect ctrl rotate to twist value
-       cmds.createNode('addDoubleLinear',name='adl_'+n,skipSelect=1)
-       cmds.createNode('multDoubleLinear',name='mdl_'+n+'Ramp',skipSelect=1)
-       cmds.connectAttr('mult_'+n+'Off.output'+axis,'adl_'+n+'.input1')
-       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.rotate'+axis,'mdl_'+n+'Ramp.input1')
-       cmds.setAttr('mdl_'+n+'Ramp.input2',k*0.25)
-       cmds.connectAttr('mdl_'+n+'Ramp.output','adl_'+n+'.input2')
-       cmds.connectAttr('adl_'+n+'.output',pc+'.rotate'+axis) # pin constraint back to twist joint
-       pin = cmds.createNode('transform',name='pin_'+n,parent=pc,skipSelect=1)
+       cmds.createNode('multiplyDivide',name='mult_'+z[3:]+'Off')
+       cmds.connectAttr(p+'.rotate','mult_'+z[3:]+'Off.input1') # auto twist switch function
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[3:]+'Off.input2X')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[3:]+'Off.input2Y')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.autoTwist','mult_'+z[3:]+'Off.input2Z')
+       cmds.connectAttr('mult_'+z[3:]+'Off.outputX',pc+'.rotateX')
+       cmds.connectAttr('mult_'+z[3:]+'Off.outputY',pc+'.rotateY')
+       cmds.connectAttr('mult_'+z[3:]+'Off.outputZ',pc+'.rotateZ')
+       cmds.disconnectAttr('mult_'+z[3:]+'Off.output'+axis,pc+'.rotate'+axis) # turn to connect ctrl rotate to twist value
+       cmds.createNode('addDoubleLinear',name='adl_'+z[3:],skipSelect=1)
+       cmds.createNode('multDoubleLinear',name='mdl_'+z[3:]+'Ramp',skipSelect=1)
+       cmds.connectAttr('mult_'+z[3:]+'Off.output'+axis,'adl_'+z[3:]+'.input1')
+       cmds.connectAttr('ctrl_'+bendCtrl[i][j]+'.rotate'+axis,'mdl_'+z[3:]+'Ramp.input1')
+       cmds.setAttr('mdl_'+z[3:]+'Ramp.input2',k*0.25)
+       cmds.connectAttr('mdl_'+z[3:]+'Ramp.output','adl_'+z[3:]+'.input2')
+       cmds.connectAttr('adl_'+z[3:]+'.output',pc+'.rotate'+axis) # pin constraint back to twist joint
+       pin = cmds.createNode('transform',name='pin_'+z[3:],parent=pc,skipSelect=1)
        po += [pin]
        cmds.parentConstraint(pin,z)
        cmds.scaleConstraint(pin,z)
@@ -5704,6 +5750,11 @@ class warRig:
 ################################################# Utility Module #############################################
 ##############################################################################################################
 
+ def ssParent(self,child,parent):
+  ls = cmds.ls(sl=1)
+  cmds.parent(child,parent,relative=1,shape=1)
+  cmds.select(ls,r=1)
+
  def createAdj(self,jn,parent,attr,*a): # adj ctrl process
   jnj = cmds.createNode('joint',name=jn+'Adj',skipSelect=1)
   if parent != '' : cmds.parent(jnj,parent)
@@ -5789,6 +5840,32 @@ class warRig:
     if cmds.objExists(rem+'.'+x+y) == 0 :
      cmds.addAttr(rem,longName=x+y)
     cmds.setAttr(rem+'.'+x+y,cmds.getAttr(x+'.'+y))
+
+ def otherSideNode(self,adj,*a):
+  p = cmds.listRelatives(adj,parent=1)[0]
+  cmds.createNode('transform',name=adj+'R',parent=p,skipSelect=1)
+  mdl = cmds.createNode('multDoubleLinear',name='mdl_'+adj+'R',skipSelect=1)
+  cmds.connectAttr(adj+'.tx',mdl+'.input1')
+  cmds.setAttr(mdl+'.input2',-1)
+  cmds.connectAttr(mdl+'.output',adj+'R'+'.tx')
+  cmds.connectAttr(adj+'.ty',adj+'R'+'.ty')
+  cmds.connectAttr(adj+'.tz',adj+'R'+'.tz')
+
+ def guildCrv(self,name,adjs,grp,*a):
+  close = 0
+  if adjs[0] == adjs[-1] :
+   adjs.pop()
+   close = 1 
+  cvp = [ (0,0,0) for i in range(len(adjs)) ]
+  crv = cmds.curve(point=cvp,name=name,degree=3)
+  cmds.parent(crv,grp,relative=1)
+  #cmds.setAttr(crv+'.template',1)
+  cmds.setAttr(crv+'.overrideEnabled',1)
+  cmds.setAttr(crv+'.overrideDisplayType',2)
+  for i,adj in enumerate(adjs) :
+   cmds.connectAttr(adj+'.translate',crv+'.controlPoints['+str(i)+']')
+  if close == 1 : cmds.closeCurve(crv,replaceOriginal=1,preserveShape=0,constructionHistory=0)
+  return crv
 
  def createJoint(self,name='joint',parent=None,*a):
   print 'ready to create ' + name + '..'
@@ -6130,7 +6207,6 @@ class warRig:
   cmds.sets(ctrl,e=1,addElement='ctrlSet')
   
   if self.ctrlPos.get(ctrl[5:]) != None :
-   #['circ',0,0,0,1,1,[0.3,0.4,0.4]]
    cmds.addAttr(ctrl,longName='warAnim_shape',dt='string')
    cmds.addAttr(ctrl,longName='warAnim_x',attributeType='long')
    cmds.addAttr(ctrl,longName='warAnim_y',attributeType='long')
@@ -6141,14 +6217,19 @@ class warRig:
    cmds.addAttr(ctrl,longName='warAnim_g',attributeType='double')
    cmds.addAttr(ctrl,longName='warAnim_b',attributeType='double')
    cmds.setAttr(ctrl+'.warAnim_shape',self.ctrlPos[ctrl[5:]][0],type='string')
-   cmds.setAttr(ctrl+'.warAnim_x',self.ctrlPos[ctrl[5:]][1])
-   cmds.setAttr(ctrl+'.warAnim_y',self.ctrlPos[ctrl[5:]][2])
+   #
+   if type(self.ctrlPos[ctrl[5:]][1]) == list :
+    orderList = self.ctrlPos[ctrl[5:]][1]
+    cmds.addAttr(ctrl,ln='warAlignObj',at='enum',en=orderList[0]+':',keyable=1)
+    cmds.setAttr(ctrl+'.warAnim_x',0)
+   else : cmds.setAttr(ctrl+'.warAnim_x',self.ctrlPos[ctrl[5:]][1])
+   if type(self.ctrlPos[ctrl[5:]][2]) == str :
+    cmds.addAttr(ctrl,ln='warAlignObj',at='string',en=orderList[0]+':',keyable=1)
+    
+   else: cmds.setAttr(ctrl+'.warAnim_y',self.ctrlPos[ctrl[5:]][2])
    cmds.setAttr(ctrl+'.warAnim_ro',self.ctrlPos[ctrl[5:]][3])
    cmds.setAttr(ctrl+'.warAnim_sx',self.ctrlPos[ctrl[5:]][4])
    cmds.setAttr(ctrl+'.warAnim_sy',self.ctrlPos[ctrl[5:]][5])
-   cmds.setAttr(ctrl+'.warAnim_r',self.ctrlPos[ctrl[5:]][6][0])
-   cmds.setAttr(ctrl+'.warAnim_g',self.ctrlPos[ctrl[5:]][6][1])
-   cmds.setAttr(ctrl+'.warAnim_b',self.ctrlPos[ctrl[5:]][6][2])
 
  def ctrlOffset(self,ctrl,value,*a):
   nc = cmds.listRelatives(ctrl,type='nurbsCurve')[0]
