@@ -433,7 +433,7 @@ class warRig:
    self.createAdj('neck','chestAdj',[2,0,0,1,1,1])
    self.torsoAdjuster(['neck','head'],'neckAdj')
    self.createAdj('top','headAdj',[2,0,0,1,1,1])
-   self.faceSimpleAdjuster()
+   self.facialLevel()
    if av == 'Biped' :
     cmds.setAttr('chestAdj.jointNumber',3)
     cmds.setAttr('headAdj.jointNumber',2)
@@ -561,46 +561,45 @@ class warRig:
 
  def facialLevel(self,*a):
   sel = cmds.radioCollection('rbtnC_facial',q=1,select=1)
+  fclv = int(sel[-1])
   L1 = ['rbtn_f1','rbtn_f2','rbtn_f3','rbtn_f4'] ; L4 = ['rbtn_f4']
   L2 = ['rbtn_f2','rbtn_f3','rbtn_f4'] ; L3 = ['rbtn_f3','rbtn_f4']
   print sel
   if cmds.objExists('faceAdj.level'): cmds.setAttr('faceAdj.level',int(sel[-1]))
-    
-  if cmds.objExists('eyeAdj') == 0 :
-   if sel in L1 :
-    cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj')
-    cmds.parentConstraint('headAdj','eyeAdj_cons')
-    self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
-    self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
-
-  if cmds.objExists('jawAdj') == 0 :
-   if sel in L1 :
-    cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj')
-    cmds.parentConstraint('headAdj','jawAdj_cons')
-    self.createAdj('jaw','jawAdj_cons',[0,0,0,0,0,0],'jaw')
-    self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
-	
+  if cmds.objExists('headAdj') == 0 : return 0
+  
   if cmds.objExists('faceAdj') == 0 :
    cmds.createNode('transform',name='faceAdj_consA',parent='headAdj')
    cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA')
    self.createAdj('face','faceAdj_consB',[0,0,0,0,0,0],'none')
    cmds.setAttr('faceAdj.overrideDisplayType',1)
    cmds.addAttr('faceAdj',longName='level',attributeType='long',keyable=1)
-   
    cmds.createNode('condition',name='cd_faceAdj')
-   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.firstTerm')
-   cmds.connectAttr('jawAdj.tz','cd_faceAdj.secondTerm')
    cmds.setAttr('cd_faceAdj.operation',5)
-   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.colorIfTrueR')
-   cmds.connectAttr('jawAdj.tz','cd_faceAdj.colorIfFalseR')
    cmds.connectAttr('cd_faceAdj.outColorR','faceAdj.tz')
    cmds.createNode('addDoubleLinear',name='adl_faceAdj')
-   cmds.connectAttr('eyeAdj.ty','adl_faceAdj.input1')
-   cmds.connectAttr('jawAdj.ty','adl_faceAdj.input2')
    cmds.createNode('multDoubleLinear',name='mdl_faceAdj')
    cmds.connectAttr('adl_faceAdj.output','mdl_faceAdj.input1')
    cmds.setAttr('mdl_faceAdj.input2',0.5)
    cmds.connectAttr('mdl_faceAdj.output','faceAdj.ty')
+  
+  if fclv >= 1 and cmds.objExists('eyeAdj') == 0 :
+   cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj')
+   cmds.parentConstraint('headAdj','eyeAdj_cons')
+   self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
+   self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
+   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.firstTerm')
+   cmds.connectAttr('eyeAdj.tz','cd_faceAdj.colorIfTrueR')
+   cmds.connectAttr('eyeAdj.ty','adl_faceAdj.input1')
+
+  if fclv >= 1  and cmds.objExists('jawAdj') == 0 :
+   cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj')
+   cmds.parentConstraint('headAdj','jawAdj_cons')
+   self.createAdj('jaw','jawAdj_cons',[0,0,0,0,0,0],'jaw')
+   self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
+   cmds.connectAttr('jawAdj.tz','cd_faceAdj.secondTerm')
+   cmds.connectAttr('jawAdj.tz','cd_faceAdj.colorIfFalseR')
+   cmds.connectAttr('jawAdj.ty','adl_faceAdj.input2')
   
   # basic eyelid adj
   if cmds.objExists('uplidMainAdj') == 0 :
@@ -689,7 +688,7 @@ class warRig:
     cmds.delete('chopAdj')
   
   # Advance eyelid adj
-  advLid = ['uplidI','uplidO','lowlidI','lowlidO']
+  advLid = ['canthusIn','uplidIn1','uplidOut1','lowlidIn1','lowlidOut1','canthusOut']
   grp = 'grp_advLidAdj'
   adjList = [ x+'Adj' for x in advLid ]
   if self.exCheck(adjList) == 0 :
@@ -700,42 +699,6 @@ class warRig:
    if sel not in L3 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete(grp)
-  
- def faceSimpleAdjuster(self,*a):
-  cmds.createNode('transform',name='faceAdj_consA',parent='headAdj',skipSelect=1)
-  cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA',skipSelect=1)
-  self.createAdj('face','faceAdj_consB',[0,0,0,0,0,0],'none')
-  cmds.setAttr('faceAdj.overrideDisplayType',1)
-
-  cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj',skipSelect=1)
-  cmds.parentConstraint('headAdj','eyeAdj_cons')
-  self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
-  self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
-
-  cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj',skipSelect=1)
-  cmds.parentConstraint('headAdj','jawAdj_cons')
-  self.createAdj('jaw','jawAdj_cons',[0,0,0,0,0,0],'jaw')
-  self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
-
-  cmds.createNode('condition',name='cd_faceAdj',skipSelect=1)
-  cmds.connectAttr('eyeAdj.tz','cd_faceAdj.firstTerm')
-  cmds.connectAttr('jawAdj.tz','cd_faceAdj.secondTerm')
-  cmds.setAttr('cd_faceAdj.operation',5)
-  cmds.connectAttr('eyeAdj.tz','cd_faceAdj.colorIfTrueR')
-  cmds.connectAttr('jawAdj.tz','cd_faceAdj.colorIfFalseR')
-  cmds.connectAttr('cd_faceAdj.outColorR','faceAdj.tz')
-  cmds.createNode('addDoubleLinear',name='adl_faceAdj',skipSelect=1)
-  cmds.connectAttr('eyeAdj.ty','adl_faceAdj.input1')
-  cmds.connectAttr('jawAdj.ty','adl_faceAdj.input2')
-  cmds.createNode('multDoubleLinear',name='mdl_faceAdj',skipSelect=1)
-  cmds.connectAttr('adl_faceAdj.output','mdl_faceAdj.input1')
-  cmds.setAttr('mdl_faceAdj.input2',0.5)
-  cmds.connectAttr('mdl_faceAdj.output','faceAdj.ty')
-
-  cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj',skipSelect=1)
-  cmds.parentConstraint('headAdj','lidAdj_cons')
-  self.createAdj('uplidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
-  self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
 
 # Shoulder, Arm Type adjuster module :  exsample part = ['shoulder','arm','elbow','wrist']
  def armAdjuster(self,part,hrc,*a):
