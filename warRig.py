@@ -641,19 +641,17 @@ class warRig:
     cmds.delete('browAdj')
   
   # basic lip(mouth) adj
-  adjList = ['upLidMAdj','upLidSAdj','cornerAdj','loLidSAdj','loLidMAdj']
+  lipList = ['upLipM','upLipL1','corner','loLipL1','loLipM']
+  grp = 'lipAdj_cons'
+  adjList = [ x+'Adj' for x in lipList ]
   if self.exCheck(adjList) == 0 :
    if fclv >= 2 :
-    grp = cmds.createNode('transform',name='lipAdj_cons',parent='jawAdj',skipSelect=1)
+    cmds.createNode('transform',name=grp,parent='jawAdj',skipSelect=1)
     cmds.parentConstraint('headAdj',grp)
-    self.createAdj('upLidM',grp,[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('upLidS',grp,[0,0,0,0,0,0],'faceSpot')
-    self.otherSideNode('upLidSAdj')
-    self.createAdj('corner',grp,[0,0,0,0,0,0],'faceSpot')
-    self.otherSideNode('cornerAdj')
-    self.createAdj('loLidS',grp,[0,0,0,0,0,0],'faceSpot')
-    self.otherSideNode('loLidSAdj')
-    self.createAdj('loLidM',grp,[0,0,0,0,0,0],'faceSpot')
+    for adj in lipList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode(adjList[1])
+    self.otherSideNode(adjList[2])
+    self.otherSideNode(adjList[3])
     self.posingSet(adjList,'faceAdj')
     crvCvList = [adjList[0],adjList[1],adjList[2],adjList[2],adjList[2],adjList[3],adjList[4],adjList[3]+'R',adjList[2]+'R',adjList[2]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
     self.guildCrv('crv_lipAdj',crvCvList,grp)
@@ -692,6 +690,11 @@ class warRig:
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='lidAdj_cons',skipSelect=1)
     for adj in advLid : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[0],adjList[1],'uplidMainAdj',adjList[2],adjList[5]]
+    self.guildCrv('crv_uplidAdj',crvCvList,grp)
+    crvCvList = [adjList[0],adjList[3],'lowlidMainAdj',adjList[4],adjList[5]]
+    self.guildCrv('crv_lowlidAdj',crvCvList,grp)
   else :
    if fclv < 3 :
     self.posingRem(adjList,'faceAdj')
@@ -893,7 +896,7 @@ class warRig:
    adjList += [('eyeAdj',(3.05,5.4,7.24)),('sightAdj',(0,0,2)),('browAAdj',(1,6.84,10.48)),('browBAdj',(3,7.3,9.97)),('uplidMainAdj',(3.12,5.76,8.93)),('lowlidMainAdj',(3.16,4.78,8.8))]
    adjList += [('canthusInAdj',(1.7,5,8.6)),('uplidIn1Adj',(2.3,5.5,8.8)),('uplidOut1Adj',(3.9,5.6,8.7)),('lowlidIn1Adj',(2.4,4.9,8.7)),('lowlidOut1Adj',(3.9,4.9,8.6)),('canthusOutAdj',(4.5,5.2,8.1))]
    adjList += [('thirdEyeAdj',(0,5.4,7.24)),('thirdSightAdj',(0,0,2)),('thirdUplidMainAdj',(0,5.76,8.93)),('thirdLowlidMainAdj',(0,4.78,8.8))]
-   adjList += [('jawAdj',(0,0.24,1.52)),('jawTipAdj',(0,-5.1,8.4)),('upLidMAdj',(0,-.8,10.95)),('upLidSAdj',(1.77,-.95,10.14)),('cornerAdj',(2.44,-1.2,9.2)),('loLidSAdj',(1.77,-1.45,9.94)),('loLidMAdj',(0,-1.7,10.725))]
+   adjList += [('jawAdj',(0,0.24,1.52)),('jawTipAdj',(0,-5.1,8.4)),('upLipMAdj',(0,-.8,10.95)),('upLipL1Adj',(1.77,-.95,10.14)),('cornerAdj',(2.44,-1.2,9.2)),('loLipL1Adj',(1.77,-1.45,9.94)),('loLipMAdj',(0,-1.7,10.725))]
    adjList += [('tongueAdj',(0,-2.4,4.9)),('tongue1Adj',(0,0,0)),('tongueTipAdj',(0,0.8,3.6))]
    adjList += [('cheekAdj',(3.5,3.42,8.8)),('nasalisAdj',(1.75,1.85,9.9)),('gillAdj',(5,-.42,6.64))]
    adjList += [('finger0Adj',(1.3,0,0)),('thumb0Adj',(-6,-.1,0)),('thumb1Adj',(4.25,-1,6.8),(65,-50,-10)),('thumb2Adj',(3.2,0,0)),('thumb3Adj',(3,0,0))]
@@ -1202,7 +1205,7 @@ class warRig:
   allList += [ ('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo) ]
   allList += [ ('cheekAdj',self.cheekJo[0],self.faceJo) , ('nasalisAdj',self.cheekJo[1],self.faceJo) , ('gillAdj',self.cheekJo[2],self.faceJo) ]
   allList += [ ('jawAdj',self.jawJo[0],self.faceJo) , ('jawTipAdj',self.jawJo[1],self.jawJo[0]) ]
-  allList += [ ('upLidMAdj',self.lipJo[0],self.faceJo,('loLidMAdj',[0,-1,0])) , ('upLidSAdj',self.lipJo[1],self.faceJo,[self.lipJo[0]]) , ('cornerAdj',self.lipJo[2],self.faceJo,[self.lipJo[0]]) , ('loLidSAdj',self.lipJo[3],self.faceJo,[self.lipJo[0]]) , ('loLidMAdj',self.lipJo[4],self.faceJo,[self.lipJo[0]]) ]
+  allList += [ ('upLipMAdj',self.lipJo[0],self.faceJo,('loLipMAdj',[0,-1,0])) , ('upLipL1Adj',self.lipJo[1],self.faceJo,[self.lipJo[0]]) , ('cornerAdj',self.lipJo[2],self.faceJo,[self.lipJo[0]]) , ('loLipL1Adj',self.lipJo[3],self.faceJo,[self.lipJo[0]]) , ('loLipMAdj',self.lipJo[4],self.faceJo,[self.lipJo[0]]) ]
   allList += [ ('earRootAdj',self.earJo[0],self.headJo,[]) , ('earAdj',self.earJo[1],self.earJo[0]) , ('earInAdj',self.earJo[2],self.earJo[1]) , ('earInTipAdj',self.earJo[3],self.earJo[2]) , ('earOutAdj',self.earJo[4],self.earJo[1]) , ('earOutTipAdj',self.earJo[5],self.earJo[4]) ]
   allList += [ ('tongueTipAdj',self.tongueJo,self.jawJo[0],self.tongueTipJo,('gLine_tongueRebuild', 'tongueAdj', 'tongue1Adj', 'tongue2Adj',[0,0,1])) ]
   
@@ -1531,6 +1534,7 @@ class warRig:
    cmds.setAttr(x+'.preferredAngle',lock=1)
    self.ctrlTransRem(x)
 
+# add facial blendShape Attribute on grp_facial
   #self.jawJo = ['jcF50_jaw','jcF51_jawTip']
   fjo = []
   #fjo += [self.eyeJo,self.eyeJo] # add facial blendShape attribute on grp_facial
@@ -1567,6 +1571,9 @@ class warRig:
      
   for x in fjoDict.keys() :
    print x
+   
+# lip joint move with jaw
+  self.createlipJoMovement()
 
   '''
 # lip joint interacte
@@ -1620,6 +1627,14 @@ class warRig:
   cmds.setAttr(self.rootJo+'.v',1)
   sys.stderr.write('Create joints done.')
   
+# Extra Joint Setup : lip joint move with jaw
+ def createlipJoMovement(self,*a):
+  self.xCons(self.headJo,'xTrans_head')
+  if cmds.objExists('crv_lipAdj') == 1 :
+   cmds.duplicate('crv_lipAdj',name='crv_lipJo',renameChildren=1)
+   cmds.parent('crv_lipJo','xTrans_head')
+  pass
+
 # Extra Joint : Elbow Out
  def createEyelidHalf(self,*a):
   jo = [self.lidHalfJo[0][0],self.lidHalfJo[0][1],self.lidHalfJo[0][2],self.lidHalfJo[0][3],self.L2R(self.lidHalfJo[0][0]),self.lidHalfJo[0][2]] ; exJo = []
@@ -1632,16 +1647,14 @@ class warRig:
   elif len(exJo) > 0 :
    cmds.warning('Trouble.')
   else :
-   if cmds.objExists('xCons_face')==0:
-    cmds.createNode('transform',name='xCons_face',parent='grp_deformer')
-    self.xCons(self.faceJo,'xCons_face')
+   self.xCons(self.faceJo,'xTrans_face')
    #list = [[self.uplidJo[2],self.uplidJo[3],self.uplidJo[0],'uplidHalfRotL','uplidHalfL',self.uplidJo[1]]]
    list = [[self.lidHalfJo[0][0],self.lidHalfJo[0][1],self.lidJo[0],'uplidHalfRotL','uplidHalfL',self.lidJo[1]]]
    list += [[self.lolidJo[2],self.lolidJo[3],self.lolidJo[0],'lolidHalfRotL','lolidHalfL',self.lolidJo[1]]]
    list += [[self.L2R(self.uplidJo[2]),self.L2R(self.uplidJo[3]),self.L2R(self.uplidJo[0]),'uplidHalfRotR','uplidHalfR',self.L2R(self.uplidJo[1])]]
    list += [[self.L2R(self.lolidJo[2]),self.L2R(self.lolidJo[3]),self.L2R(self.lolidJo[0]),'lolidHalfRotR','lolidHalfR',self.L2R(self.lolidJo[1])]]
    for y in list :
-    cmds.createNode('joint',name=y[0],parent='xCons_face')
+    cmds.createNode('joint',name=y[0],parent='xTrans_face')
     cmds.createNode('joint',name=y[1],parent=y[0])
     cmds.connectAttr(y[2]+'.translate',y[0]+'.translate')
     cmds.connectAttr(y[2]+'.jointOrient',y[0]+'.jointOrient')
@@ -1864,9 +1877,7 @@ class warRig:
 
 # Extra Joint : Shoulder IK
  def createShoulderIk(self,*a):
-  if cmds.objExists('xCons_chest')==0:
-   cmds.createNode('transform',name='xCons_chest',parent='grp_deformer')
-   self.xCons('jcC00_chest','xCons_chest')
+  self.xCons('jcC00_chest','xTrans_chest')
   shoulderIkNameList=['jo_shoulderIkL','jo_shoulderIkR']
   shoulderJoList=['jlM00_shoulderL','jrM00_shoulderR']
   shoulderIkJoList=['jlM20_shoulderIkL','jrM20_shoulderIkR']
@@ -1877,7 +1888,7 @@ class warRig:
     cmds.showHidden(shoulderIkJoList[i],above=1)
     sys.stderr.write('shoulderIK already exist, set visibility on.')
    else :
-    cmds.createNode('transform',name=shoulderIkNameList[i]+'_trans',parent='xCons_chest')
+    cmds.createNode('transform',name=shoulderIkNameList[i]+'_trans',parent='xTrans_chest')
     cmds.connectAttr(shoulderJoList[i]+'.t',shoulderIkNameList[i]+'_trans.t')
     cmds.createNode('joint',name=shoulderIkJoList[i],parent=shoulderIkNameList[i]+'_trans')
     if shoulderIkJoList[i][-1] == 'L' : cmds.aimConstraint(armJoList[i],shoulderIkJoList[i],aimVector=[1,0,0],upVector=[0,1,0],worldUpType='none')
@@ -1954,10 +1965,7 @@ class warRig:
       cmds.connectAttr(mult+'.output',cd+tfa[ij])
 
  def createAssistA(self,jo,n,xCons,*a): # for finger additional joint
-  if cmds.objExists(xCons)== 0 :
-   cmds.createNode('transform',n=xCons)
-   self.xCons(jo,xCons)
-   cmds.parent(xCons,'grp_deformer')
+  self.xCons(jo,xCons)
   cmds.createNode('transform',name=n+'_transA',parent=xCons)
   cmds.createNode('transform',name=n+'_transB',parent=n+'_transA')
   child = cmds.listRelatives(jo,children=1)
@@ -6211,12 +6219,15 @@ class warRig:
  def xCons(self,so,do,*a): # dMatrix Constraint
   dos = do.split('_',1)
   xn = 'xCons_' + dos[1]
-  xd = cmds.createNode('decomposeMatrix',name=xn,skipSelect=1)
-  cmds.connectAttr(so+'.worldMatrix[0]',xd+'.inputMatrix')
-  cmds.connectAttr(xd+'.outputTranslate',do+'.translate')
-  cmds.connectAttr(xd+'.outputRotate',do+'.rotate')
-  cmds.connectAttr(xd+'.outputScale',do+'.scale')
-  cmds.connectAttr(xd+'.outputShear',do+'.shear')
+  gn = 'xTrans_' + dos[1]
+  if cmds.objExists(gn) == 0 :
+   cmds.createNode('transform',name=gn,parent='grp_deformer',skipSelect=1)
+   xd = cmds.createNode('decomposeMatrix',name=xn,skipSelect=1)
+   cmds.connectAttr(so+'.worldMatrix[0]',xd+'.inputMatrix')
+   cmds.connectAttr(xd+'.outputTranslate',do+'.translate')
+   cmds.connectAttr(xd+'.outputRotate',do+'.rotate')
+   cmds.connectAttr(xd+'.outputScale',do+'.scale')
+   cmds.connectAttr(xd+'.outputShear',do+'.shear')
 
  def consCheck(self,n,*a):
   dict = {'wristL':self.wristJo[0],'wristR':self.wristJo[1],'hipL':self.hipJo[0],'hipR':self.hipJo[1],'ankleL':self.ankleJo[0],'ankleR':self.ankleJo[1]}
@@ -6245,14 +6256,14 @@ class warRig:
   
   if type(n) == str or type(n) == unicode :
    if cmds.objExists('xTrans_'+n)==0:
-    cmds.createNode('transform',name='xTrans_'+n,parent='grp_deformer',skipSelect=1)
+    #cmds.createNode('transform',name='xTrans_'+n,parent='grp_deformer',skipSelect=1)
     self.xCons(dict[n],'xTrans_'+n)
     return 'xTrans_'+n
   if type(n) == list :
    xn = []
    for x in n :
     if cmds.objExists('xTrans_'+x)==0:
-     cmds.createNode('transform',name='xTrans_'+x,parent='grp_deformer',skipSelect=1)
+     #cmds.createNode('transform',name='xTrans_'+x,parent='grp_deformer',skipSelect=1)
      self.xCons(dict[x],'xTrans_'+x)
      xn.append('xTrans_'+x)
    return xn
