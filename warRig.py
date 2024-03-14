@@ -1629,10 +1629,19 @@ class warRig:
   
 # Extra Joint Setup : lip joint move with jaw
  def createlipJoMovement(self,*a):
-  self.xCons(self.headJo,'xTrans_head')
+  self.xCons(self.faceJo,'xTrans_face')
   if cmds.objExists('crv_lipAdj') == 1 :
    cmds.duplicate('crv_lipAdj',name='crv_lipJo',renameChildren=1)
-   cmds.parent('crv_lipJo','xTrans_head')
+   cmds.parent('crv_lipJo','xTrans_face')
+   cmds.makeIdentity('crv_lipJo',apply=True,translate=1,rotate=0,scale=0)
+   paraList = [11,0,2,4,5,6,8,10]
+   for i,x in enumerate(self.lipJo) :
+    nn = x.split('_')[1] # node name
+    poc = cmds.createNode('pointOnCurveInfo',name='poc_'+nn,skipSelect=1)
+    cmds.setAttr(poc+'.parameter',paraList[i])
+    cmds.connectAttr('crv_lipJo.local',poc+'.inputCurve')
+    cmds.setAttr(x+'.translate',0,0,0,type='double3')
+    cmds.connectAttr(poc+'.position',x+'.rotatePivotTranslate')
   pass
 
 # Extra Joint : Elbow Out
@@ -6218,8 +6227,8 @@ class warRig:
 
  def xCons(self,so,do,*a): # dMatrix Constraint
   dos = do.split('_',1)
-  xn = 'xCons_' + dos[1]
-  gn = 'xTrans_' + dos[1]
+  xn = 'xCons_' + dos[1] # matrix name
+  gn = 'xTrans_' + dos[1] # group name
   if cmds.objExists(gn) == 0 :
    cmds.createNode('transform',name=gn,parent='grp_deformer',skipSelect=1)
    xd = cmds.createNode('decomposeMatrix',name=xn,skipSelect=1)
