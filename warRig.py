@@ -659,17 +659,37 @@ class warRig:
    if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete('lipAdj_cons')
+    
+  # mouth round adj
+  mouthList = ['noseUnder','noseAla','nasolabialFoldA','nasolabialFoldB','nasolabialFoldC','nasolabialFoldD']
+  grp = 'mouthAdj_cons'
+  adjList = [ x+'Adj' for x in mouthList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    for adj in mouthList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode(adjList[1])
+    #self.otherSideNode(adjList[2])
+    #self.otherSideNode(adjList[3])
+    self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[2],adjList[3],adjList[4],adjList[5]]
+    self.guildCrv('crv_nasolabialFoldAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete('mouthAdj_cons')
 
-  # chop adj
+  # cheek adj
+  grp = 'cheekAdj_cons'
   adjList = ['cheekAdj','nasalisAdj','gillAdj']
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     self.createAdj('chop','headAdj',[0,0,0,0,0,0],'none')
-    cmds.createNode('transform',name='chopAdj_cons',parent='chopAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj','chopAdj_cons')
-    self.createAdj('cheek','chopAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('nasalis','chopAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('gill','chopAdj_cons',[0,0,0,0,0,0],'faceSpot')
+    cmds.createNode('transform',name=grp,parent='chopAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    self.createAdj('cheek',grp,[0,0,0,0,0,0],'faceSpot')
+    self.createAdj('nasalis',grp,[0,0,0,0,0,0],'faceSpot')
+    self.createAdj('gill',grp,[0,0,0,0,0,0],'faceSpot')
     pmaChop = cmds.createNode('plusMinusAverage',skipSelect=1)
     cmds.setAttr(pmaChop+'.operation',3)
     cmds.connectAttr('cheekAdj.translate',pmaChop+'.input3D[0]')
@@ -893,12 +913,15 @@ class warRig:
  def adjusterPosition(self,*a):
    av = cmds.optionMenu('aMenu',q=1,value=1) ; adjList = []
    adjList += [('rootAdj',(0,102.48,1.81)),('chestAdj',(0,24.4,-2.4)),('neckAdj',(0,17.568,-4.885)),('headAdj',(0,14.15,3.9)),('topAdj',(0,16.4,0))]
+   # facial Adj
    adjList += [('eyeAdj',(3.05,5.4,7.24)),('sightAdj',(0,0,2)),('browAAdj',(1,6.84,10.48)),('browBAdj',(3,7.3,9.97)),('uplidMainAdj',(3.12,5.76,8.93)),('lowlidMainAdj',(3.16,4.78,8.8))]
    adjList += [('canthusInAdj',(1.7,5,8.6)),('uplidIn1Adj',(2.3,5.5,8.8)),('uplidOut1Adj',(3.9,5.6,8.7)),('lowlidIn1Adj',(2.4,4.9,8.7)),('lowlidOut1Adj',(3.9,4.9,8.6)),('canthusOutAdj',(4.5,5.2,8.1))]
    adjList += [('thirdEyeAdj',(0,5.4,7.24)),('thirdSightAdj',(0,0,2)),('thirdUplidMainAdj',(0,5.76,8.93)),('thirdLowlidMainAdj',(0,4.78,8.8))]
    adjList += [('jawAdj',(0,0.24,1.52)),('jawTipAdj',(0,-5.1,8.4)),('upLipMAdj',(0,-.8,10.95)),('upLipL1Adj',(1.77,-.95,10.14)),('cornerAdj',(2.44,-1.2,9.2)),('loLipL1Adj',(1.77,-1.45,9.94)),('loLipMAdj',(0,-1.7,10.725))]
    adjList += [('tongueAdj',(0,-2.4,4.9)),('tongue1Adj',(0,0,0)),('tongueTipAdj',(0,0.8,3.6))]
    adjList += [('cheekAdj',(3.5,3.42,8.8)),('nasalisAdj',(1.75,1.85,9.9)),('gillAdj',(5,-.42,6.64))]
+   adjList += [('noseUnderAdj',(0,-2.2,9.1)),('noseAlaAdj',(1.6,-1.4,8.2)),('nasolabialFoldAAdj',(1.8,-1.2,8.1)),('nasolabialFoldBAdj',(3,-1.8,7.5)),('nasolabialFoldCAdj',(3.3,-3.1,7.4)),('nasolabialFoldDAdj',(3.3,-4.5,7))]
+   # finger Adj
    adjList += [('finger0Adj',(1.3,0,0)),('thumb0Adj',(-6,-.1,0)),('thumb1Adj',(4.25,-1,6.8),(65,-50,-10)),('thumb2Adj',(3.2,0,0)),('thumb3Adj',(3,0,0))]
    adjList += [('index0Adj',(0,0,0)),('index1Adj',(8.3,1.9,5.3),(0.5,-20,11)),('index2Adj',(3.7,0,0)),('index3Adj',(2.3,0,0)),('index4Adj',(2.4,0,0))]
    adjList += [('middle0Adj',(0,0,0)),('middle1Adj',(8.8,1.9,2.86),(-9.6,-13,9.2)),('middle2Adj',(4.7,0,0)),('middle3Adj',(2.5,0,0)),('middle4Adj',(2.6,0,0))]
@@ -1470,7 +1493,7 @@ class warRig:
   leftParent = []
   rightParent = []
   matL = 'jl[A-Z]\d+_[a-zA-Z0-9]+L'
-  natL = 'jo+_[a-zA-Z0-9]+L'
+  natL = '\Ajo+_[a-zA-Z0-9]+L\Z'
   matC = 'jc[A-Z]\d+_[a-zA-Z0-9]+'
   matR = 'jr[A-Z]\d+_[a-zA-Z0-9]+R'
   aj = cmds.listRelatives(self.rootJo,allDescendents=1,type='joint')
@@ -1491,7 +1514,7 @@ class warRig:
     rightJo.append(x)
     
    if len(re.findall(natL,x)) > 0 :
-    
+    print x
     leftJo.append(x)
     xpj = cmds.listRelatives(x,parent=1)[0]
     leftParent.append(xpj)
@@ -1502,6 +1525,7 @@ class warRig:
      rightParent.append(xpj)
     x = x[:-1]+'R'
     rightJo.append(x)
+    print x
 
   print rightJo
   for i in range(len(leftJo)) :
@@ -1634,8 +1658,24 @@ class warRig:
    cmds.duplicate('crv_lipAdj',name='crv_lipJo',renameChildren=1)
    cmds.parent('crv_lipJo','xTrans_face')
    cmds.makeIdentity('crv_lipJo',apply=True,translate=1,rotate=0,scale=0)
+   cmds.parent('crv_lipJo','grp_facial')
+   sk = cmds.skinCluster([self.headJo,self.jawJo[0]],'crv_lipJo',toSelectedBones=1,removeUnusedInfluence=0)
+   cmds.setAttr('crv_lipJo.overrideEnabled',0)
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[0]',transformValue=[(self.headJo,1),(self.jawJo[0],0)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[1]',transformValue=[(self.headJo,1),(self.jawJo[0],0)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[2]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[3]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[4]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[5]',transformValue=[(self.headJo,0),(self.jawJo[0],1)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[6]',transformValue=[(self.headJo,0),(self.jawJo[0],1)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[7]',transformValue=[(self.headJo,0),(self.jawJo[0],1)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[8]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[9]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[10]',transformValue=[(self.headJo,.5),(self.jawJo[0],.5)])
+   cmds.skinPercent(sk[0],'crv_lipJo.cv[11]',transformValue=[(self.headJo,1),(self.jawJo[0],0)])
+   allLipJo = self.lipJo + [self.L2R(self.lipJo[3]),self.L2R(self.lipJo[2]),self.L2R(self.lipJo[1])]
    paraList = [11,0,2,4,5,6,8,10]
-   for i,x in enumerate(self.lipJo) :
+   for i,x in enumerate(allLipJo) :
     nn = x.split('_')[1] # node name
     poc = cmds.createNode('pointOnCurveInfo',name='poc_'+nn,skipSelect=1)
     cmds.setAttr(poc+'.parameter',paraList[i])
