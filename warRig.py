@@ -677,7 +677,7 @@ class warRig:
   else :
    if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
-    cmds.delete('mouthAdj_cons')
+    cmds.delete(grp)
 
   # cheek adj
   grp = 'cheekAdj_cons'
