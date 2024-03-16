@@ -467,7 +467,7 @@ class warRig:
     self.digitAdjuster('',['indexToe','middleToe','fourthToe'],'ankleAdj',[0,0,1])
     self.createAdj('tail','rootAdj',[2,0,0,1,1,1])
 
-   self.adjusterPosition()
+   self.adjusterPosition() # set all adjuster default position
    if cmds.objExists('grp_temp') :
     p = cmds.listRelatives('rootAdj',parent=1)
     if p != 'grp_temp' : cmds.parent('rootAdj','grp_temp')
@@ -911,39 +911,149 @@ class warRig:
   
 # set adjuster default position
  def adjusterPosition(self,*a):
-   av = cmds.optionMenu('aMenu',q=1,value=1) ; adjList = []
-   adjList += [('rootAdj',(0,102.48,1.81)),('chestAdj',(0,24.4,-2.4)),('neckAdj',(0,17.568,-4.885)),('headAdj',(0,14.15,3.9)),('topAdj',(0,16.4,0))]
+   av = cmds.optionMenu('aMenu',q=1,value=1) # Adjuster Variation
+   adjList = [] ; adjDict = {}
+   adjDict['rootAdj'] = (0,102.5,1.8)
+   adjDict['chestAdj'] = (0,24.4,-2.4)
+   adjDict['neckAdj'] = (0,17.6,-4.9)
+   adjDict['headAdj'] = (0,14.15,3.9)
+   adjDict['neckAdj'] = (0,17.6,-4.9)
+   adjDict['topAdj'] = (0,16.4,0)
    # facial Adj
-   adjList += [('eyeAdj',(3.05,5.4,7.24)),('sightAdj',(0,0,2)),('browAAdj',(1,6.84,10.48)),('browBAdj',(3,7.3,9.97)),('uplidMainAdj',(3.12,5.76,8.93)),('lowlidMainAdj',(3.16,4.78,8.8))]
-   adjList += [('canthusInAdj',(1.7,5,8.6)),('uplidIn1Adj',(2.3,5.5,8.8)),('uplidOut1Adj',(3.9,5.6,8.7)),('lowlidIn1Adj',(2.4,4.9,8.7)),('lowlidOut1Adj',(3.9,4.9,8.6)),('canthusOutAdj',(4.5,5.2,8.1))]
-   adjList += [('thirdEyeAdj',(0,5.4,7.24)),('thirdSightAdj',(0,0,2)),('thirdUplidMainAdj',(0,5.76,8.93)),('thirdLowlidMainAdj',(0,4.78,8.8))]
-   adjList += [('jawAdj',(0,0.24,1.52)),('jawTipAdj',(0,-5.1,8.4)),('upLipMAdj',(0,-.8,10.95)),('upLipL1Adj',(1.77,-.95,10.14)),('cornerAdj',(2.44,-1.2,9.2)),('loLipL1Adj',(1.77,-1.45,9.94)),('loLipMAdj',(0,-1.7,10.725))]
-   adjList += [('tongueAdj',(0,-2.4,4.9)),('tongue1Adj',(0,0,0)),('tongueTipAdj',(0,0.8,3.6))]
-   adjList += [('cheekAdj',(3.5,3.42,8.8)),('nasalisAdj',(1.75,1.85,9.9)),('gillAdj',(5,-.42,6.64))]
-   adjList += [('noseUnderAdj',(0,-2.2,9.1)),('noseAlaAdj',(1.6,-1.4,8.2)),('nasolabialFoldAAdj',(1.8,-1.2,8.1)),('nasolabialFoldBAdj',(3,-1.8,7.5)),('nasolabialFoldCAdj',(3.3,-3.1,7.4)),('nasolabialFoldDAdj',(3.3,-4.5,7))]
+   adjDict['eyeAdj'] = (3.05,5.4,7.24)
+   adjDict['sightAdj'] = (0,0,2)
+   adjDict['browAAdj'] = (1,6.84,10.48) ; adjDict['browBAdj'] = (3,7.3,9.97)
+   adjDict['uplidMainAdj'] = (3.12,5.76,8.93)
+   adjDict['lowlidMainAdj'] = (3.16,4.78,8.8)
+   adjDict['canthusInAdj'] = (1.7,5,8.6)
+   adjDict['uplidIn1Adj'] = (2.3,5.5,8.8)
+   adjDict['uplidOut1Adj'] = (3.9,5.6,8.7)
+   adjDict['lowlidIn1Adj'] = (2.4,4.9,8.7)
+   adjDict['lowlidOut1Adj'] = (3.9,4.9,8.6)
+   adjDict['canthusOutAdj'] = (4.5,5.2,8.1)
+   adjDict['thirdEyeAdj'] = (0,5.4,7.24)
+   adjDict['thirdSightAdj'] = (0,0,2)
+   adjDict['thirdUplidMainAdj'] = (0,5.76,8.93)
+   adjDict['thirdLowlidMainAdj'] = (0,4.78,8.8)
+   adjDict['jawAdj'] = (0,0.24,1.52)
+   adjDict['jawTipAdj'] = (0,-5.1,8.4)
+   adjDict['upLipMAdj'] = (0,-.8,10.95)
+   adjDict['upLipL1Adj'] = (1.77,-.95,10.14)
+   adjDict['cornerAdj'] = (2.44,-1.2,9.2)
+   adjDict['loLipL1Adj'] = (1.77,-1.45,9.94)
+   adjDict['loLipMAdj'] = (0,-1.7,10.725)
+   adjDict['tongueAdj'] = (0,-2.4,4.9)
+   #adjDict['tongue1Adj'] = (0,0,0)
+   adjDict['tongueTipAdj'] = (0,0.8,3.6)
+   adjDict['cheekAdj'] = (3.5,3.42,8.8)
+   adjDict['nasalisAdj'] = (1.75,1.85,9.9)
+   adjDict['gillAdj'] = (5,-.42,6.64)
+   adjDict['noseUnderAdj'] = (0,-2.2,9.1)
+   adjDict['noseAlaAdj'] = (1.6,-1.4,8.2)
+   adjDict['nasolabialFoldAAdj'] = (1.8,-1.2,8.1)
+   adjDict['nasolabialFoldBAdj'] = (3,-1.8,7.5)
+   adjDict['nasolabialFoldCAdj'] = (3.3,-3.1,7.4)
+   adjDict['nasolabialFoldDAdj'] = (3.3,-4.5,7)
+   # arm and leg adj
+   adjDict['shoulderAdj'] = (1.3,14.6,-3.6)
+   adjDict['armAdj'] = (19,0,-1.55)
+   adjDict['elbowAdj'] = (0,0,0)
+   adjDict['wristAdj'] = [(45.4,0,12.5),(0,0,-10)]
+   adjDict['hipAdj'] = (8.98,-9.76,-1.8)
+   adjDict['ankleAdj'] = (2.2,-83.6,-3)
+   adjDict['ballAdj'] = (0,-6.6,11.7)
+   adjDict['toeAdj'] = (0,-1.3,7) 
    # finger Adj
-   adjList += [('finger0Adj',(1.3,0,0)),('thumb0Adj',(-6,-.1,0)),('thumb1Adj',(4.25,-1,6.8),(65,-50,-10)),('thumb2Adj',(3.2,0,0)),('thumb3Adj',(3,0,0))]
-   adjList += [('index0Adj',(0,0,0)),('index1Adj',(8.3,1.9,5.3),(0.5,-20,11)),('index2Adj',(3.7,0,0)),('index3Adj',(2.3,0,0)),('index4Adj',(2.4,0,0))]
-   adjList += [('middle0Adj',(0,0,0)),('middle1Adj',(8.8,1.9,2.86),(-9.6,-13,9.2)),('middle2Adj',(4.7,0,0)),('middle3Adj',(2.5,0,0)),('middle4Adj',(2.6,0,0))]
-   adjList += [('ring0Adj',(0,0,0)),('ring1Adj',(9.1,1.35,0.63),(-20,-8.3,4)),('ring2Adj',(4.1,0,0)),('ring3Adj',(2.4,0,0)),('ring4Adj',(2.5,0,0))]
-   adjList += [('little0Adj',(0,0,0)),('little1Adj',(9,0.3,-1.2),(-28,-2,0)),('little2Adj',(3,0,0)),('little3Adj',(2,0,0)),('little4Adj',(2,0,0))]
-   adjList += [('shoulderAdj',(1.3,14.6,-3.6)),('armAdj',(19,0,-1.55)),('elbowAdj',(0,0,0)),('wristAdj',(45.4,0,12.5),(0,0,-10))]
-   adjList += [('hipAdj',(8.98,-9.76,-1.8)),('ankleAdj',(2.2,-83.6,-3)),('ballAdj',(0,-6.6,11.7)),('toeAdj',(0,-1.3,7))]
-   adjList += [('downBelowAdj',(0,-15,6)),('penisAdj',(0,3,10)),('scrotumAdj',(0,3,10)),('nutAdj',(0,-1.5,0))]
+   adjDict['finger0Adj'] = (1.3,0,0)
+   adjDict['thumb0Adj'] = (-6,-.1,0)
+   adjDict['thumb1Adj'] = [(4.25,-1,6.8),(65,-50,-10)]
+   adjDict['thumb2Adj'] = (3.2,0,0)
+   adjDict['thumb3Adj'] = (3,0,0)
+   adjDict['index1Adj'] = [(8.3,1.9,5.3),(0.5,-20,11)]
+   adjDict['index2Adj'] = (3.7,0,0)
+   adjDict['index3Adj'] = (2.3,0,0)
+   adjDict['index4Adj'] = (2.4,0,0)
+   adjDict['middle1Adj'] = [(8.8,1.9,2.86),(-9.6,-13,9.2)]
+   adjDict['middle2Adj'] = (4.7,0,0)
+   adjDict['middle3Adj'] = (2.5,0,0)
+   adjDict['middle4Adj'] = (2.6,0,0)
+   adjDict['ring1Adj'] = [(9.1,1.35,0.63),(-20,-8.3,4)]
+   adjDict['ring2Adj'] = (4.1,0,0)
+   adjDict['ring3Adj'] = (2.4,0,0)
+   adjDict['ring4Adj'] = (2.5,0,0)
+   adjDict['little1Adj'] = [(9,0.3,-1.2),(-28,-2,0)]
+   adjDict['little2Adj'] = (3,0,0)
+   adjDict['little3Adj'] = (2,0,0)
+   adjDict['little4Adj'] = (2,0,0)
+   # downBelow Adj
+   adjDict['downBelowAdj'] = (0,-15,6)
+   adjDict['penisAdj'] = (0,3,10)
+   adjDict['scrotumAdj'] = (0,3,10)
+   adjDict['nutAdj'] = (0,-1.5,0)
+   # palm Adj
+   adjDict['palmAdj'] = (0,-6.6,11.7)
+   adjDict['fingerAdj'] = (0,-1.3,7)
+   adjDict['palm2Adj'] = (0,-6.6,11.7)
+   adjDict['finger2Adj'] = (0,-1.3,7)
+   # tail Adj
+   adjDict['tailAdj'] = (0,0,-10)
+   adjDict['tailTipAdj'] = (0,-10,-60)
+   # foot Adj
+   adjDict['foot0Adj'] = (0,-6.8,4.6)
+   adjDict['bigToe0Adj'] = (-2.7,-6.6,4.5)
+   # foot Adj
+   adjDict['earRootAdj'] = (7.5,3,7.4)
+   adjDict['earAdj'] = (0,1.5,-0.8)
+   adjDict['earInAdj'] = (-1,1.5,0.8)
+   adjDict['earInTipAdj'] = (0,2,0)
+   adjDict['earOutAdj'] = (1,1.5,0.8)
+   adjDict['earOutTipAdj'] = (0,2,0)
+   # torso around adj
+   adjDict['abdomeFrontAdj'] = (0,0,10)
+   adjDict['abdomeSideAdj'] = (14,0,0)
+   adjDict['spine1FrontAdj'] = (0,0,10)
+   adjDict['spine1SideAdj'] = (13,0,0)
+   adjDict['spine2FrontAdj'] = (0,0,10)
+   adjDict['spine2SideAdj'] = (14,0,0)
+   adjDict['chestFrontAdj'] = (0,0,10)
+   adjDict['chestSideAdj'] = (15,0,0)
+   # adjDict[] = 
+   adjDict['bigToe0Adj'] = [-2.2,-5.8,6]
+   adjDict['bigToe1Adj'] = [-3.3,-7.5,13.1]
+   adjDict['bigToe2Adj'] = [0,-.1,4.2]
+   adjDict['bigToe3Adj'] = [0,0,7.1]
+   adjDict['bigToe4Adj'] = [0,0,1]
+   adjDict['indexToe1Adj'] = [-0.8,-7.2,13]
+   adjDict['indexToe2Adj'] = [0,0.4,3.6]
+   adjDict['indexToe3Adj'] = [0,-0.8,1.4]
+   adjDict['indexToe4Adj'] = [0,-0.9,1.3]
+   adjDict['middleToe1Adj'] = [0.7,-7.4,12.7]
+   adjDict['middleToe2Adj'] = [0,0.4,3.1]
+   adjDict['middleToe3Adj'] = [0,-0.8,1.7]
+   adjDict['middleToe4Adj'] = [0,-0.6,1.2]
+   adjDict['fourthToe1Adj'] = [2,-7.3,12.5]
+   adjDict['fourthToe2Adj'] = [0,0,2]
+   adjDict['fourthToe3Adj'] = [0,-0.6,1.5]
+   adjDict['fourthToe4Adj'] = [0,-0.8,1.3]
+   adjDict['littleToe1Adj'] = [3.4,-7.7,12.2]
+   adjDict['littleToe2Adj'] = [0,-0.3,2]
+   adjDict['littleToe3Adj'] = [0,-0.3,0.8]
+   adjDict['littleToe4Adj'] = [0,-0.4,1.1]
+   
+   adjDict['backHoofAdj'] = [0,-1,0]
+   adjDict['rearBallAdj'] = [0,-30,3.5]
+   adjDict['rearToeAdj'] = [0,-2.4,3]
+   adjDict['rearHoofAdj'] = [0,-3.6,1]
 
-   adjList += [('palmAdj',(0,-6.6,11.7)),('fingerAdj',(0,-1.3,7)),('palm2Adj',[0,-6.6,11.7]),('finger2Adj',(0,-1.3,7))]
-   adjList += [('tailAdj',(0,0,-10)),('tailTipAdj',(0,-10,-60)),('foot0Adj',(0,-6.8,4.6))]
-   adjList += [('bigToe0Adj',(-2.7,-6.6,4.5)),('indexToe0Adj',(0,0,0)),('middleToe0Adj',(0,0,0)),('fourthToe0Adj',(0,0,0)),('littleToe0Adj',(0,0,0))]
-   adjList += [('earRootAdj',(7.5,3,7.4)),('earAdj',(0,1.5,-0.8)),('earInAdj',(-1,1.5,0.8)),('earInTipAdj',(0,2,0)),('earOutAdj',(1,1.5,0.8)),('earOutTipAdj',(0,2,0))]
-   adjList += [('abdomeFrontAdj',[0,0,10]),('abdomeSideAdj',[14,0,0]),('spine1FrontAdj',[0,0,10]),('spine1SideAdj',[13,0,0]),('spine2FrontAdj',[0,0,10]),('spine2SideAdj',[14,0,0]),('chestFrontAdj',[0,0,10]),('chestSideAdj',[15,0,0])]
-   adjList += [('bigToe0Adj',[-2.2,-5.8,6]),('bigToe1Adj',[-3.3,-7.5,13.1]),('bigToe2Adj',[0,-.1,4.2]),('bigToe3Adj',[0,0,7.1]),('bigToe4Adj',[0,0,1])]
-   adjList += [('indexToe1Adj',[-0.8,-7.2,13]),('indexToe2Adj',[0,0.4,3.6]),('indexToe3Adj',[0,-0.8,1.4]),('indexToe4Adj',[0,-0.9,1.3])]
-   adjList += [('middleToe1Adj',[0.7,-7.4,12.7]),('middleToe2Adj',[0,0.4,3.1]),('middleToe3Adj',[0,-0.8,1.7]),('middleToe4Adj',[0,-0.6,1.2])]
-   adjList += [('fourthToe1Adj',[2,-7.3,12.5]),('fourthToe2Adj',[0,0,2]),('fourthToe3Adj',[0,-0.6,1.5]),('fourthToe4Adj',[0,-0.8,1.3])]
-   adjList += [('littleToe1Adj',[3.4,-7.7,12.2]),('littleToe2Adj',[0,-0.3,2]),('littleToe3Adj',[0,-0.3,0.8]),('littleToe4Adj',[0,-0.4,1.1])]
-   adjList += [('backHoofAdj',[0,-1,0]),('rearBallAdj',[0,-30,3.5]),('rearToeAdj',[0,-2.4,3]),('rearHoofAdj',[0,-3.6,1])]
-   adjList += [('shoulder2Adj',(1.3,10,-3.6)),('arm2Adj',(15,0,-1.55)),('elbow2Adj',(0,0,0)),('wrist2Adj',(45.4,0,12.5))]
-   adjList += [('hip2Adj',(9,-9.8,-24)),('knee2Adj',(0,0,0)),('ankle2Adj',(2.2,-83.6,-3)),('ball2Adj',(0,-6.6,11.7)),('toe2Adj',(0,-1.3,7))]
+   adjDict['shoulder2Adj'] = (1.3,10,-3.6)
+   adjDict['arm2Adj'] = (15,0,-1.55)
+   adjDict['wrist2Adj'] = (45.4,0,12.5)
+   adjDict['hip2Adj'] = (9,-9.8,-24)
+   adjDict['knee2Adj'] = (0,0,0)
+   adjDict['ankle2Adj'] = (2.2,-83.6,-3)
+   adjDict['ball2Adj'] = (0,-6.6,11.7)
+   adjDict['toe2Adj'] = (0,-1.3,7)
+
    adjList += [('finger20Adj',(1.3,0,0)),('thumb20Adj',(-6,-.1,0)),('thumb21Adj',(4.25,-1,6.8),(65,-50,-10)),('thumb22Adj',(3.2,0,0)),('thumb23Adj',(3,0,0))]
    adjList += [('index20Adj',(0,0,0)),('index21Adj',(8.3,1.9,5.3),(0.5,-20,11)),('index22Adj',(3.7,0,0)),('index23Adj',(2.3,0,0)),('index24Adj',(2.4,0,0))]
    adjList += [('middle20Adj',(0,0,0)),('middle21Adj',(8.8,1.9,2.86),(-9.6,-13,9.2)),('middle22Adj',(4.7,0,0)),('middle23Adj',(2.5,0,0)),('middle24Adj',(2.6,0,0))]
@@ -988,18 +1098,21 @@ class warRig:
     adjList += [('fourthToe1Adj',(0.4,-0.5,0.5),(0,27.5,0)),('fourthToe2Adj',(0,-0.2,0.9)),('fourthToe3Adj',(0,0,1.2)),('fourthToe4Adj',(0,0,0.5))]
 
    if len(a) == 0 :
-    for x in adjList :
-     try : cmds.setAttr(x[0]+'.translate',x[1][0],x[1][1],x[1][2],type="double3")
-     except : pass
-     try : cmds.setAttr(x[0]+'.rotate',x[2][0],x[2][1],x[2][2],type="double3")
-     except : pass
-     try : cmds.setAttr(x[0]+'.scale',x[3][0],x[3][1],x[3][2],type="double3")
-     except : pass
+    for x in adjDict.items() :
+     if isinstance(x[1],tuple) :
+      try : cmds.setAttr(x[0]+'.translate',x[1][0],x[1][1],x[1][2],type="double3")
+      except : pass
+     if isinstance(x[1],list) :
+      try : cmds.setAttr(x[0]+'.translate',x[1][0][0],x[1][0][1],x[1][0][2],type="double3")
+      except : pass
+      try : cmds.setAttr(x[0]+'.rotate',x[1][1][0],x[1][1][1],x[1][1][2],type="double3")
+      except : pass
+      try : cmds.setAttr(x[0]+'.scale',x[1][2][0],x[1][2][1],x[1][2][2],type="double3")
+      except : pass
    else :
-    adj0 = [ x[0] for x in adjList ]
     for x in a :
-     i = adj0.index(x)
-     try : cmds.setAttr(x+'.translate',adjList[i][1][0],adjList[i][1][1],adjList[i][1][2],type="double3")
+     t = adjDict.get(x,(0,0,0))
+     try : cmds.setAttr(x+'.translate',t[0],t[1],t[2],type="double3")
      except : pass
 
 ##############################################################################################################
