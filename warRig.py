@@ -719,6 +719,25 @@ class warRig:
    if fclv < 3 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete(grp)
+    
+  # lying (under eyes) adj
+  lyingList = ['lyingA','lyingB','lyingC','lyingD']
+  grp = 'grp_lyingAdj'
+  adjList = [ x+'Adj' for x in lyingList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    for adj in lyingList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    #self.otherSideNode(adjList[1])
+    #self.otherSideNode(adjList[2])
+    #self.otherSideNode(adjList[3])
+    self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3]]
+    self.guildCrv('crv_lyingAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
 
 # Shoulder, Arm Type adjuster module :  exsample part = ['shoulder','arm','elbow','wrist']
  def armAdjuster(self,part,hrc,*a):
@@ -954,6 +973,10 @@ class warRig:
    adjDict['nasolabialFoldBAdj'] = (3,-1.8,7.5)
    adjDict['nasolabialFoldCAdj'] = (3.3,-3.1,7.4)
    adjDict['nasolabialFoldDAdj'] = (3.3,-4.5,7)
+   adjDict['lyingAAdj'] = (1.4,1.4,7.7)
+   adjDict['lyingBAdj'] = (2.5,0.6,7.4)
+   adjDict['lyingCAdj'] = (4.6,0.6,7.2)
+   adjDict['lyingDAdj'] = (5.2,1.4,6.1)
    # arm and leg adj
    adjDict['shoulderAdj'] = (1.3,14.6,-3.6)
    adjDict['armAdj'] = (19,0,-1.55)
