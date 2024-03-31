@@ -667,6 +667,7 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
     for adj in mouthList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.otherSideNode(adjList[1])
     #self.otherSideNode(adjList[2])
@@ -721,19 +722,44 @@ class warRig:
     cmds.delete(grp)
     
   # lying (under eyes) adj
-  lyingList = ['lyingA','lyingB','lyingC','lyingD']
+  nameList = ['lyingA','lyingB','lyingC','lyingD']
   grp = 'grp_lyingAdj'
-  adjList = [ x+'Adj' for x in lyingList ]
+  adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
-    for adj in lyingList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
-    #self.otherSideNode(adjList[1])
-    #self.otherSideNode(adjList[2])
-    #self.otherSideNode(adjList[3])
+    cmds.parentConstraint('headAdj',grp)
+    for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.posingSet(adjList,'faceAdj')
     crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3]]
     self.guildCrv('crv_lyingAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
+    
+  # contour (face border) adj
+  nameList = ['contourUpA','contourUpB','contourUpC','contourUpD','contourSideA','contourSideB','contourSideC','contourSideD','contourLowA','contourLowB','contourLowC','contourLowD']
+  grp = 'grp_contourAdj'
+  adjList = [ x+'Adj' for x in nameList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode(adjList[1])
+    self.otherSideNode(adjList[2])
+    self.otherSideNode(adjList[3])
+    self.otherSideNode(adjList[4])
+    self.otherSideNode(adjList[5])
+    self.otherSideNode(adjList[6])
+    self.otherSideNode(adjList[7])
+    self.otherSideNode(adjList[8])
+    self.otherSideNode(adjList[9])
+    self.otherSideNode(adjList[10])
+    self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5],adjList[6],adjList[7],adjList[8],adjList[9],adjList[10],adjList[11],adjList[10]+'R',adjList[9]+'R',adjList[8]+'R',adjList[7]+'R',adjList[6]+'R',adjList[5]+'R',adjList[4]+'R',adjList[3]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
+    self.guildCrv('crv_contourAdj',crvCvList,grp)
   else :
    if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
@@ -939,44 +965,56 @@ class warRig:
    adjDict['neckAdj'] = (0,17.6,-4.9)
    adjDict['topAdj'] = (0,16.4,0)
    # facial Adj
-   adjDict['eyeAdj'] = (3.05,5.4,7.24)
-   adjDict['sightAdj'] = (0,0,2)
-   adjDict['browAAdj'] = (1,6.84,10.48) ; adjDict['browBAdj'] = (3,7.3,9.97)
-   adjDict['uplidMainAdj'] = (3.12,5.76,8.93)
-   adjDict['lowlidMainAdj'] = (3.16,4.78,8.8)
-   adjDict['canthusInAdj'] = (1.7,5,8.6)
-   adjDict['uplidIn1Adj'] = (2.3,5.5,8.8)
-   adjDict['uplidOut1Adj'] = (3.9,5.6,8.7)
-   adjDict['lowlidIn1Adj'] = (2.4,4.9,8.7)
-   adjDict['lowlidOut1Adj'] = (3.9,4.9,8.6)
-   adjDict['canthusOutAdj'] = (4.5,5.2,8.1)
+   adjDict['eyeAdj'] = (3.1,3.8,12.2)
+   adjDict['sightAdj'] = (0,0,1.5)
+   adjDict['browAAdj'] = (1.5,5.1,14.4)
+   adjDict['browBAdj'] = (3.5,5.5,13.9)
+   adjDict['uplidMainAdj'] = (3.2,4.4,13.7)
+   adjDict['lowlidMainAdj'] = (3.2,3.2,13.7)
+   adjDict['canthusInAdj'] = (1.8,3.3,13.4)
+   adjDict['uplidIn1Adj'] = (2.4,4.2,13.6)
+   adjDict['uplidOut1Adj'] = (4.1,4.1,13.5)
+   adjDict['lowlidIn1Adj'] = (2.7,3.2,13.6)
+   adjDict['lowlidOut1Adj'] = (4,3.3,13.4)
+   adjDict['canthusOutAdj'] = (4.7,3.7,12.9)
    adjDict['thirdEyeAdj'] = (0,5.4,7.24)
    adjDict['thirdSightAdj'] = (0,0,2)
    adjDict['thirdUplidMainAdj'] = (0,5.76,8.93)
    adjDict['thirdLowlidMainAdj'] = (0,4.78,8.8)
-   adjDict['jawAdj'] = (0,0.24,1.52)
+   adjDict['jawAdj'] = (0,0.21,5.4)
    adjDict['jawTipAdj'] = (0,-5.1,8.4)
-   adjDict['upLipMAdj'] = (0,-.8,10.95)
-   adjDict['upLipL1Adj'] = (1.77,-.95,10.14)
-   adjDict['cornerAdj'] = (2.44,-1.2,9.2)
-   adjDict['loLipL1Adj'] = (1.77,-1.45,9.94)
-   adjDict['loLipMAdj'] = (0,-1.7,10.725)
+   adjDict['upLipMAdj'] = (0,-3.2,14.9)
+   adjDict['upLipL1Adj'] = (1.3,-3.2,14.3)
+   adjDict['cornerAdj'] = (2.3,-3.5,13.5)
+   adjDict['loLipL1Adj'] = (1.3,-3.9,14.4)
+   adjDict['loLipMAdj'] = (0,-4,14.6)
    adjDict['tongueAdj'] = (0,-2.4,4.9)
-   #adjDict['tongue1Adj'] = (0,0,0)
    adjDict['tongueTipAdj'] = (0,0.8,3.6)
    adjDict['cheekAdj'] = (3.5,3.42,8.8)
    adjDict['nasalisAdj'] = (1.75,1.85,9.9)
    adjDict['gillAdj'] = (5,-.42,6.64)
    adjDict['noseUnderAdj'] = (0,-2.2,9.1)
    adjDict['noseAlaAdj'] = (1.6,-1.4,8.2)
-   adjDict['nasolabialFoldAAdj'] = (1.8,-1.2,8.1)
-   adjDict['nasolabialFoldBAdj'] = (3,-1.8,7.5)
-   adjDict['nasolabialFoldCAdj'] = (3.3,-3.1,7.4)
-   adjDict['nasolabialFoldDAdj'] = (3.3,-4.5,7)
-   adjDict['lyingAAdj'] = (1.4,1.4,7.7)
-   adjDict['lyingBAdj'] = (2.5,0.6,7.4)
-   adjDict['lyingCAdj'] = (4.6,0.6,7.2)
-   adjDict['lyingDAdj'] = (5.2,1.4,6.1)
+   adjDict['nasolabialFoldAAdj'] = (1.7,0,14.2)
+   adjDict['nasolabialFoldBAdj'] = (3.2,-0.9,13.6)
+   adjDict['nasolabialFoldCAdj'] = (3.9,-2.3,13.3)
+   adjDict['nasolabialFoldDAdj'] = (3.5,-3.9,12.8)
+   adjDict['lyingAAdj'] = (1.5,2.2,14)
+   adjDict['lyingBAdj'] = (2.7,1.8,13.6)
+   adjDict['lyingCAdj'] = (4.3,1.9,13.2)
+   adjDict['lyingDAdj'] = (5.3,2.4,12.5)
+   adjDict['contourUpAAdj'] = (0.0,10.4,13.4)
+   adjDict['contourUpBAdj'] = (3.3,10.4,12.9)
+   adjDict['contourUpCAdj'] = (5.9,9.7,10.7)
+   adjDict['contourUpDAdj'] = (7,8.4,8.7)
+   adjDict['contourSideAAdj'] = (7.7,6.4,6.5)
+   adjDict['contourSideBAdj'] = (8,4,5.4)
+   adjDict['contourSideCAdj'] = (7.8,1.4,5.6)
+   adjDict['contourSideDAdj'] = (7.1,-1.8,5.9)
+   adjDict['contourLowAAdj'] = (6.3,-4,7.1)
+   adjDict['contourLowBAdj'] = (5,-5.8,9.5)
+   adjDict['contourLowCAdj'] = (3.1,-6.9,12.6)
+   adjDict['contourLowDAdj'] = (0.0,-7.2,14)
    # arm and leg adj
    adjDict['shoulderAdj'] = (1.3,14.6,-3.6)
    adjDict['armAdj'] = (19,0,-1.55)
