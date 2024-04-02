@@ -612,15 +612,18 @@ class warRig:
    self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
 
   # eyebrow adj
-  adjList = ['browAAdj','browBAdj'] # brow adj
+  nameList = ['browA','browB','browC']
+  grp = 'browAdj_cons'
+  adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
    if fclv >= 2 :
     self.createAdj('brow','headAdj',[0,0,0,0,0,0],'none')
     cmds.setAttr('browAdj.overrideDisplayType',1)
-    cmds.createNode('transform',name='browAdj_cons',parent='browAdj')
-    cmds.parentConstraint('headAdj','browAdj_cons')
-    self.createAdj('browA','browAdj_cons',[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('browB','browAdj_cons',[0,0,0,0,0,0],'faceSpot')
+    cmds.createNode('transform',name=grp,parent='browAdj')
+    cmds.parentConstraint('headAdj',grp)
+    self.createAdj('browA',grp,[0,0,0,0,0,0],'faceSpot')
+    self.createAdj('browB',grp,[0,0,0,0,0,0],'faceSpot')
+    self.createAdj('browC',grp,[0,0,0,0,0,0],'faceSpot')
     self.createAdj('browM','browAAdj',[0,0,0,0,0,0],'none')
     cmds.setAttr('browMAdj.overrideDisplayType',1)
     cmds.connectAttr('eyeAdj.translateX','browAdj.translateX')
@@ -660,8 +663,27 @@ class warRig:
     self.posingRem(adjList,'faceAdj')
     cmds.delete('lipAdj_cons')
     
+  # nose adj
+  nameList = ['noseRoot','noseAlaA','noseAlaB','noseUnder']
+  grp = 'grp_noseAdj'
+  adjList = [ x+'Adj' for x in nameList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.otherSideNode(adjList[1])
+    self.otherSideNode(adjList[2])
+    self.posingSet(adjList,'faceAdj')
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[2]+'R',adjList[1]+'R']
+    self.guildCrv('crv_noseAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
+    
   # mouth round adj
-  mouthList = ['noseUnder','noseAla','nasolabialFoldA','nasolabialFoldB','nasolabialFoldC','nasolabialFoldD']
+  mouthList = ['nasolabialFoldA','nasolabialFoldB','nasolabialFoldC','nasolabialFoldD','chinA','chinB']
   grp = 'mouthAdj_cons'
   adjList = [ x+'Adj' for x in mouthList ]
   if self.exCheck(adjList) == 0 :
@@ -673,7 +695,7 @@ class warRig:
     #self.otherSideNode(adjList[2])
     #self.otherSideNode(adjList[3])
     self.posingSet(adjList,'faceAdj')
-    crvCvList = [adjList[2],adjList[3],adjList[4],adjList[5]]
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5]]
     self.guildCrv('crv_nasolabialFoldAdj',crvCvList,grp)
   else :
    if fclv < 2 :
@@ -681,27 +703,27 @@ class warRig:
     cmds.delete(grp)
 
   # cheek adj
-  grp = 'cheekAdj_cons'
-  adjList = ['cheekAdj','nasalisAdj','gillAdj']
-  if self.exCheck(adjList) == 0 :
-   if fclv >= 3 :
-    self.createAdj('chop','headAdj',[0,0,0,0,0,0],'none')
-    cmds.createNode('transform',name=grp,parent='chopAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
-    self.createAdj('cheek',grp,[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('nasalis',grp,[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('gill',grp,[0,0,0,0,0,0],'faceSpot')
-    pmaChop = cmds.createNode('plusMinusAverage',skipSelect=1)
-    cmds.setAttr(pmaChop+'.operation',3)
-    cmds.connectAttr('cheekAdj.translate',pmaChop+'.input3D[0]')
-    cmds.connectAttr('nasalisAdj.translate',pmaChop+'.input3D[1]')
-    cmds.connectAttr('gillAdj.translate',pmaChop+'.input3D[2]')
-    cmds.connectAttr(pmaChop+'.output3D','chopAdj.translate')
-    self.posingSet(adjList,'faceAdj')
-  else :
-   if fclv < 3 :
-    self.posingRem(adjList,'faceAdj')
-    cmds.delete('chopAdj')
+  #grp = 'cheekAdj_cons'
+  #adjList = ['cheekAdj','nasalisAdj','gillAdj']
+  #if self.exCheck(adjList) == 0 :
+  # if fclv >= 3 :
+  #  self.createAdj('chop','headAdj',[0,0,0,0,0,0],'none')
+  #  cmds.createNode('transform',name=grp,parent='chopAdj',skipSelect=1)
+  #  cmds.parentConstraint('headAdj',grp)
+  #  self.createAdj('cheek',grp,[0,0,0,0,0,0],'faceSpot')
+  #  self.createAdj('nasalis',grp,[0,0,0,0,0,0],'faceSpot')
+  #  self.createAdj('gill',grp,[0,0,0,0,0,0],'faceSpot')
+  #  pmaChop = cmds.createNode('plusMinusAverage',skipSelect=1)
+  #  cmds.setAttr(pmaChop+'.operation',3)
+  #  cmds.connectAttr('cheekAdj.translate',pmaChop+'.input3D[0]')
+  #  cmds.connectAttr('nasalisAdj.translate',pmaChop+'.input3D[1]')
+  #  cmds.connectAttr('gillAdj.translate',pmaChop+'.input3D[2]')
+  #  cmds.connectAttr(pmaChop+'.output3D','chopAdj.translate')
+  #  self.posingSet(adjList,'faceAdj')
+  #else :
+  # if fclv < 3 :
+  #  self.posingRem(adjList,'faceAdj')
+  #  cmds.delete('chopAdj')
   
   # Advance eyelid adj
   advLid = ['canthusIn','uplidIn1','uplidOut1','lowlidIn1','lowlidOut1','canthusOut']
@@ -722,7 +744,7 @@ class warRig:
     cmds.delete(grp)
     
   # lying (under eyes) adj
-  nameList = ['lyingA','lyingB','lyingC','lyingD']
+  nameList = ['canthusInB','hoodA','hoodB','hoodC','hoodD','lyingA','lyingB','lyingC','lyingD']
   grp = 'grp_lyingAdj'
   adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
@@ -733,6 +755,40 @@ class warRig:
     self.posingSet(adjList,'faceAdj')
     crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3]]
     self.guildCrv('crv_lyingAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
+    
+  # brows around adj
+  nameList = ['cheekboneA','cheekboneB','cheekboneC','temple']
+  grp = 'grp_infraorbitalAdj'
+  adjList = [ x+'Adj' for x in nameList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.posingSet(adjList,'faceAdj')
+    #crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3]]
+    #self.guildCrv('crv_lyingAdj',crvCvList,grp)
+  else :
+   if fclv < 2 :
+    self.posingRem(adjList,'faceAdj')
+    cmds.delete(grp)
+    
+  # cheek adj
+  nameList = ['cheekA','cheekB','cheekC']
+  grp = 'grp_cheekAdj'
+  adjList = [ x+'Adj' for x in nameList ]
+  if self.exCheck(adjList) == 0 :
+   if fclv >= 3 :
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
+    cmds.parentConstraint('headAdj',grp)
+    for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
+    self.posingSet(adjList,'faceAdj')
+    #crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3]]
+    #self.guildCrv('crv_lyingAdj',crvCvList,grp)
   else :
    if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
@@ -969,6 +1025,8 @@ class warRig:
    adjDict['sightAdj'] = (0,0,1.5)
    adjDict['browAAdj'] = (1.5,5.1,14.4)
    adjDict['browBAdj'] = (3.5,5.5,13.9)
+   adjDict['browCAdj'] = (5.3,5.2,12.6)
+   
    adjDict['uplidMainAdj'] = (3.2,4.4,13.7)
    adjDict['lowlidMainAdj'] = (3.2,3.2,13.7)
    adjDict['canthusInAdj'] = (1.8,3.3,13.4)
@@ -990,19 +1048,40 @@ class warRig:
    adjDict['loLipMAdj'] = (0,-4,14.6)
    adjDict['tongueAdj'] = (0,-2.4,4.9)
    adjDict['tongueTipAdj'] = (0,0.8,3.6)
-   adjDict['cheekAdj'] = (3.5,3.42,8.8)
-   adjDict['nasalisAdj'] = (1.75,1.85,9.9)
-   adjDict['gillAdj'] = (5,-.42,6.64)
-   adjDict['noseUnderAdj'] = (0,-2.2,9.1)
-   adjDict['noseAlaAdj'] = (1.6,-1.4,8.2)
-   adjDict['nasolabialFoldAAdj'] = (1.7,0,14.2)
+   #adjDict['cheekAdj'] = (3.5,3.42,8.8)
+   #adjDict['nasalisAdj'] = (1.75,1.85,9.9)
+   #adjDict['gillAdj'] = (5,-.42,6.64)
+   adjDict['noseRootAdj'] = (0,3.5,14.5)
+   adjDict['noseUnderAdj'] = (0,-1.5,15.1)
+   #adjDict['noseAlaAdj'] = (1.6,-1.4,8.2)
+   adjDict['noseAlaAAdj'] = (1.6,0,14.2)
+   adjDict['noseAlaBAdj'] = (1.5,-1.2,14.5)
+   adjDict['nasolabialFoldAAdj'] = (1.5,1.4,14.2)
    adjDict['nasolabialFoldBAdj'] = (3.2,-0.9,13.6)
    adjDict['nasolabialFoldCAdj'] = (3.9,-2.3,13.3)
    adjDict['nasolabialFoldDAdj'] = (3.5,-3.9,12.8)
-   adjDict['lyingAAdj'] = (1.5,2.2,14)
-   adjDict['lyingBAdj'] = (2.7,1.8,13.6)
-   adjDict['lyingCAdj'] = (4.3,1.9,13.2)
-   adjDict['lyingDAdj'] = (5.3,2.4,12.5)
+   adjDict['chinAAdj'] = (2.4,-4.9,13.9)
+   adjDict['chinBAdj'] = (0,-5.1,14.1)
+   
+   adjDict['canthusInBAdj'] = (1.1,3.4,14)
+   adjDict['hoodAAdj'] = (2.1,4.5,14)
+   adjDict['hoodBAdj'] = (3.4,4.8,13.8)
+   adjDict['hoodCAdj'] = (4.8,4.3,13)
+   adjDict['hoodDAdj'] = (5.3,3.8,12.3)
+   adjDict['lyingAAdj'] = (1.6,2.7,13.8)
+   adjDict['lyingBAdj'] = (2.8,2.4,13.6)
+   adjDict['lyingCAdj'] = (4.2,2.4,13.3)
+   adjDict['lyingDAdj'] = (5.1,2.9,12.6)
+   
+   adjDict['cheekboneAAdj'] = (3,1.7,13.6)
+   adjDict['cheekboneBAdj'] = (4.8,1.4,12.8)
+   adjDict['cheekboneCAdj'] = (6.2,2.4,11.5)
+   adjDict['templeAdj'] = (6.4,3.9,11)
+   
+   adjDict['cheekAAdj'] = (5.1,0.4,12.5)
+   adjDict['cheekBAdj'] = (5.2,-1.6,11.7)
+   adjDict['cheekCAdj'] = (5,-3.9,11)
+   
    adjDict['contourUpAAdj'] = (0.0,10.4,13.4)
    adjDict['contourUpBAdj'] = (3.3,10.4,12.9)
    adjDict['contourUpCAdj'] = (5.9,9.7,10.7)
@@ -1400,7 +1479,7 @@ class warRig:
   allList += [ ('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj') ]
   allList += [ ('thirdUplidMainAdj',{self.thirdLidJo[0]:self.faceJo,self.thirdLidJo[1]:self.thirdLidJo[0]},self.rootJo) ]
   allList += [ ('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo) ]
-  allList += [ ('cheekAdj',self.cheekJo[0],self.faceJo) , ('nasalisAdj',self.cheekJo[1],self.faceJo) , ('gillAdj',self.cheekJo[2],self.faceJo) ]
+  #allList += [ ('cheekAdj',self.cheekJo[0],self.faceJo) , ('nasalisAdj',self.cheekJo[1],self.faceJo) , ('gillAdj',self.cheekJo[2],self.faceJo) ]
   allList += [ ('jawAdj',self.jawJo[0],self.faceJo) , ('jawTipAdj',self.jawJo[1],self.jawJo[0]) ]
   allList += [ ('upLipMAdj',self.lipJo[0],self.faceJo,('loLipMAdj',[0,-1,0])) , ('upLipL1Adj',self.lipJo[1],self.faceJo,[self.lipJo[0]]) , ('cornerAdj',self.lipJo[2],self.faceJo,[self.lipJo[0]]) , ('loLipL1Adj',self.lipJo[3],self.faceJo,[self.lipJo[0]]) , ('loLipMAdj',self.lipJo[4],self.faceJo,[self.lipJo[0]]) ]
   allList += [ ('earRootAdj',self.earJo[0],self.headJo,[]) , ('earAdj',self.earJo[1],self.earJo[0]) , ('earInAdj',self.earJo[2],self.earJo[1]) , ('earInTipAdj',self.earJo[3],self.earJo[2]) , ('earOutAdj',self.earJo[4],self.earJo[1]) , ('earOutTipAdj',self.earJo[5],self.earJo[4]) ]
@@ -6045,11 +6124,14 @@ class warRig:
 
  def guildCrv(self,name,adjs,grp,*a):
   close = 0
+  deg = 3
+  if len(adjs) == 3 : deg = 2
+  if len(adjs) < 3 : deg = 1
   if adjs[0] == adjs[-1] :
    adjs.pop()
    close = 1 
   cvp = [ (0,0,0) for i in range(len(adjs)) ]
-  crv = cmds.curve(point=cvp,name=name,degree=3)
+  crv = cmds.curve(point=cvp,name=name,degree=deg)
   cmds.parent(crv,grp,relative=1)
   #cmds.setAttr(crv+'.template',1)
   cmds.setAttr(crv+'.overrideEnabled',1)
