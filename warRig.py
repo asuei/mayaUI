@@ -566,8 +566,8 @@ class warRig:
   if cmds.objExists('headAdj') == 0 : return 0
   
   if cmds.objExists('faceAdj') == 0 :
-   cmds.createNode('transform',name='faceAdj_consA',parent='headAdj')
-   cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA')
+   cmds.createNode('transform',name='faceAdj_consA',parent='headAdj',skipSelect=1)
+   cmds.createNode('transform',name='faceAdj_consB',parent='faceAdj_consA',skipSelect=1)
    self.createAdj('face','faceAdj_consB',[0,0,0,0,0,0],'none')
    cmds.setAttr('faceAdj.overrideDisplayType',1)
    cmds.addAttr('faceAdj',longName='level',attributeType='long',keyable=1)
@@ -581,7 +581,7 @@ class warRig:
    cmds.connectAttr('mdl_faceAdj.output','faceAdj.ty')
   
   if fclv >= 1 and cmds.objExists('eyeAdj') == 0 :
-   cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj')
+   cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj',skipSelect=1)
    cmds.parentConstraint('headAdj','eyeAdj_cons')
    self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
    self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
@@ -590,13 +590,15 @@ class warRig:
    cmds.connectAttr('eyeAdj.ty','adl_faceAdj.input1')
 
   if fclv >= 1  and cmds.objExists('jawAdj') == 0 :
-   cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj')
+   cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj',skipSelect=1)
    cmds.parentConstraint('headAdj','jawAdj_cons')
    self.createAdj('jaw','jawAdj_cons',[0,0,0,0,0,0],'jaw')
    self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
    cmds.connectAttr('jawAdj.tz','cd_faceAdj.secondTerm')
    cmds.connectAttr('jawAdj.tz','cd_faceAdj.colorIfFalseR')
    cmds.connectAttr('jawAdj.ty','adl_faceAdj.input2')
+   cmds.createNode('transform',name='jawTipAdj_v',parent='jawAdj_cons',skipSelect=1)
+   cmds.pointConstraint('jawTipAdj','jawTipAdj_v')
   
   # basic eyelid adj
   if cmds.objExists('uplidMainAdj') == 0 :
@@ -612,31 +614,32 @@ class warRig:
    self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
 
   # eyebrow adj
-  nameList = ['browA','browB','browC']
+  nameList = ['glabella','browA','browB','browC']
   grp = 'browAdj_cons'
   adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
    if fclv >= 2 :
-    self.createAdj('brow','headAdj',[0,0,0,0,0,0],'none')
-    cmds.setAttr('browAdj.overrideDisplayType',1)
-    cmds.createNode('transform',name=grp,parent='browAdj')
+    #self.createAdj('brow','headAdj',[0,0,0,0,0,0],'none')
+    #cmds.setAttr('browAdj.overrideDisplayType',1)
+    cmds.createNode('transform',name=grp,parent='faceAdj')
     cmds.parentConstraint('headAdj',grp)
+    self.createAdj('glabella',grp,[0,0,0,0,0,0],'faceSpot')
     self.createAdj('browA',grp,[0,0,0,0,0,0],'faceSpot')
     self.createAdj('browB',grp,[0,0,0,0,0,0],'faceSpot')
     self.createAdj('browC',grp,[0,0,0,0,0,0],'faceSpot')
-    self.createAdj('browM','browAAdj',[0,0,0,0,0,0],'none')
-    cmds.setAttr('browMAdj.overrideDisplayType',1)
-    cmds.connectAttr('eyeAdj.translateX','browAdj.translateX')
-    cmds.connectAttr('eyeAdj.translateZ','browAdj.translateZ')
-    pmaBrow = cmds.createNode('plusMinusAverage')
-    cmds.setAttr(pmaBrow+'.operation',3)
-    cmds.connectAttr('browAAdj.translateY',pmaBrow+'.input1D[0]')
-    cmds.connectAttr('browBAdj.translateY',pmaBrow+'.input1D[1]')
-    cmds.connectAttr(pmaBrow+'.output1D','browAdj.translateY')
-    cmds.createNode('multDoubleLinear',name='mdl_browMAdj')
-    cmds.connectAttr('browAAdj.translateX','mdl_browMAdj.input1')
-    cmds.setAttr('mdl_browMAdj.input2',-1)
-    cmds.connectAttr('mdl_browMAdj.output','browMAdj.translateX')
+    #self.createAdj('browM','browAAdj',[0,0,0,0,0,0],'none') # glabella
+    #cmds.setAttr('browMAdj.overrideDisplayType',1)
+    #cmds.connectAttr('eyeAdj.translateX','browAdj.translateX')
+    #cmds.connectAttr('eyeAdj.translateZ','browAdj.translateZ')
+    #pmaBrow = cmds.createNode('plusMinusAverage')
+    #cmds.setAttr(pmaBrow+'.operation',3)
+    #cmds.connectAttr('browAAdj.translateY',pmaBrow+'.input1D[0]')
+    #cmds.connectAttr('browBAdj.translateY',pmaBrow+'.input1D[1]')
+    #cmds.connectAttr(pmaBrow+'.output1D','browAdj.translateY')
+    #cmds.createNode('multDoubleLinear',name='mdl_browMAdj')
+    #cmds.connectAttr('browAAdj.translateX','mdl_browMAdj.input1')
+    #cmds.setAttr('mdl_browMAdj.input2',-1)
+    #cmds.connectAttr('mdl_browMAdj.output','browMAdj.translateX')
     self.posingSet(adjList,'faceAdj')
   else :
    if fclv < 2 :
@@ -659,7 +662,7 @@ class warRig:
       for t in tList :
        pass
     self.posingSet(adjList,'faceAdj')
-    crvCvList = ['browAAdj','browBAdj','browCAdj',adjList[3],adjList[2],adjList[1],adjList[0]]
+    crvCvList = ['glabellaAdj','browAAdj','browBAdj','browCAdj',adjList[3],adjList[2],adjList[1],adjList[0]]
     self.guildCrv('crv_browsAdj',crvCvList,grp)
   else :
    if fclv < 2 :
@@ -667,19 +670,21 @@ class warRig:
     cmds.delete(grp)
   
   # basic lip(mouth) adj
-  lipList = ['upLipM','upLipL1','corner','loLipL1','loLipM']
+  lipList = ['upLipM','upLipL1','upLipL2','corner','loLipL2','loLipL1','loLipM']
   grp = 'lipAdj_cons'
   adjList = [ x+'Adj' for x in lipList ]
   if self.exCheck(adjList) == 0 :
    if fclv >= 2 :
-    cmds.createNode('transform',name=grp,parent='jawAdj',skipSelect=1)
+    cmds.createNode('transform',name=grp,parent='faceAdj',skipSelect=1)
     cmds.parentConstraint('headAdj',grp)
     for adj in lipList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.otherSideNode(adjList[1])
     self.otherSideNode(adjList[2])
     self.otherSideNode(adjList[3])
+    self.otherSideNode(adjList[4])
+    self.otherSideNode(adjList[5])
     self.posingSet(adjList,'faceAdj')
-    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[2],adjList[2],adjList[3],adjList[4],adjList[3]+'R',adjList[2]+'R',adjList[2]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5],adjList[6],adjList[5]+'R',adjList[4]+'R',adjList[3]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
     self.guildCrv('crv_lipAdj',crvCvList,grp)
   else :
    if fclv < 2 :
@@ -817,13 +822,28 @@ class warRig:
     self.otherSideNode(adjList[8])
     self.otherSideNode(adjList[9])
     self.otherSideNode(adjList[10])
+    self.otherSideNode(adjList[11])
     self.posingSet(adjList,'faceAdj')
-    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5],adjList[6],adjList[7],adjList[8],adjList[9],adjList[10],adjList[11],adjList[10]+'R',adjList[9]+'R',adjList[8]+'R',adjList[7]+'R',adjList[6]+'R',adjList[5]+'R',adjList[4]+'R',adjList[3]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5],adjList[6],adjList[7],adjList[8],adjList[9],adjList[10],adjList[11],'jawTipAdj_v',adjList[11]+'R',adjList[10]+'R',adjList[9]+'R',adjList[8]+'R',adjList[7]+'R',adjList[6]+'R',adjList[5]+'R',adjList[4]+'R',adjList[3]+'R',adjList[2]+'R',adjList[1]+'R',adjList[0]]
     self.guildCrv('crv_contourAdj',crvCvList,grp)
   else :
    if fclv < 2 :
     self.posingRem(adjList,'faceAdj')
     cmds.delete(grp)
+
+  cmds.createNode('transform',name='grp_faceAdjCrv',parent='faceAdj',skipSelect=1)
+  crvCvList = ['contourUpAAdj','glabellaAdj','noseRootAdj','noseTipAdj','noseUnderAdj','corniceMAdj','upLipMAdj']
+  self.guildCrv('crv_upCenterAdj',crvCvList,grp)
+  crvCvList = ['loLipMAdj','chinBAdj','jawTipAdj_v']
+  self.guildCrv('crv_loCenterAdj',crvCvList,grp)
+  crvCvList = ['upLipL2Adj','corniceBAdj','nasolabialFoldBAdj']
+  self.guildCrv('crv_cheekAAdj',crvCvList,grp)
+  crvCvList = ['cornerAdj','nasolabialFoldDAdj','cheekCAdj','contourLowAAdj']
+  self.guildCrv('crv_cheekBAdj',crvCvList,grp)
+  crvCvList = ['noseAlaBAdj','corniceAAdj','upLipL1Adj']
+  self.guildCrv('crv_mouthVUAdj',crvCvList,grp)
+  crvCvList = ['cheekboneAAdj','nasolabialFoldAAdj','noseBridgeAdj']
+  self.guildCrv('crv_NoseHBAdj',crvCvList,grp)
 
 # Shoulder, Arm Type adjuster module :  exsample part = ['shoulder','arm','elbow','wrist']
  def armAdjuster(self,part,hrc,*a):
@@ -1027,6 +1047,8 @@ class warRig:
    # facial Adj
    adjDict['eyeAdj'] = (3.1,3.8,12.2)
    adjDict['sightAdj'] = (0,0,1.5)
+   
+   adjDict['glabellaAdj'] = (0,5,14.6)
    adjDict['browAAdj'] = (1.5,5.1,14.4)
    adjDict['browBAdj'] = (3.5,5.5,13.9)
    adjDict['browCAdj'] = (5.3,5.2,12.6)
@@ -1036,7 +1058,7 @@ class warRig:
    adjDict['canthusInAdj'] = (1.8,3.3,13.4)
    adjDict['uplidIn1Adj'] = (2.4,4.2,13.6)
    adjDict['uplidOut1Adj'] = (4.1,4.1,13.5)
-   adjDict['lowlidIn1Adj'] = (2.7,3.2,13.6)
+   adjDict['lowlidIn1Adj'] = (2.4,3.2,13.6)
    adjDict['lowlidOut1Adj'] = (4,3.3,13.4)
    adjDict['canthusOutAdj'] = (4.7,3.7,12.9)
    adjDict['thirdEyeAdj'] = (0,5.4,7.24)
@@ -1047,8 +1069,10 @@ class warRig:
    adjDict['jawTipAdj'] = (0,-7.4,8.6)
    adjDict['upLipMAdj'] = (0,-3.2,14.9)
    adjDict['upLipL1Adj'] = (1.3,-3.2,14.3)
+   adjDict['upLipL2Adj'] = (1.8,-3.3,14)
    adjDict['cornerAdj'] = (2.3,-3.5,13.5)
    adjDict['loLipL1Adj'] = (1.3,-3.9,14.4)
+   adjDict['loLipL2Adj'] = (1.8,-3.7,14)
    adjDict['loLipMAdj'] = (0,-4,14.6)
    adjDict['tongueAdj'] = (0,-2.4,4.9)
    adjDict['tongueTipAdj'] = (0,0.8,3.6)
@@ -1062,8 +1086,8 @@ class warRig:
    adjDict['noseAlaAAdj'] = (1.6,0,14.2)
    adjDict['noseAlaBAdj'] = (1.5,-1.2,14.5)
    adjDict['noseTipAdj'] = (0,-0.3,16.3)
-   adjDict['nasolabialFoldAAdj'] = (1.5,1.4,14.2)
-   adjDict['nasolabialFoldBAdj'] = (3.2,-0.9,13.6)
+   adjDict['nasolabialFoldAAdj'] = (1.7,1.5,13.9)
+   adjDict['nasolabialFoldBAdj'] = (3,-0.3,13.7)
    adjDict['nasolabialFoldCAdj'] = (3.9,-2.3,13.3)
    adjDict['nasolabialFoldDAdj'] = (3.5,-3.9,12.8)
    adjDict['chinAAdj'] = (2.4,-4.9,13.9)
@@ -1086,7 +1110,7 @@ class warRig:
    
    adjDict['corniceMAdj'] = (0,-2.3,15)
    adjDict['corniceAAdj'] = (1.5,-2.7,14.6)
-   adjDict['corniceBAdj'] = (2.7,-2.9,13.8)
+   adjDict['corniceBAdj'] = (2.7,-2.4,14)
    
    adjDict['cheekAAdj'] = (5.1,0.4,12.5)
    adjDict['cheekBAdj'] = (5.2,-1.6,11.7)
@@ -1101,9 +1125,9 @@ class warRig:
    adjDict['contourSideCAdj'] = (7.8,1.4,5.6)
    adjDict['contourSideDAdj'] = (7.1,-1.8,5.9)
    adjDict['contourLowAAdj'] = (6.3,-4,7.1)
-   adjDict['contourLowBAdj'] = (5,-5.8,9.5)
-   adjDict['contourLowCAdj'] = (3.1,-6.9,12.6)
-   adjDict['contourLowDAdj'] = (0.0,-7.2,14)
+   adjDict['contourLowBAdj'] = (5.3,-5.2,8.6)
+   adjDict['contourLowCAdj'] = (3.7,-6.2,10.9)
+   adjDict['contourLowDAdj'] = (1.8,-6.9,13.2)
    # arm and leg adj
    adjDict['shoulderAdj'] = (1.3,14.6,-3.6)
    adjDict['armAdj'] = (19,0,-1.55)
