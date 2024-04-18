@@ -574,7 +574,6 @@ class warRig:
   # eye adj
   if fclv >= 1 and cmds.objExists('eyeAdj') == 0 :
    cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj',skipSelect=1)
-   cmds.parentConstraint('headAdj','eyeAdj_cons')
    self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
    self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
 
@@ -623,7 +622,6 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 2 :
     cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
     for adj in lipList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.otherSideNode(adjList[1])
     self.otherSideNode(adjList[2])
@@ -645,7 +643,6 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
     for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.posingSet(adjList,'faceAdj')
     crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[8],adjList[7],adjList[6],adjList[5],adjList[0]]
@@ -677,7 +674,6 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
     for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.otherSideNode(adjList[1])
     self.otherSideNode(adjList[2])
@@ -691,7 +687,7 @@ class warRig:
     cmds.delete(grp)
     
   # mouth round adj
-  nameList = ['corniceM','corniceA','corniceB','modiolus','submanA','submanB','submanM']
+  nameList = ['corniceM','corniceA','corniceB','modiolusA','modiolusB','submanB','submanA','submanM']
   grp = 'grp_mouthAdj'
   adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
@@ -702,7 +698,7 @@ class warRig:
     self.otherSideNode(adjList[2])
     #self.otherSideNode(adjList[3])
     self.posingSet(adjList,'faceAdj')
-    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[5],adjList[4],adjList[6]]
+    crvCvList = [adjList[0],adjList[1],adjList[2],adjList[3],adjList[4],adjList[5],adjList[6],adjList[7]]
     self.guildCrv('crv_mouthAdj',crvCvList,grp)
   else :
    if fclv < 2 :
@@ -716,7 +712,6 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
     for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.otherSideNode(adjList[1])
     self.otherSideNode(adjList[2])
@@ -776,7 +771,6 @@ class warRig:
   if self.exCheck(adjList) == 0 :
    if fclv >= 3 :
     cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
-    cmds.parentConstraint('headAdj',grp)
     for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.posingSet(adjList,'faceAdj')
     crvCvList = ['lyingCAdj','cheekboneBAdj',adjList[0],adjList[1],adjList[2],'contourLowCAdj']
@@ -793,16 +787,20 @@ class warRig:
    if fclv >= 3 :
     cmds.createNode('transform',name='grp_faceAdjCrv',parent='grp_faceDetailAdj',skipSelect=1)
     #cmds.parentConstraint('headAdj',grp)
-    crvCvList = ['contourUpAAdj','glabellaAdj','noseRootAdj','noseTipAdj','noseUnderAdj','corniceMAdj','upLipMAdj']
+    crvCvList = ['contourUpAAdj','glabellaAdj','noseRootAdj']
     self.guildCrv('crv_upCenterAdj',crvCvList,grp)
+    crvCvList = ['noseUnderAdj','corniceMAdj','upLipMAdj']
+    self.guildCrv('crv_midCenterAdj',crvCvList,grp)
     crvCvList = ['loLipMAdj','submanMAdj','chinBAdj','jawTipAdj_v']
     self.guildCrv('crv_loCenterAdj',crvCvList,grp)
-    crvCvList = ['upLipL2Adj','corniceBAdj','nasolabialFoldBAdj']
-    self.guildCrv('crv_cheekAAdj',crvCvList,grp)
-    crvCvList = ['cornerAdj','modiolusAdj','nasolabialFoldDAdj','cheekCAdj','contourLowAAdj']
-    self.guildCrv('crv_cheekBAdj',crvCvList,grp)
     crvCvList = ['noseAlaBAdj','corniceAAdj','upLipL1Adj']
-    self.guildCrv('crv_mouthVUAdj',crvCvList,grp)
+    self.guildCrv('crv_mouthUAAdj',crvCvList,grp)
+    crvCvList = ['upLipL2Adj','corniceBAdj','nasolabialFoldBAdj']
+    self.guildCrv('crv_mouthUBAdj',crvCvList,grp)
+    crvCvList = ['cornerAdj','modiolusAAdj','nasolabialFoldCAdj','cheekBAdj','gillBAdj','contourSideCAdj']
+    self.guildCrv('crv_cheekBAdj',crvCvList,grp)
+    crvCvList = ['cornerAdj','modiolusBAdj','nasolabialFoldDAdj','cheekCAdj','gillCAdj','contourSideDAdj']
+    self.guildCrv('crv_cheekCAdj',crvCvList,grp)
     crvCvList = ['cheekboneAAdj','nasolabialFoldAAdj','noseBridgeAdj']
     self.guildCrv('crv_NoseHBAdj',crvCvList,grp)
   else :
@@ -1087,7 +1085,8 @@ class warRig:
    adjDict['gillBAdj'] = (6.6,-0.7,9.4)
    adjDict['gillCAdj'] = (6.2,-3.1,8.8)
    
-   adjDict['modiolusAdj'] = (3,-3.5,13.4)
+   adjDict['modiolusAAdj'] = (3,-3.1,13.5)
+   adjDict['modiolusBAdj'] = (3,-3.8,13.4)
    adjDict['submanAAdj'] = (1.5,-4.7,14.2)
    adjDict['submanBAdj'] = (2.4,-4.5,13.6)
    adjDict['submanMAdj'] = (0,-4.8,14.4)
@@ -1302,7 +1301,7 @@ class warRig:
   self.headJo = 'jo_head'
   self.topJo = 'jo_top'
   self.faceJo = 'jo_face'
-  self.browJo = ['jo_browM','jo_browL','jo_browMidL']
+  self.browJo = ['jo_glabella','jo_browL','jo_browMidL','jo_browEndL']
   
   self.eyeJo = 'jo_eyeL'
   self.specJo = ['jlF21_specAL','jlF22_specBL']
@@ -1472,35 +1471,98 @@ class warRig:
   # case len[x]=4, len[x[3]]=2 : rotate constraint then aim constraint -> aim=index2Adj, aimAxis = [1,0,0]
   # case len[x]=4, len[x[3]]=3 : specific hierachy aim constraint -> hrc=jcC00_chest, aim=armAdj, aimAxis = [1,0,0]
   # case len[x]=4, len[x[3]]=4 : specific hierachy aim constraint and ignore axis -> hrc=jcC00_chest, aim=armAdj, ignoreAxis = .tz, aimAxis = [1,0,0]
+
+  # Torso Joint
   allList = [ ('rootAdj',self.rootJo,'',[]) ]
-  allList += [ ('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')) ]
-  allList += [ ('chestFrontAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')) ]
-  allList += [ ('chestSideAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','spineAdj','spine1SideAdj','spine2SideAdj')) ]
-  allList += [ ('rearPelvisAdj',self.bodyJo,self.rootJo,self.rearPelvisJo,('gLine_bodyRebuild','spineAdj','body1Adj','body2Adj')) ]
-  allList += [ ('rearTailAdj',self.rearTailJo[0],self.rearPelvisJo) ]
-  allList += [ ('rearTailTipAdj',self.rearTailJo,self.rearPelvisJo,self.rearTailTip,('gLine_rearTailRebuild', 'rearTailAdj', 'rearTail1Adj', 'rearTail2Adj',[0,0,-1])) ]
-  #self.uplidJo
+  allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')))
+  allList.append(('chestFrontAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')))
+  allList.append(('chestSideAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','spineAdj','spine1SideAdj','spine2SideAdj')))
   neckDir = [0,1,0]
   if cmds.getAttr('neckAdj.tz')>cmds.getAttr('neckAdj.ty') : neckDir = [0,0,1]
-  allList += [ ('headAdj',self.neckJo,self.chestJo,self.headJo,('gLine_neckRebuild','neckAdj','neck1Adj','neck2Adj',neckDir)) , ('topAdj',self.topJo,self.headJo) ]
-  allList += [ ('faceAdj',self.faceJo,self.headJo) , ('browMAdj',self.browJo[0],self.faceJo) , ('browAAdj',self.browJo[1],self.faceJo) , ('browBAdj',self.browJo[2],self.faceJo) ]
-  allList += [ ('eyeAdj',self.eyeJo,self.faceJo,['sightAdj',[0,0,1]]) , ('thirdEyeAdj',self.thirdEyeJo,self.faceJo,['thirdSightAdj',[0,0,1]]) ]
-  allList += [ ('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyeAdj') ] 
-  allList += [ ('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj') ]
-  allList += [ ('thirdUplidMainAdj',{self.thirdLidJo[0]:self.faceJo,self.thirdLidJo[1]:self.thirdLidJo[0]},self.rootJo) ]
-  allList += [ ('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo) ]
-  #allList += [ ('cheekAdj',self.cheekJo[0],self.faceJo) , ('nasalisAdj',self.cheekJo[1],self.faceJo) , ('gillAdj',self.cheekJo[2],self.faceJo) ]
-  allList += [ ('jawAdj',self.jawJo[0],self.faceJo) , ('jawTipAdj',self.jawJo[1],self.jawJo[0]) ]
-  allList += [ ('upLipMAdj',self.lipJo[0],self.faceJo,('loLipMAdj',[0,-1,0])) , ('upLipL1Adj',self.lipJo[1],self.faceJo,[self.lipJo[0]]) , ('cornerAdj',self.lipJo[2],self.faceJo,[self.lipJo[0]]) , ('loLipL1Adj',self.lipJo[3],self.faceJo,[self.lipJo[0]]) , ('loLipMAdj',self.lipJo[4],self.faceJo,[self.lipJo[0]]) ]
-  allList += [ ('earRootAdj',self.earJo[0],self.headJo,[]) , ('earAdj',self.earJo[1],self.earJo[0]) , ('earInAdj',self.earJo[2],self.earJo[1]) , ('earInTipAdj',self.earJo[3],self.earJo[2]) , ('earOutAdj',self.earJo[4],self.earJo[1]) , ('earOutTipAdj',self.earJo[5],self.earJo[4]) ]
-  allList += [ ('tongueTipAdj',self.tongueJo,self.jawJo[0],self.tongueTipJo,('gLine_tongueRebuild', 'tongueAdj', 'tongue1Adj', 'tongue2Adj',[0,0,1])) ]
-  
-  allList += [ ('rootAdj',self.pelvisJo,self.rootJo) ]
-  allList += [ ('tailAdj',self.tailJo[0],self.rootJo) ]
-  allList += [ ('tailTipAdj',self.tailJo,self.pelvisJo,self.tailTip,('gLine_tailRebuild', 'tailAdj', 'tail1Adj', 'tail2Adj',[0,0,-1])) ]
-  allList += [ ('downBelowAdj',self.downBelong[0],self.pelvisJo,['penisAdj',[0,-1,0]]) , ('penisAdj',self.downBelong[1],self.downBelong[0]) ]
-  allList += [ ('scrotumAdj',self.downBelong[2],self.pelvisJo,['nutAdj',[0,-1,0]]) , ('nutAdj',self.downBelong[3],self.downBelong[2]) ]
-  
+  allList.append(('headAdj',self.neckJo,self.chestJo,self.headJo,('gLine_neckRebuild','neckAdj','neck1Adj','neck2Adj',neckDir)))
+  allList.append(('topAdj',self.topJo,self.headJo))  
+  allList.append(('rootAdj',self.pelvisJo,self.rootJo))
+  allList.append(('tailAdj',self.tailJo[0],self.rootJo))
+  allList.append(('tailTipAdj',self.tailJo,self.pelvisJo,self.tailTip,('gLine_tailRebuild', 'tailAdj', 'tail1Adj', 'tail2Adj',[0,0,-1])))
+  allList.append(('downBelowAdj',self.downBelong[0],self.pelvisJo,['penisAdj',[0,-1,0]]))
+  allList.append(('penisAdj',self.downBelong[1],self.downBelong[0]))
+  allList.append(('scrotumAdj',self.downBelong[2],self.pelvisJo,['nutAdj',[0,-1,0]]))
+  allList.append(('nutAdj',self.downBelong[3],self.downBelong[2]))
+
+  # Face Joint
+  allList.append(('faceAdj',self.faceJo,self.headJo))
+  allList.append(('eyeAdj',self.eyeJo,self.faceJo,['sightAdj',[0,0,1]]))
+  allList.append(('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyeAdj'))
+  allList.append(('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj'))
+  allList.append(('canthusInAdj','jo_canthusInL',self.faceJo))
+  allList.append(('uplidIn1Adj','jo_uplidIn1L',self.faceJo))
+  allList.append(('uplidOut1Adj','jo_uplidOut1L',self.faceJo))
+  allList.append(('lowlidIn1Adj','jo_lowlidIn1L',self.faceJo))
+  allList.append(('lowlidOut1Adj','jo_lowlidOut1L',self.faceJo))
+  allList.append(('canthusOutAdj','jo_canthusOutL',self.faceJo))
+  allList.append(('jawAdj',self.jawJo[0],self.faceJo))
+  allList.append(('jawTipAdj',self.jawJo[1],self.jawJo[0]))
+  allList.append(('upLipMAdj',self.lipJo[0],self.faceJo,('loLipMAdj',[0,-1,0])))
+  allList.append(('upLipL1Adj',self.lipJo[1],self.faceJo,[self.lipJo[0]]))
+  allList.append(('cornerAdj',self.lipJo[2],self.faceJo,[self.lipJo[0]]))
+  allList.append(('loLipL1Adj',self.lipJo[3],self.faceJo,[self.lipJo[0]]))
+  allList.append(('loLipMAdj',self.lipJo[4],self.faceJo,[self.lipJo[0]]))
+  allList.append(('canthusInBAdj','jo_canthusInBL',self.faceJo))
+  allList.append(('hoodAAdj','jo_hoodAL',self.faceJo))
+  allList.append(('hoodBAdj','jo_hoodBL',self.faceJo))
+  allList.append(('hoodCAdj','jo_hoodCL',self.faceJo))
+  allList.append(('hoodDAdj','jo_hoodDL',self.faceJo))
+  allList.append(('lyingAAdj','jo_lyingAL',self.faceJo))
+  allList.append(('lyingBAdj','jo_lyingBL',self.faceJo))
+  allList.append(('lyingCAdj','jo_lyingCL',self.faceJo))
+  allList.append(('lyingDAdj','jo_lyingDL',self.faceJo))
+  allList.append(('glabellaAdj',self.browJo[0],self.faceJo))
+  allList.append(('browAAdj',self.browJo[1],self.faceJo))
+  allList.append(('browBAdj',self.browJo[2],self.faceJo))
+  allList.append(('browCAdj',self.browJo[3],self.faceJo))
+  allList.append(('templeAdj','jo_templeL',self.faceJo))
+  allList.append(('cheekboneAAdj','jo_cheekboneAL',self.faceJo))
+  allList.append(('cheekboneBAdj','jo_cheekboneBL',self.faceJo))
+  allList.append(('cheekboneCAdj','jo_cheekboneCL',self.faceJo))
+  allList.append(('noseRootAdj','jo_noseRoot',self.faceJo))
+  allList.append(('noseBridgeAdj','jo_noseBridgeL',self.faceJo))
+  allList.append(('noseAlaAAdj','jo_noseAlaAL',self.faceJo))
+  allList.append(('noseAlaBAdj','jo_noseAlaBL',self.faceJo))
+  allList.append(('noseUnderAdj','jo_noseUnder',self.faceJo))
+  allList.append(('noseTipAdj','jo_noseTip',self.faceJo))
+  allList.append(('corniceMAdj','jo_corniceM',self.faceJo))
+  allList.append(('corniceAAdj','jo_corniceAL',self.faceJo))
+  allList.append(('corniceBAdj','jo_corniceBL',self.faceJo))
+  allList.append(('modiolusAdj','jo_modiolusL',self.faceJo))
+  allList.append(('submanMAdj','jo_submanM',self.faceJo))
+  allList.append(('submanAAdj','jo_submanAL',self.faceJo))
+  allList.append(('submanBAdj','jo_submanBL',self.faceJo))
+  allList.append(('chinAAdj','jo_chinAL',self.faceJo))
+  allList.append(('chinBAdj','jo_chinBL',self.faceJo))
+  allList.append(('nasolabialFoldAAdj','jo_nasolabialFoldAL',self.faceJo))
+  allList.append(('nasolabialFoldBAdj','jo_nasolabialFoldBL',self.faceJo))
+  allList.append(('nasolabialFoldCAdj','jo_nasolabialFoldCL',self.faceJo))
+  allList.append(('nasolabialFoldDAdj','jo_nasolabialFoldDL',self.faceJo))
+  allList.append(('nasolabialFoldEAdj','jo_nasolabialFoldEL',self.faceJo))
+  allList.append(('cheekAAdj','jo_cheekAL',self.faceJo))
+  allList.append(('cheekBAdj','jo_cheekBL',self.faceJo))
+  allList.append(('cheekCAdj','jo_cheekCL',self.faceJo))
+  allList.append(('gillAAdj','jo_gillAL',self.faceJo))
+  allList.append(('gillBAdj','jo_gillBL',self.faceJo))
+  allList.append(('gillCAdj','jo_gillC',self.faceJo))
+  allList.append(('tongueTipAdj',self.tongueJo,self.jawJo[0],self.tongueTipJo,('gLine_tongueRebuild', 'tongueAdj', 'tongue1Adj', 'tongue2Adj',[0,0,1])))
+  allList.append(('earRootAdj',self.earJo[0],self.headJo,[]))
+  allList.append(('earAdj',self.earJo[1],self.earJo[0]))
+  allList.append(('earInAdj',self.earJo[2],self.earJo[1]))
+  allList.append(('earInTipAdj',self.earJo[3],self.earJo[2]))
+  allList.append(('earOutAdj',self.earJo[4],self.earJo[1]))
+  allList.append(('earOutTipAdj',self.earJo[5],self.earJo[4]))
+  allList.append(('thirdEyeAdj',self.thirdEyeJo,self.faceJo,['thirdSightAdj',[0,0,1]]))
+  allList.append(('thirdUplidMainAdj',{self.thirdLidJo[0]:self.faceJo,self.thirdLidJo[1]:self.thirdLidJo[0]},self.rootJo))
+  allList.append(('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo))
+ 
+  #allList.append()
+  # leg joint
   allList += [ ('hipAdj',self.hipJo[0],self.pelvisJo,['kneeAdj_consA','kneeAdj',[0,-1,0]]) , ('kneeAdj',self.kneeJo[0],self.hipJo[0],[self.kneeJo[0],'ankleAdj',[0,-1,0]]) , ('ankleAdj',self.ankleJo[0],self.kneeJo[0],[]) ]
   allList += [ ('ballAdj',self.ballJo[0],self.ankleJo[0]) , ('toeAdj',self.toeJo[0],self.ballJo[0]) ]
   allList += [ ('backHoofAdj',self.bHoofJo,self.toeJo[0]) ]
@@ -1511,6 +1573,10 @@ class warRig:
   allList += [ ('fourthToe0Adj',self.fourthToeJo[0],self.ankleJo[0]) , ('fourthToe1Adj',self.fourthToeJo[1],[self.fourthToeJo[0],self.ankleJo[0]],['fourthToe2Adj',[0,0,1]]) , ('fourthToe2Adj',self.fourthToeJo[2],self.fourthToeJo[1],['fourthToe3Adj',[0,0,1]]) , ('fourthToe3Adj',self.fourthToeJo[3],self.fourthToeJo[2],['fourthToe4Adj',[0,0,1]]) , ('fourthToe4Adj',self.fourthToeJo[4],self.fourthToeJo[3]) ]
   allList += [ ('littleToe0Adj',self.littleToeJo[0],self.ankleJo[0]) , ('littleToe1Adj',self.littleToeJo[1],[self.littleToeJo[0],self.ankleJo[0]],['littleToe2Adj',[0,0,1]]) , ('littleToe2Adj',self.littleToeJo[2],self.littleToeJo[1],['littleToe3Adj',[0,0,1]]) , ('littleToe3Adj',self.littleToeJo[3],self.littleToeJo[2],['littleToe4Adj',[0,0,1]]) , ('littleToe4Adj',self.littleToeJo[4],self.littleToeJo[3]) ]
 
+  # rear body joint
+  allList.append(('rearPelvisAdj',self.bodyJo,self.rootJo,self.rearPelvisJo,('gLine_bodyRebuild','spineAdj','body1Adj','body2Adj')))
+  allList.append(('rearTailAdj',self.rearTailJo[0],self.rearPelvisJo))
+  allList.append(('rearTailTipAdj',self.rearTailJo,self.rearPelvisJo,self.rearTailTip,('gLine_rearTailRebuild', 'rearTailAdj', 'rearTail1Adj', 'rearTail2Adj',[0,0,-1])))
   allList += [ ('rearHipAdj',self.rearHipJo,self.rearPelvisJo,['rearKneeAdj_consA','rearKneeAdj',[0,-1,0]]) , ('rearKneeAdj',self.rearKneeJo,self.rearHipJo,[self.rearKneeJo,'rearAnkleAdj',[0,-1,0]]) , ('rearAnkleAdj',self.rearAnkleJo,self.rearKneeJo,[]) ]
   allList += [ ('rearBallAdj',self.rearBallJo,self.rearAnkleJo) , ('rearToeAdj',self.rearToeJo,self.rearBallJo) , ('rearHoofAdj',self.rearHoofJo,self.rearToeJo) ]
   
@@ -1518,6 +1584,8 @@ class warRig:
   allList += [ ('arm2Wing20Adj',self.arm2Wing2Jo[0],self.arm2Jo[0],['arm2Wing21Adj',[0,-1,0]]) , ('arm2Wing21Adj',self.arm2Wing2Jo[1],self.arm2Wing2Jo[0],['arm2Wing22Adj',[0,-1,0]]) , ('arm2Wing22Adj',self.arm2Wing2Jo[2],self.arm2Wing2Jo[1],['arm2Wing23Adj',[0,-1,0]]) , ('arm2Wing23Adj',self.arm2Wing2Jo[3],self.arm2Wing2Jo[2]) ]
   allList += [ ('arm2Wing30Adj',self.arm2Wing3Jo[0],self.arm2Jo[0],['arm2Wing31Adj',[0,-1,0]]) , ('arm2Wing31Adj',self.arm2Wing3Jo[1],self.arm2Wing3Jo[0],['arm2Wing32Adj',[0,-1,0]]) , ('arm2Wing32Adj',self.arm2Wing3Jo[2],self.arm2Wing3Jo[1],['arm2Wing33Adj',[0,-1,0]]) , ('arm2Wing33Adj',self.arm2Wing3Jo[3],self.arm2Wing3Jo[2]) ]
   allList += [ ('arm2Wing40Adj',self.arm2Wing4Jo[0],self.arm2Jo[0],['arm2Wing41Adj',[0,-1,0]]) , ('arm2Wing41Adj',self.arm2Wing4Jo[1],self.arm2Wing4Jo[0],['arm2Wing42Adj',[0,-1,0]]) , ('arm2Wing42Adj',self.arm2Wing4Jo[2],self.arm2Wing4Jo[1],['arm2Wing43Adj',[0,-1,0]]) , ('arm2Wing43Adj',self.arm2Wing4Jo[3],self.arm2Wing4Jo[2]) ]
+  
+
   
   # arm ariel or ground decision
   armDir = [1,0,0] ; arm2Dir = [1,0,0] ; finDir = [1,0,0]
@@ -1860,7 +1928,7 @@ class warRig:
    print x
    
 # lip joint move with jaw
-  self.createlipJoMovement()
+  #self.createlipJoMovement()
 
   '''
 # lip joint interacte
