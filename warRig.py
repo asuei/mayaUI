@@ -1494,8 +1494,8 @@ class warRig:
   allList.append(('eyeAdj',self.eyeJo,self.faceJo,['sightAdj',[0,0,1]]))
   allList.append(('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyeAdj'))
   allList.append(('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj'))
-  allList.append(('canthusInAdj','jo_canthusInL',self.faceJo))
-  allList.append(('uplidIn1Adj','jo_uplidIn1L',self.faceJo))
+  allList.append(('canthusInAdj','jo_canthusInL',self.faceJo,'snapNormal',['lowlidIn1Adj','uplidIn1Adj','canthusInAdj']))
+  allList.append(('uplidIn1Adj','jo_uplidIn1L',self.faceJo,'snapNormal',['uplidMainAdj','uplidIn1Adj','canthusInAdj']))
   allList.append(('uplidOut1Adj','jo_uplidOut1L',self.faceJo))
   allList.append(('lowlidIn1Adj','jo_lowlidIn1L',self.faceJo))
   allList.append(('lowlidOut1Adj','jo_lowlidOut1L',self.faceJo))
@@ -1521,9 +1521,9 @@ class warRig:
   allList.append(('browBAdj',self.browJo[2],self.faceJo))
   allList.append(('browCAdj',self.browJo[3],self.faceJo))
   allList.append(('templeAdj','jo_templeL',self.faceJo))
-  allList.append(('cheekboneAAdj','jo_cheekboneAL',self.faceJo))
-  allList.append(('cheekboneBAdj','jo_cheekboneBL',self.faceJo))
-  allList.append(('cheekboneCAdj','jo_cheekboneCL',self.faceJo))
+  allList.append(('cheekboneAAdj','jo_cheekboneAL',self.faceJo,'snapNormal',['lyingBAdj','nasolabialFoldAAdj','nasolabialFoldBAdj','cheekboneBAdj']))
+  allList.append(('cheekboneBAdj','jo_cheekboneBL',self.faceJo,'snapNormal',['lyingCAdj','cheekboneAAdj','cheekAAdj','cheekboneCAdj']))
+  allList.append(('cheekboneCAdj','jo_cheekboneCL',self.faceJo,'snapNormal',['templeAdj','cheekboneBAdj','gillAAdj']))
   allList.append(('noseRootAdj','jo_noseRoot',self.faceJo))
   allList.append(('noseBridgeAdj','jo_noseBridgeL',self.faceJo))
   allList.append(('noseAlaAAdj','jo_noseAlaAL',self.faceJo))
@@ -1544,9 +1544,9 @@ class warRig:
   allList.append(('nasolabialFoldCAdj','jo_nasolabialFoldCL',self.faceJo))
   allList.append(('nasolabialFoldDAdj','jo_nasolabialFoldDL',self.faceJo))
   allList.append(('nasolabialFoldEAdj','jo_nasolabialFoldEL',self.faceJo))
-  allList.append(('cheekAAdj','jo_cheekAL',self.faceJo))
-  allList.append(('cheekBAdj','jo_cheekBL',self.faceJo))
-  allList.append(('cheekCAdj','jo_cheekCL',self.faceJo))
+  allList.append(('cheekAAdj','jo_cheekAL',self.faceJo,'snapNormal',['cheekboneBAdj','nasolabialFoldBAdj','cheekBAdj','gillAAdj']))
+  allList.append(('cheekBAdj','jo_cheekBL',self.faceJo,'snapNormal',['cheekAAdj','nasolabialFoldCAdj','cheekCAdj','gillBAdj']))
+  allList.append(('cheekCAdj','jo_cheekCL',self.faceJo,'snapNormal',['cheekBAdj','nasolabialFoldDAdj','contourLowCAdj','gillCAdj']))
   allList.append(('gillAAdj','jo_gillAL',self.faceJo))
   allList.append(('gillBAdj','jo_gillBL',self.faceJo))
   allList.append(('gillCAdj','jo_gillC',self.faceJo))
@@ -1732,6 +1732,15 @@ class warRig:
      cmds.aimConstraint(tn2,tn1,aimVector=x[3][3],upVector=[0,1,0],worldUpType='none')
      cmds.xform(x[1],rotation=cmds.xform(tn1,q=1,ws=1,ro=1),ws=1,a=1)
      cmds.delete(tn1,tn2)
+
+   if len(x) >= 4 and x[3] == 'snapNormal' :
+    print 'Asuei is working from here ! hey hey hey ~'
+    ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in x[4] ]
+    pcf = cmds.polyCreateFacet( p=ppList )
+    cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
+    cmds.makeIdentity(x[1],apply=True,translate=0,rotate=1,scale=0)
+    cmds.delete(pcf[0])
+
    if x[1] in invis : cmds.setAttr(x[1]+'.drawStyle',2)
    if x[1] in boxStyle : cmds.setAttr(x[1]+'.drawStyle',1)
 
