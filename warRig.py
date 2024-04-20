@@ -1463,6 +1463,8 @@ class warRig:
     if x[-3:] == 'Adj' :
      ga = cmds.xform(x,q=1,worldSpace=1,translation=1)
      if ga[1] > topPos : topPos = ga[1]
+  
+  if cmds.objExists('here') == 0 : self.createHierachy()
 
   # 4 case in create and locating method
   # case len[x]=3 : simple point snap, 3 in list -> 1. most exist adj 2. create joint name 3. should parent joint
@@ -3892,10 +3894,9 @@ class warRig:
    ttt = cmds.createNode('transform',parent=tt)
    cmds.delete(cmds.pointConstraint(self.jawJo[1],ttt))
    cmds.setAttr(ttt+'.translateZ',cmds.getAttr(ttt+'.translateZ')*1.2)
-   self.ctrlCircle('ctrl_jaw',ch*0.1,2,2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
-   self.ctrlJaw('ctrl_newJaw','jo_jaw','jo_jawTip',2,[0,0,0,1,1,1,1,0,0,0],[0.55,0.3,0.55])
+   self.ctrlJaw('ctrl_jaw','jo_jaw','jo_jawTip',2,[0,0,0,1,1,1,1,0,0,0],[0.55,0.3,0.55])
    cmds.matchTransform('ctrlTrans_jaw',ttt)
-   cmds.matchTransform('ctrlTrans_newJaw',self.jawJo[0])
+   cmds.matchTransform('ctrlTrans_jaw',self.jawJo[0])
    cmds.setAttr('ctrlTrans_jaw.rotateX',cmds.getAttr('ctrlTrans_jaw.rotateX')*0.5)
    cmds.delete(tt,ttt)
    cmds.createNode('transform',name='pin_jawTrans',parent='cons_facialRig',skipSelect=1)
@@ -3913,16 +3914,11 @@ class warRig:
    cmds.setAttr('multiply_jawRot.input2Y',2.5)
    cmds.setAttr('multiply_jawRot.input2Z',0.1)
    #cmds.connectAttr('multiply_jawRot.outputY','pin_jaw.rotateY')
-   cmds.connectAttr('ctrl_newJaw.rotateY','pin_jaw.rotateY')
-   cmds.connectAttr('multiply_jawRot.outputZ','pin_jaw.translateX')
+   cmds.connectAttr('ctrl_jaw.rotateY','pin_jaw.rotateY')
+   #cmds.connectAttr('multiply_jawRot.outputZ','pin_jaw.translateX')
    
-   cmds.createNode('multDoubleLinear',name='mdl_jawTy',skipSelect=1)
-   cmds.connectAttr('ctrl_jaw.ty','mdl_jawTy.input1')
-   cmds.setAttr('mdl_jawTy.input2',-1)
    cmds.createNode('setRange',name='rag_jaw',skipSelect=1)
-   cmds.connectAttr('mdl_jawTy.output','rag_jaw.valueX')
-   cmds.connectAttr('mdl_jawTy.output','rag_jaw.valueY')
-   cmds.connectAttr('mdl_jawTy.output','rag_jaw.valueZ')
+   cmds.connectAttr('ctrl_jaw.rotate','rag_jaw.value')
    cmds.setAttr('rag_jaw.maxX',30)
    cmds.setAttr('rag_jaw.maxY',10)
    cmds.setAttr('rag_jaw.maxZ',20)
@@ -3931,10 +3927,9 @@ class warRig:
    cmds.setAttr('rag_jaw.oldMaxY',2)
    cmds.setAttr('rag_jaw.oldMaxZ',6)
    #cmds.connectAttr('rag_jaw.outValueY','pin_jaw.rotateX')
-   cmds.connectAttr('ctrl_newJaw.rotateX','pin_jaw.rotateX')
+   cmds.connectAttr('ctrl_jaw.rotateX','pin_jaw.rotateX')
    cmds.connectAttr('rag_jaw.outValueZ','pin_jawTrans.rotateX')
    cmds.parent('ctrlTrans_jaw','ctrl_facial')
-   cmds.parent('ctrlTrans_newJaw','ctrl_facial')
    
    if self.exCheck(['grp_facial.jawOpen','grp_facial.jawStretch','grp_facial.jawDrop']):# bs attributes connect 
     cmds.createNode('setRange',name='srg_jawBs',skipSelect=1)
@@ -4005,26 +4000,26 @@ class warRig:
      cmds.connectAttr('xAdd_'+ctrl[i]+'.matrixSum','xCons_'+ctrl[i]+'.inputMatrix')
      cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateY','ctrlCons_'+ctrl[i]+'Jaw.translateY')
      cmds.connectAttr('xCons_'+ctrl[i]+'.outputRotate','ctrlCons_'+ctrl[i]+'Jaw.rotate')
-     if xv[i] != 0 :
-      cmds.createNode('multDoubleLinear',name='mdl_'+ctrl[i]+'X')
-      cmds.connectAttr('ctrl_jaw.translateY','mdl_'+ctrl[i]+'X.input1')
-      cmds.setAttr('mdl_'+ctrl[i]+'X.input2',xv[i])
-      cmds.createNode('addDoubleLinear',name='adl_'+ctrl[i]+'X')
-      cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateX','adl_'+ctrl[i]+'X.input1')
-      cmds.connectAttr('mdl_'+ctrl[i]+'X.output','adl_'+ctrl[i]+'X.input2')
-      cmds.connectAttr('adl_'+ctrl[i]+'X.output','ctrlCons_'+ctrl[i]+'Jaw.translateX')
-     else :
-      cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateX','ctrlCons_'+ctrl[i]+'Jaw.translateX')
-     if xv[i] != 0 :
-      cmds.createNode('multDoubleLinear',name='mdl_'+ctrl[i]+'Z')
-      cmds.connectAttr('ctrl_jaw.translateY','mdl_'+ctrl[i]+'Z.input1')
-      cmds.setAttr('mdl_'+ctrl[i]+'Z.input2',zv[i])
-      cmds.createNode('addDoubleLinear',name='adl_'+ctrl[i]+'Z')
-      cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateZ','adl_'+ctrl[i]+'Z.input1')
-      cmds.connectAttr('mdl_'+ctrl[i]+'Z.output','adl_'+ctrl[i]+'Z.input2')
-      cmds.connectAttr('adl_'+ctrl[i]+'Z.output','ctrlCons_'+ctrl[i]+'Jaw.translateZ')
-     else :
-      cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateZ','ctrlCons_'+ctrl[i]+'Jaw.translateZ')
+     #if xv[i] != 0 :
+     # cmds.createNode('multDoubleLinear',name='mdl_'+ctrl[i]+'X')
+     # cmds.connectAttr('ctrl_jaw.translateY','mdl_'+ctrl[i]+'X.input1')
+     # cmds.setAttr('mdl_'+ctrl[i]+'X.input2',xv[i])
+     # cmds.createNode('addDoubleLinear',name='adl_'+ctrl[i]+'X')
+     # cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateX','adl_'+ctrl[i]+'X.input1')
+     # cmds.connectAttr('mdl_'+ctrl[i]+'X.output','adl_'+ctrl[i]+'X.input2')
+     # cmds.connectAttr('adl_'+ctrl[i]+'X.output','ctrlCons_'+ctrl[i]+'Jaw.translateX')
+     #else :
+     # cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateX','ctrlCons_'+ctrl[i]+'Jaw.translateX')
+     #if xv[i] != 0 :
+     # cmds.createNode('multDoubleLinear',name='mdl_'+ctrl[i]+'Z')
+     # cmds.connectAttr('ctrl_jaw.translateY','mdl_'+ctrl[i]+'Z.input1')
+     # cmds.setAttr('mdl_'+ctrl[i]+'Z.input2',zv[i])
+     # cmds.createNode('addDoubleLinear',name='adl_'+ctrl[i]+'Z')
+     # cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateZ','adl_'+ctrl[i]+'Z.input1')
+     # cmds.connectAttr('mdl_'+ctrl[i]+'Z.output','adl_'+ctrl[i]+'Z.input2')
+     # cmds.connectAttr('adl_'+ctrl[i]+'Z.output','ctrlCons_'+ctrl[i]+'Jaw.translateZ')
+     #else :
+     # cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateZ','ctrlCons_'+ctrl[i]+'Jaw.translateZ')
 
 # Cheek Controller self.cheekJo = ['jlF35_cheekL','jlF40_nasalisL','jlF45_gillL']
   if self.exCheck(self.cheekJo):
@@ -6552,14 +6547,7 @@ class warRig:
   cmds.curve(degree=1,p=pList,k=[0,1,2,3,4,5,6,7,8,9,10,11],name=name)
   self.ctrlOptimize(name,a)
   
- def ctrlJaw(self,name,rJo,tJo,*a): # direction = 0 or 1 or 2
-  ce = 'curve -d 3 -periodic 1 '
-  i = 0
-  while (i <= 7) :
-   ce += " -p " + str(math.cos(math.radians(45*i))) + " " + str(math.sin(math.radians(45*i))) + " 0" 
-   i = i + 1
-  ce = ce + " -n " + name
-  #ctrl = mel.eval(ce)
+ def ctrlJaw(self,name,rJo,tJo,*a):
   ctrl = cmds.curve(n=name,d=3,p=[(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0)])
   cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1,preserveShape=0)
   cmds.matchTransform(name,rJo)
