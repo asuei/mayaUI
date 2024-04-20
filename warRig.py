@@ -3893,14 +3893,16 @@ class warRig:
    cmds.delete(cmds.pointConstraint(self.jawJo[1],ttt))
    cmds.setAttr(ttt+'.translateZ',cmds.getAttr(ttt+'.translateZ')*1.2)
    self.ctrlCircle('ctrl_jaw',ch*0.1,2,2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
-   self.ctrlJaw('ctrl_newJaw','jo_jaw','jo_jawTip',2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+   self.ctrlJaw('ctrl_newJaw','jo_jaw','jo_jawTip',2,[0,0,0,1,1,1,1,0,0,0],[0.55,0.3,0.55])
    cmds.matchTransform('ctrlTrans_jaw',ttt)
-   cmds.matchTransform('ctrlTrans_newJaw',ttt)
+   cmds.matchTransform('ctrlTrans_newJaw',self.jawJo[0])
    cmds.setAttr('ctrlTrans_jaw.rotateX',cmds.getAttr('ctrlTrans_jaw.rotateX')*0.5)
    cmds.delete(tt,ttt)
    cmds.createNode('transform',name='pin_jawTrans',parent='cons_facialRig',skipSelect=1)
+   cmds.createNode('transform',name='pin_jawCons',parent='pin_jawTrans',skipSelect=1)
    cmds.createNode('transform',name='pin_jaw',parent='pin_jawTrans',skipSelect=1)
    cmds.matchTransform('pin_jawTrans',self.headJo)
+   cmds.matchTransform('pin_jawCons',self.jawJo[0])
    cmds.matchTransform('pin_jaw',self.jawJo[0])
    cmds.parentConstraint('pin_jaw',self.jawJo[0])
    cmds.createNode('multiplyDivide',name='multiply_jawRot')
@@ -3910,7 +3912,8 @@ class warRig:
    cmds.setAttr('multiply_jawRot.input2X',-5)
    cmds.setAttr('multiply_jawRot.input2Y',2.5)
    cmds.setAttr('multiply_jawRot.input2Z',0.1)
-   cmds.connectAttr('multiply_jawRot.outputY','pin_jaw.rotateY')
+   #cmds.connectAttr('multiply_jawRot.outputY','pin_jaw.rotateY')
+   cmds.connectAttr('ctrl_newJaw.rotateY','pin_jaw.rotateY')
    cmds.connectAttr('multiply_jawRot.outputZ','pin_jaw.translateX')
    
    cmds.createNode('multDoubleLinear',name='mdl_jawTy',skipSelect=1)
@@ -3927,7 +3930,8 @@ class warRig:
    cmds.setAttr('rag_jaw.oldMaxX',6)
    cmds.setAttr('rag_jaw.oldMaxY',2)
    cmds.setAttr('rag_jaw.oldMaxZ',6)
-   cmds.connectAttr('rag_jaw.outValueY','pin_jaw.rotateX')
+   #cmds.connectAttr('rag_jaw.outValueY','pin_jaw.rotateX')
+   cmds.connectAttr('ctrl_newJaw.rotateX','pin_jaw.rotateX')
    cmds.connectAttr('rag_jaw.outValueZ','pin_jawTrans.rotateX')
    cmds.parent('ctrlTrans_jaw','ctrl_facial')
    cmds.parent('ctrlTrans_newJaw','ctrl_facial')
@@ -3957,14 +3961,13 @@ class warRig:
     lj.append(self.L2R(self.lipJo[2]))
     lj.append(self.L2R(self.lipJo[1]))
     print lj
-    ctrl = ['upLip','upLipLA''upLipLB','cornerL','loLipLA','loLipLB','loLip','upLipAR','upLipBR','cornerR','loLipAR','loLipBR','dddddd']
+    ctrl = ['upLip','upLipLA''upLipLB','cornerL','loLipLA','loLipLB','loLip','upLipAR','upLipBR','cornerR','loLipAR','loLipBR']
     ctrl = [ x.replace('jo_','') for x in lj ]
     wt = [0,0.1,0.3,0.5,.7,0.9,1,0.9,0.7,0.5,0.3,0.1]
     xv = [0,0.025,0.1,0.025,0,-.025,-.1,-.025,0,0,0,0] # x offset value
     zv = [0,-.05,-.15,-.05,0,-.05,-.15,-.05,0,0,0,0] # z offset value
     for i in range(len(lj)):
-     print lj[i]
-     self.ctrlLocator('ctrl_'+ctrl[i],ch*0.05,1,[1,1,1,1,1,1,0,0,0,0],[0.35,0.1,0.35])
+     self.ctrlLocator('ctrl_'+ctrl[i],ch*0.05,1,[1,1,1,1,1,1,0,0,0,0],[0.15,0,0.15])
      cmds.matchTransform('ctrlTrans_'+ctrl[i],lj[i],position=1,rotation=1)
      cmds.createNode('transform',name='pin_'+ctrl[i],parent='ctrl_'+ctrl[i])
      cmds.parent('ctrlTrans_'+ctrl[i],'ctrl_facial')
@@ -6550,14 +6553,15 @@ class warRig:
   self.ctrlOptimize(name,a)
   
  def ctrlJaw(self,name,rJo,tJo,*a): # direction = 0 or 1 or 2
-  ce = 'curve -d 3 '
+  ce = 'curve -d 3 -periodic 1 '
   i = 0
   while (i <= 7) :
    ce += " -p " + str(math.cos(math.radians(45*i))) + " " + str(math.sin(math.radians(45*i))) + " 0" 
    i = i + 1
   ce = ce + " -n " + name
-  ctrl = mel.eval(ce)
-  cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1)
+  #ctrl = mel.eval(ce)
+  ctrl = cmds.curve(n=name,d=3,p=[(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0),(0,0,0)])
+  cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1,preserveShape=0)
   cmds.matchTransform(name,rJo)
   rt = cmds.createNode('transform',skipSelect=1)
   rtr = cmds.createNode('transform',parent=rt,skipSelect=1)
@@ -6569,7 +6573,28 @@ class warRig:
   cmds.setAttr(rtr+'.rx',-12)
   cmds.setAttr(rtrt+'.tz',jl*1.141)
   cmds.xform(name+'.cv[0]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
-
+  cmds.setAttr(rtr+'.rx',-7.8)
+  cmds.setAttr(rtr+'.ry',7.4)
+  cmds.xform(name+'.cv[1]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.ry',-7.4)
+  cmds.xform(name+'.cv[7]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.rx',3.1)
+  cmds.setAttr(rtrt+'.tz',jl*1.027)
+  cmds.setAttr(rtr+'.ry',16.5)
+  cmds.xform(name+'.cv[2]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.ry',-16.5)
+  cmds.xform(name+'.cv[6]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.rx',18.1)
+  cmds.setAttr(rtrt+'.tz',jl*0.857)
+  cmds.setAttr(rtr+'.ry',16.6)
+  cmds.xform(name+'.cv[3]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.ry',-16.6)
+  cmds.xform(name+'.cv[5]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.setAttr(rtr+'.rx',22.5)
+  cmds.setAttr(rtr+'.ry',0)
+  cmds.setAttr(rtrt+'.tz',jl*0.8)
+  cmds.xform(name+'.cv[4]',worldSpace=1,translation=cmds.xform(rtrt,q=1,ws=1,t=1))
+  cmds.delete(rt)
   cmds.matchTransform(name,'here')
   self.ctrlOptimize(name,a)
   
