@@ -31,7 +31,6 @@ class warRig:
   cmds.optionMenu('limbMenu',label='',changeCommand=self.limbMenuCmd,enable=0)
   #cmds.optionMenu('limbMenu',label='',changeComma nd=self.limbMenuCmd)
   cmds.optionMenu('extraMenu1',label='',changeCommand=self.extraMenu1Cmd)
-  cmds.menuItem( label='Tail')
   cmds.menuItem( label='Ear')
   cmds.menuItem( label='Tongue')
   cmds.menuItem( label='torsoAround')
@@ -112,9 +111,11 @@ class warRig:
   cmds.setParent( '..' )
   form2 = cmds.formLayout()
   grid2 = cmds.gridLayout(numberOfColumns=2,cellWidth=160)
-  cmds.checkBox(label='tail')
-  cmds.checkBox(label='ear')
-  cmds.checkBox(label='tongue')
+  cmds.objExists('tailAdj')
+  cmds.checkBox('cb_wrTail',label='tail',value=cmds.objExists('tailAdj'),changeCommand=self.extra_tail)
+  cmds.checkBox('cb_wrEar',label='ear',value=cmds.objExists('earRootAdj'))
+  cmds.checkBox('cb_wrTongue',label='tongue',value=cmds.objExists('tongueAdj'))
+  cmds.checkBox('cb_wrTorsoAround',label='torsoAround')
   cmds.checkBox(label='extra arm')
   cmds.checkBox(label='extra leg')
   cmds.checkBox(label='downBelow')
@@ -265,16 +266,27 @@ class warRig:
      cmds.setAttr(x+'.'+y,cmds.getAttr(sl+'.'+x+y))
     else : self.adjusterPosition(x)
  
+ def extra_tail(self,*a):
+  if cmds.objExists('tailAdj') :
+   sys.stderr.write('Tail adjuster already exist.')
+  else :
+   self.createAdj('tail','rootAdj',[2,0,0,1,1,1])
+   self.torsoAdjuster(['tail','tailTip'],'tailAdj')
+   cmds.setAttr('tailTipAdj.jointNumber',6)
+   self.adjusterPosition('tailAdj','tailTipAdj')
+  if cmds.checkBox('cb_wrTail',q=1,value=1) == 0 :
+   cmds.delete('tailAdj')
+ 
+ def extra_ear(self,*a):
+  if cmds.objExists('earRootAdj') :
+   sys.stderr.write('Ear adjuster already exist.')
+ 
+ def extra_tongue(self,*a):
+  if cmds.objExists('tongueAdj') :
+   sys.stderr.write('Tongue adjuster already exist.')
+ 
  def extraMenu1Cmd(self,*a):
   op = cmds.optionMenu('extraMenu1',q=1,value=1) ; dv = []
-  if op == 'Tail' :
-   if cmds.objExists('tailAdj') :
-    sys.stderr.write('Tail adjuster already exist.')
-   else :
-    self.createAdj('tail','rootAdj',[2,0,0,1,1,1])
-    self.torsoAdjuster(['tail','tailTip'],'tailAdj')
-    cmds.setAttr('tailTipAdj.jointNumber',6)
-    self.adjusterPosition('tailAdj','tailTipAdj')
   if op == 'Ear' :
    if cmds.objExists('earAdj') :
     sys.stderr.write('Ear adjuster already exist.')
