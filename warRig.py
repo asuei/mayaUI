@@ -318,14 +318,16 @@ class warRig:
    self.createAdj('chestSideUp','grp_chestAroundAdj',[0,0,0,1,1,1])
    self.createAdj('chestRearLow','grp_chestAroundAdj',[0,0,0,1,1,1])
    self.createAdj('chestRearUp','grp_chestAroundAdj',[0,0,0,1,1,1])
-   #cmds.addAttr('chestFrontBAdj',longName='jointNumber',attributeType='long')
-   #cmds.addAttr('chestSideFBAdj',longName='jointNumber',attributeType='long')
-   #cmds.connectAttr('chestAdj.jointNumber','chestFrontBAdj.jointNumber')
-   #cmds.connectAttr('chestAdj.jointNumber','chestSideFBAdj.jointNumber')
+   cmds.addAttr('chestFrontLowAdj',longName='jointNumber',attributeType='long')
+   cmds.addAttr('chestSideLowAdj',longName='jointNumber',attributeType='long')
+   cmds.connectAttr('chestAdj.jointNumber','chestFrontLowAdj.jointNumber')
+   cmds.connectAttr('chestAdj.jointNumber','chestSideLowAdj.jointNumber')
    self.curveCtrled('gLine_chestFront',['abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj','chestFrontLowAdj'],2)
    self.curveCtrled('gLine_chestSide',['abdomeSideAdj','spine1SideAdj','spine2SideAdj','chestSideLowAdj'],2)
    self.adjusterPosition('abdomeFrontAdj','abdomeSideAdj','chestFrontLowAdj','chestFrontUpAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj')
    self.adjusterPosition('spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj')
+   crvCvList = ['chestSideUpAdj','chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj','chestSideLowAdj']
+   self.guildCrv('crv_chestFrontAdj',crvCvList,'grp_chestAroundAdj')
   if cmds.checkBox('cb_wrTorsoAround',q=1,value=1) == 0 :
    cmds.delete(adjList)
  
@@ -1497,9 +1499,12 @@ class warRig:
 
   # Torso Joint
   allList = [ ('rootAdj',self.rootJo,'',[]) ]
-  allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')))
-  allList.append(('chestFrontAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')))
-  allList.append(('chestSideAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','spineAdj','spine1SideAdj','spine2SideAdj')))
+  allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')))  
+  allList.append(('chestFrontLowAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj')))
+  #allList.append(('chestSideUpAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','abdomeSideAdj','spine1SideAdj','spine2SideAdj')))
+  #allList.append((['abdomeFrontAdj','chestFrontLowAdj'],self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')))
+  allList.append(('chestFrontUpAdj','jo_chestFrontL',self.chestJo,'avgTransSnapNormal',['chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj']))
+  
   neckDir = [0,1,0]
   if cmds.getAttr('neckAdj.tz')>cmds.getAttr('neckAdj.ty') : neckDir = [0,0,1]
   allList.append(('headAdj',self.neckJo,self.chestJo,self.headJo,('gLine_neckRebuild','neckAdj','neck1Adj','neck2Adj',neckDir)))
@@ -1656,9 +1661,10 @@ class warRig:
 # create joint loop
   exList = []
   for x in allList :
-   if cmds.objExists(x[0]) :
-   #if self.exCheck(x[0]) :
+   #if cmds.objExists(x[0]) :
+   if self.exCheck(x[0]) :
     exList.append(x)
+    print str(x[0])+" exist."
     if type(x[1]) == str :
      if cmds.objExists(x[1]) == 0 :
       if x[2] == '' : self.createJoint(x[1])
@@ -1684,6 +1690,7 @@ class warRig:
     if type(x[1]) == list :
      print x[0]
      pNum = cmds.getAttr(x[0]+'.jointNumber')
+     #pNum = cmds.getAttr('chestAdj.jointNumber')
      if type(x[2]) == str : pList = x[1][:] ; pList.insert(0,x[2]) # define created joint parent to upper hierachy joint
      if type(x[2]) == list :
       pList = x[2][:] # or parent to specific joint in list = x[2]
@@ -1728,7 +1735,9 @@ class warRig:
   boxStyle = [self.faceJo]
   
   for x in exList :
+   print str(x[0])+" exist. Process it"
    if type(x[1]) == str :
+    print 'x = str'
     cmds.xform(x[1],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
     cmds.setAttr(x[1]+'.rotate',0,0,0,type="double3")
     if x[1] == self.pelvisJo : cmds.setAttr(self.pelvisJo+'.ty',-0.01)
@@ -1760,7 +1769,13 @@ class warRig:
      cmds.delete(tn1,tn2)
 
    if len(x) >= 4 and x[3] == 'snapNormal' :
-    print 'Asuei is working from here ! hey hey hey ~'
+    ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in x[4] ]
+    pcf = cmds.polyCreateFacet( p=ppList )
+    cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
+    cmds.makeIdentity(x[1],apply=True,translate=0,rotate=1,scale=0)
+    cmds.delete(pcf[0])
+   if len(x) >= 4 and x[3] == 'avgTransSnapNormal' :
+    cmds.delete(cmds.pointConstraint(x[4],x[1],weight=0.5))
     ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in x[4] ]
     pcf = cmds.polyCreateFacet( p=ppList )
     cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
@@ -1769,16 +1784,21 @@ class warRig:
 
    if x[1] in invis : cmds.setAttr(x[1]+'.drawStyle',2)
    if x[1] in boxStyle : cmds.setAttr(x[1]+'.drawStyle',1)
-
+   
    if type(x[1]) == list :
+    print 'x = list'
     if len(x[1])>3 :
      spineList = []
+     print x[1]
      for y in x[1] :
+      print y
       if cmds.objExists(y) :
        spineList.append(y)
      if cmds.objExists(x[4][1]) : 
       cmds.xform(x[1][0],t=cmds.xform(x[4][1],q=1,ws=1,t=1),ws=1,a=1)
       cmds.xform(x[1][0],ro=cmds.xform(x[4][2],q=1,ws=1,ro=1),ws=1,a=1)
+     print 'spineList is '
+     print spineList
      if len(spineList) == 2 :
       pos1 = cmds.xform(x[4][2],q=1,ws=1,t=1)
       pos2 = cmds.xform(x[0],q=1,ws=1,t=1)
@@ -1797,7 +1817,7 @@ class warRig:
         tempList.append(cmds.aimConstraint(tmp,spineList[i],aimVector=x[4][4],upVector=[0,1,0],worldUpType='none')[0])
        else : cmds.xform(spineList[i],ro=[0,0,0],ws=1,a=1)
        cmds.xform(spineList[i],t=cmds.pointOnCurve(x[4][0],parameter=(1.0/(len(spineList))*i),position=1),ws=1,a=1)
-      cmds.delete(tempList)
+      #cmds.delete(tempList)
      cmds.xform(x[3],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
      cmds.xform(x[3],ro=cmds.xform(x[0],q=1,ws=1,ro=1),ws=1,a=1)
 
@@ -1838,6 +1858,7 @@ class warRig:
      pass
 
    if type(x[1]) == tuple :
+    print 'x = tuple'
     if cmds.objExists(x[3]) :
      cmds.xform(x[1][0],t=cmds.xform('eyeAdj',q=1,ws=1,t=1),ws=1,a=1)
      cmds.delete(cmds.aimConstraint(x[0],x[1][0],aimVector=[0,0,1],upVector=[0,-1,0],worldUpType='object',worldUpObject='lowlidMainAdj'))
@@ -3952,17 +3973,17 @@ class warRig:
    cmds.connectAttr('rag_jaw.outValueZ','pin_jawTrans.rotateX')
    cmds.parent('ctrlTrans_jaw','ctrl_facial')
    
-   if self.exCheck(['grp_facial.jawOpen','grp_facial.jawStretch','grp_facial.jawDrop']):# bs attributes connect 
-    cmds.createNode('setRange',name='srg_jawBs',skipSelect=1)
-    cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueX')
-    cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueY')
-    cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueZ')
-    cmds.setAttr('srg_jawBs.max',1,1,1)
-    cmds.setAttr('srg_jawBs.oldMin',0,2,0)
-    cmds.setAttr('srg_jawBs.oldMax',2,5,6)
-    cmds.connectAttr('srg_jawBs.outValueX','grp_facial.jawOpen')
-    cmds.connectAttr('srg_jawBs.outValueY','grp_facial.jawStretch')
-    cmds.connectAttr('srg_jawBs.outValueZ','grp_facial.jawDrop')
+   #if self.exCheck(['grp_facial.jawOpen','grp_facial.jawStretch','grp_facial.jawDrop']):# bs attributes connect 
+   # cmds.createNode('setRange',name='srg_jawBs',skipSelect=1)
+   # cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueX')
+   # cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueY')
+   # cmds.connectAttr('mdl_jawTy.output','srg_jawBs.valueZ')
+   # cmds.setAttr('srg_jawBs.max',1,1,1)
+   # cmds.setAttr('srg_jawBs.oldMin',0,2,0)
+   # cmds.setAttr('srg_jawBs.oldMax',2,5,6)
+   # cmds.connectAttr('srg_jawBs.outValueX','grp_facial.jawOpen')
+   # cmds.connectAttr('srg_jawBs.outValueY','grp_facial.jawStretch')
+   # cmds.connectAttr('srg_jawBs.outValueZ','grp_facial.jawDrop')
    
 # Lip Controller
    if self.exCheck(self.lipJo) :
