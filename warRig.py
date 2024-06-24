@@ -264,73 +264,6 @@ class warRig:
      cmds.setAttr(x+'.'+y,cmds.getAttr(sl+'.'+x+y))
     else : self.adjusterPosition(x)
  
- def extra_tail(self,*a):
-  if cmds.objExists('tailAdj') :
-   sys.stderr.write('Tail adjuster already exist.')
-  else :
-   self.createAdj('tail','rootAdj',[2,0,0,1,1,1])
-   self.torsoAdjuster(['tail','tailTip'],'tailAdj')
-   cmds.setAttr('tailTipAdj.jointNumber',6)
-   self.adjusterPosition('tailAdj','tailTipAdj')
-  if cmds.checkBox('cb_wrTail',q=1,value=1) == 0 :
-   cmds.delete('tailAdj')
- 
- def extra_ear(self,*a):
-  if cmds.objExists('earRootAdj') :
-   sys.stderr.write('Ear adjuster already exist.')
-  else :
-   self.createAdj('earRoot','headAdj',[0,0,0,0,0,0])
-   self.createAdj('ear','earRootAdj',[0,0,0,0,0,0])
-   self.createAdj('earIn','earAdj',[0,0,0,0,0,0])
-   self.createAdj('earInTip','earInAdj',[0,0,0,0,0,0])
-   self.createAdj('earOut','earAdj',[0,0,0,0,0,0])
-   self.createAdj('earOutTip','earOutAdj',[0,0,0,0,0,0])
-   self.adjusterPosition('earRootAdj','earAdj','earInAdj','earInTipAdj','earOutAdj','earOutTipAdj')
-  if cmds.checkBox('cb_wrEar',q=1,value=1) == 0 :
-   cmds.delete('earRootAdj')
- 
- def extra_tongue(self,*a):
-  if cmds.objExists('tongueAdj') :
-   sys.stderr.write('Tongue adjuster already exist.')
-  else :
-   self.createAdj('tongue','jawAdj',[2,0,0,1,1,1])
-   self.torsoAdjuster(['tongue','tongueTip'],'tongueAdj')
-   cmds.setAttr('tongueTipAdj.jointNumber',5)
-   self.adjusterPosition('tongueAdj','tongue1Adj','tongueTipAdj')
-  if cmds.checkBox('cb_wrTongue',q=1,value=1) == 0 :
-   cmds.delete('tongueAdj')
-   
- def extra_torsoAround(self,*a):
-  adjList = ['abdomeFrontAdj','abdomeSideAdj','spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj','grp_chestAroundAdj']
-  if self.exCheck(adjList) :
-   sys.stderr.write('Torso around adjuster already exist.')
-  else :
-   cmds.createNode('transform',name='grp_chestAroundAdj',parent='chestAdj',skipSelect=1)
-   self.createAdj('abdomeFront','rootAdj',[2,0,0,1,1,1])
-   self.createAdj('abdomeSide','rootAdj',[0,0,0,1,1,1])
-   self.createAdj('spine1Front','spine1Adj',[2,0,0,1,1,1])
-   self.createAdj('spine1Side','spine1Adj',[0,0,0,1,1,1])
-   self.createAdj('spine2Front','spine2Adj',[2,0,0,1,1,1])
-   self.createAdj('spine2Side','spine2Adj',[0,0,0,1,1,1])
-   self.createAdj('chestFrontLow','grp_chestAroundAdj',[2,0,0,1,1,1])
-   self.createAdj('chestFrontUp','grp_chestAroundAdj',[2,0,0,1,1,1])
-   self.createAdj('chestSideLow','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestSideUp','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestRearLow','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestRearUp','grp_chestAroundAdj',[0,0,0,1,1,1])
-   cmds.addAttr('chestFrontLowAdj',longName='jointNumber',attributeType='long')
-   cmds.addAttr('chestSideLowAdj',longName='jointNumber',attributeType='long')
-   cmds.connectAttr('chestAdj.jointNumber','chestFrontLowAdj.jointNumber')
-   cmds.connectAttr('chestAdj.jointNumber','chestSideLowAdj.jointNumber')
-   self.curveCtrled('gLine_chestFront',['abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj','chestFrontLowAdj'],2)
-   self.curveCtrled('gLine_chestSide',['abdomeSideAdj','spine1SideAdj','spine2SideAdj','chestSideLowAdj'],2)
-   self.adjusterPosition('abdomeFrontAdj','abdomeSideAdj','chestFrontLowAdj','chestFrontUpAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj')
-   self.adjusterPosition('spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj')
-   crvCvList = ['chestSideUpAdj','chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj','chestSideLowAdj']
-   self.guildCrv('crv_chestFrontAdj',crvCvList,'grp_chestAroundAdj')
-  if cmds.checkBox('cb_wrTorsoAround',q=1,value=1) == 0 :
-   cmds.delete(adjList)
- 
  def extraMenu1Cmd(self,*a):
   op = cmds.optionMenu('extraMenu1',q=1,value=1) ; dv = []
   if op == 'extraArm' :
@@ -1177,18 +1110,18 @@ class warRig:
    adjDict['earOutAdj'] = (1,1.5,0.8)
    adjDict['earOutTipAdj'] = (0,2,0)
    # torso around adj
-   adjDict['abdomeFrontAdj'] = (0,0,10)
+   adjDict['abdomeFrontAdj'] = (0,0,12.3)
    adjDict['abdomeSideAdj'] = (14,0,0)
-   adjDict['spine1FrontAdj'] = (0,0,10)
+   adjDict['spine1FrontAdj'] = (0,0,13.7)
    adjDict['spine1SideAdj'] = (13,0,0)
-   adjDict['spine2FrontAdj'] = (0,0,10)
+   adjDict['spine2FrontAdj'] = (0,0,15.2)
    adjDict['spine2SideAdj'] = (14,0,0)
    adjDict['chestFrontLowAdj'] = (0,0,14.6)
    adjDict['chestFrontUpAdj'] = (0,15.9,8)
    adjDict['chestSideLowAdj'] = (15.1,0,11)
    adjDict['chestSideUpAdj'] = (14.9,17,5.4)
-   adjDict['chestRearLowAdj'] = (16,17.9,-8.7)
-   adjDict['chestRearUpAdj'] = (15.5,0,-9.5)
+   adjDict['chestRearLowAdj'] = (15.5,0,-9.5)
+   adjDict['chestRearUpAdj'] = (16,17.9,-8.7)
    # adjDict[] = 
    adjDict['bigToe0Adj'] = [-2.2,-5.8,6]
    adjDict['bigToe1Adj'] = [-3.3,-7.5,13.1]
@@ -1287,6 +1220,73 @@ class warRig:
      try : cmds.setAttr(x+'.translate',t[0],t[1],t[2],type="double3")
      except : pass
 
+ def extra_tail(self,*a):
+  if cmds.objExists('tailAdj') :
+   sys.stderr.write('Tail adjuster already exist.')
+  else :
+   self.createAdj('tail','rootAdj',[2,0,0,1,1,1])
+   self.torsoAdjuster(['tail','tailTip'],'tailAdj')
+   cmds.setAttr('tailTipAdj.jointNumber',6)
+   self.adjusterPosition('tailAdj','tailTipAdj')
+  if cmds.checkBox('cb_wrTail',q=1,value=1) == 0 :
+   cmds.delete('tailAdj')
+   
+ def extra_ear(self,*a):
+  if cmds.objExists('earRootAdj') :
+   sys.stderr.write('Ear adjuster already exist.')
+  else :
+   self.createAdj('earRoot','headAdj',[0,0,0,0,0,0])
+   self.createAdj('ear','earRootAdj',[0,0,0,0,0,0])
+   self.createAdj('earIn','earAdj',[0,0,0,0,0,0])
+   self.createAdj('earInTip','earInAdj',[0,0,0,0,0,0])
+   self.createAdj('earOut','earAdj',[0,0,0,0,0,0])
+   self.createAdj('earOutTip','earOutAdj',[0,0,0,0,0,0])
+   self.adjusterPosition('earRootAdj','earAdj','earInAdj','earInTipAdj','earOutAdj','earOutTipAdj')
+  if cmds.checkBox('cb_wrEar',q=1,value=1) == 0 :
+   cmds.delete('earRootAdj')
+
+ def extra_tongue(self,*a):
+  if cmds.objExists('tongueAdj') :
+   sys.stderr.write('Tongue adjuster already exist.')
+  else :
+   self.createAdj('tongue','jawAdj',[2,0,0,1,1,1])
+   self.torsoAdjuster(['tongue','tongueTip'],'tongueAdj')
+   cmds.setAttr('tongueTipAdj.jointNumber',5)
+   self.adjusterPosition('tongueAdj','tongue1Adj','tongueTipAdj')
+  if cmds.checkBox('cb_wrTongue',q=1,value=1) == 0 :
+   cmds.delete('tongueAdj')
+   
+ def extra_torsoAround(self,*a):
+  adjList = ['abdomeFrontAdj','abdomeSideAdj','spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj','grp_chestAroundAdj']
+  if self.exCheck(adjList) :
+   sys.stderr.write('Torso around adjuster already exist.')
+  else :
+   cmds.createNode('transform',name='grp_chestAroundAdj',parent='chestAdj',skipSelect=1)
+   self.createAdj('abdomeFront','rootAdj',[2,0,0,1,1,1])
+   self.createAdj('abdomeSide','rootAdj',[0,0,0,1,1,1])
+   self.createAdj('spine1Front','spine1Adj',[2,0,0,1,1,1])
+   self.createAdj('spine1Side','spine1Adj',[0,0,0,1,1,1])
+   self.createAdj('spine2Front','spine2Adj',[2,0,0,1,1,1])
+   self.createAdj('spine2Side','spine2Adj',[0,0,0,1,1,1])
+   self.createAdj('chestFrontLow','grp_chestAroundAdj',[2,0,0,1,1,1])
+   self.createAdj('chestFrontUp','grp_chestAroundAdj',[2,0,0,1,1,1])
+   self.createAdj('chestSideLow','grp_chestAroundAdj',[0,0,0,1,1,1])
+   self.createAdj('chestSideUp','grp_chestAroundAdj',[0,0,0,1,1,1])
+   self.createAdj('chestRearLow','grp_chestAroundAdj',[0,0,0,1,1,1])
+   self.createAdj('chestRearUp','grp_chestAroundAdj',[0,0,0,1,1,1])
+   cmds.addAttr('chestFrontLowAdj',longName='jointNumber',attributeType='long')
+   cmds.addAttr('chestSideLowAdj',longName='jointNumber',attributeType='long')
+   cmds.connectAttr('chestAdj.jointNumber','chestFrontLowAdj.jointNumber')
+   cmds.connectAttr('chestAdj.jointNumber','chestSideLowAdj.jointNumber')
+   self.curveCtrled('gLine_chestFront',['abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj','chestFrontLowAdj'],2)
+   self.curveCtrled('gLine_chestSide',['abdomeSideAdj','spine1SideAdj','spine2SideAdj','chestSideLowAdj'],2)
+   self.adjusterPosition('abdomeFrontAdj','abdomeSideAdj','chestFrontLowAdj','chestFrontUpAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj')
+   self.adjusterPosition('spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj')
+   crvCvList = ['chestSideUpAdj','chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj','chestSideLowAdj']
+   self.guildCrv('crv_chestFrontAdj',crvCvList,'grp_chestAroundAdj')
+  if cmds.checkBox('cb_wrTorsoAround',q=1,value=1) == 0 :
+   cmds.delete(adjList)
+
 ##############################################################################################################
 ############################################## Joint Create Phase ############################################
 ##############################################################################################################
@@ -1313,13 +1313,13 @@ class warRig:
   self.pelvisSplitJo = 'jo_pelvisL'
   self.downBelong = ['jo_penis','jo_penisTip','jo_scrotumL','jo_scrotumTipL']
   self.spineJo = ['jo_spine0','jo_spine1','jo_spine2','jo_spine3','jo_spine4','jo_spine5','jo_spine6','jo_spine7','jo_spine8','jo_spine9']
-  self.spineFront = [ 'jcB02_spine0F','jcB12_spine1F','jcB22_spine2F','jcB32_spine3F','jcB42_spine4F','jcB52_spine5F','jcB62_spine6F','jcB72_spine7F','jcB82_spine8F','jcB92_spine9F' ]
-  self.spineSide = [ 'jlB04_spine0L','jlB14_spine1L','jlB24_spine2L','jlB34_spine3L','jlB44_spine4L','jlB54_spine5L','jlB64_spine6L','jlB74_spine7L','jlB84_spine8L','jlB94_spine9L' ]
+  self.spineFront = [ 'jo_spine0F','jo_spine1F','jo_spine2F','jo_spine3F','jo_spine4F','jo_spine5F','jo_spine6F','jo_spine7F','jo_spine8F','jo_spine9F' ]
+  self.spineSide = [ 'jo_spine0L','jo_spine1L','jo_spine2L','jo_spine3L','jo_spine4L','jo_spine5L','jo_spine6L','jo_spine7L','jo_spine8L','jo_spine9L' ]
   self.tailJo = ['jo_tail0','jo_tail1','jo_tail2','jo_tail3','jo_tail4','jo_tail5','jo_tail6','jo_tail7','jo_tail8','jo_tail9']
   self.tailTip = 'jo_tailTip'
   self.chestJo = 'jo_chest'
   self.chestJoList = [self.chestJo]
-  self.chestRound = ['jcC02_chestF','jlC04_chestL']
+  self.chestRound = ['jo_chestF','jo_chestL']
   self.neckJo = ['jo_neck','jo_neck1','jo_neck2','jo_neck3','jo_neck4','jo_neck5','jo_neck6','jo_neck7','jo_neck8','jo_neck9']
   self.headJo = 'jo_head'
   self.topJo = 'jo_top'
@@ -1501,7 +1501,7 @@ class warRig:
   allList = [ ('rootAdj',self.rootJo,'',[]) ]
   allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')))  
   allList.append(('chestFrontLowAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj')))
-  #allList.append(('chestSideUpAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','abdomeSideAdj','spine1SideAdj','spine2SideAdj')))
+  allList.append(('chestSideLowAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','abdomeSideAdj','spine1SideAdj','spine2SideAdj')))
   #allList.append((['abdomeFrontAdj','chestFrontLowAdj'],self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')))
   allList.append(('chestFrontUpAdj','jo_chestFrontL',self.chestJo,'avgTransSnapNormal',['chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj']))
   
@@ -1775,7 +1775,9 @@ class warRig:
     cmds.makeIdentity(x[1],apply=True,translate=0,rotate=1,scale=0)
     cmds.delete(pcf[0])
    if len(x) >= 4 and x[3] == 'avgTransSnapNormal' :
-    cmds.delete(cmds.pointConstraint(x[4],x[1],weight=0.5))
+    pCons = cmds.pointConstraint(x[4][0],x[4][3],x[1],weight=1)
+    cmds.pointConstraint(x[4][1],x[4][2],x[1],weight=3)
+    cmds.delete(pCons)
     ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in x[4] ]
     pcf = cmds.polyCreateFacet( p=ppList )
     cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
@@ -4416,6 +4418,47 @@ class warRig:
        cmds.setAttr(mult6+'.input2',ga[1]*0.1*mv[j])
        cmds.connectAttr(mult6+'.output','plus_'+ctrl+'.input3D[1].input3Dy')
 	
+  if self.anyCheck(['jo_chestFrontL','jo_chestFrontR']):
+   self.ctrlCircleH('ctrl_chestBreath',ch*0.3,2,0,2,[0,0,1,0,0,0,0,0,0,0],[0.22,0.33,0.2])
+   cmds.parent('ctrlTrans_chestBreath','ctrl_chest',relative=1)
+   cmds.delete(cmds.pointConstraint(['jo_chestFrontL','jo_chestFrontR'],'ctrlTrans_chestBreath'))
+   cmds.setAttr('ctrlTrans_chestBreath.rx',cmds.getAttr('jo_chestFrontL.jointOrientX'))
+   cmds.setAttr('ctrlTrans_chestBreath.tz',cmds.getAttr('ctrlTrans_chestBreath.tz')*1.6)
+   self.consCheck('chest')
+   cmds.createNode('transform',name='dri_chestBreathRoot',parent='xTrans_chest',skipSelect=1)
+   cmds.createNode('transform',name='pin_chestFrontL',parent="dri_chestBreathRoot",skipSelect=1)
+   cmds.createNode('transform',name='pin_chestFrontR',parent="dri_chestBreathRoot",skipSelect=1)
+   cmds.matchTransform('pin_chestFrontL','jo_chestFrontL')
+   cmds.matchTransform('pin_chestFrontR','jo_chestFrontR')
+   cmds.parentConstraint('pin_chestFrontL','jo_chestFrontL')
+   cmds.parentConstraint('pin_chestFrontR','jo_chestFrontR')
+   cmds.scaleConstraint('pin_chestFrontL','jo_chestFrontL')
+   cmds.scaleConstraint('pin_chestFrontR','jo_chestFrontR')
+   cmds.createNode('multiplyDivide',name='mult_chestBreathRootA',skipSelect=1)
+   cmds.connectAttr('ctrl_chestBreath.translateZ','mult_chestBreathRootA.input1X')
+   cmds.connectAttr('ctrl_chestBreath.translateZ','mult_chestBreathRootA.input1Y')
+   cmds.connectAttr('ctrl_chestBreath.translateZ','mult_chestBreathRootA.input1Z')
+   cmds.setAttr("mult_chestBreathRootA.input2X",0.1)
+   cmds.setAttr("mult_chestBreathRootA.input2Y",-.1)
+   cmds.setAttr("mult_chestBreathRootA.input2Z",-.2)
+   cmds.connectAttr('mult_chestBreathRootA.outputX','dri_chestBreathRoot.translateY')
+   cmds.connectAttr('mult_chestBreathRootA.outputY','dri_chestBreathRoot.translateZ')
+   cmds.connectAttr('mult_chestBreathRootA.outputZ','dri_chestBreathRoot.rotateX')
+   cmds.createNode('multDoubleLinear',name='mdl_chestBreathRootSx',skipSelect=1)
+   cmds.createNode('multDoubleLinear',name='mdl_chestBreathRootSz',skipSelect=1)
+   cmds.connectAttr('ctrl_chestBreath.translateZ','mdl_chestBreathRootSx.input1')
+   cmds.connectAttr('ctrl_chestBreath.translateZ','mdl_chestBreathRootSz.input1')
+   cmds.setAttr("mdl_chestBreathRootSx.input2",0.02)
+   cmds.setAttr("mdl_chestBreathRootSz.input2",0.01)
+   cmds.createNode('addDoubleLinear',name='adl_chestBreathRootSx',skipSelect=1)
+   cmds.createNode('addDoubleLinear',name='adl_chestBreathRootSz',skipSelect=1)
+   cmds.connectAttr('mdl_chestBreathRootSx.output','adl_chestBreathRootSx.input1')
+   cmds.connectAttr('mdl_chestBreathRootSz.output','adl_chestBreathRootSz.input1')
+   cmds.setAttr("adl_chestBreathRootSx.input2",1)
+   cmds.setAttr("adl_chestBreathRootSz.input2",1)
+   cmds.connectAttr('adl_chestBreathRootSx.output','dri_chestBreathRoot.scaleX')
+   cmds.connectAttr('adl_chestBreathRootSz.output','dri_chestBreathRoot.scaleZ')
+    
 # free and bend at twist Controller
   if self.anyCheck(['upperarmTwistL','wristTwistL','upperarmTwistR','wristTwistR','thighTwistL','kneeTwistL','thighTwistR','kneeTwistR','upperarm2TwistL','upperarm2TwistR']):
    swList = ['ctrl_shoulderL','ctrl_shoulderR','ctrl_pelvisL','ctrl_pelvisR','ctrl_shoulder2L','ctrl_shoulder2R']
@@ -6119,7 +6162,7 @@ class warRig:
   delList += ['grp_torsoAround','bColor_tongue0','bColor_tongue1','bColor_tongue2','bColor_tongue3','bColor_tongue4','bColor_tongue5','bColor_tongue6','bColor_tongue7','bColor_tongue8','bColor_tongue9']
   delList += ['bColor_tongueScale1','bColor_tongueScale4','bColor_tongueScale7','bColor_tongueTip']
   delList += ['clp_upLidYL','clp_upLidYR'] #?
-  delList += ['srg_jawBs']
+  delList += ['srg_jawBs','dri_chestBreathRoot']
   delList += ['srg_uplidUpDnAttrL','srg_uplidUpDnAttrR','srg_uplidUpDnAttrThird','srg_lolipUpDnAttrL','srg_lolipUpDnAttrR','srg_lolipUpDnAttrThird','adl_eyeBallY0L','adl_eyeBallY0R','adl_eyeBallY0Third']
   delList += ['clp_cornerXL','clp_cornerXR','clp_cornerYL','clp_cornerYR','clp_loLidYL','clp_loLidYR']
   delList += ['clp_cheekYL','clp_cheekYR','dvd_freeElbowL','dvd_freeElbowR','dvd_freeKneeL','dvd_freeKneeR']
@@ -6171,7 +6214,7 @@ class warRig:
   cmds.setAttr(jnj+'.radius',0,channelBox=0)
   cmds.setAttr(jnj+'.drawLabel',1)
   cmds.setAttr(jnj+'.type',18)
-  cmds.setAttr(jnj+'.otherType',(jnj.replace('Adj','')),type="string")
+  cmds.setAttr(jnj+'.otherType',jn,type="string")
   cmds.setAttr(jnj+'.overrideEnabled',1)
   cmds.setAttr(jnj+'.overrideColor',22)
   if len(a)>0 :
@@ -6208,6 +6251,7 @@ class warRig:
     cmds.setAttr(jn+'AdjShape.localScaleX',0.25)
     cmds.setAttr(jn+'AdjShape.localScaleY',0.25)
     cmds.setAttr(jn+'AdjShape.localScaleZ',0.25)
+    
   an = ['.translateX','.translateY','.translateZ','.rotateX','.rotateY','.rotateZ']
   for i in range(6) :
    if attr[i] == 1 : cmds.setAttr(jnj+an[i],lock=1,keyable=0,channelBox=0)
@@ -6720,7 +6764,8 @@ class warRig:
   dict['pelvis'] = self.pelvisJo ; dict['root'] = self.rootJo ; dict['viceShoulderL'] = self.shoulder2Jo[0] ; dict['viceElbowL'] = self.elbow2Jo[0]
   dict['viceShoulderR'] = self.L2R(self.shoulder2Jo[0]) ; dict['viceElbowR'] = self.L2R(self.elbow2Jo[0]) ; dict['head'] = self.headJo
   dict['neck2'] = self.L2R(self.neckJo[2]) ; dict['rearPelvis'] = self.rearPelvisJo ; dict['rearKneeL'] = self.rearKneeJo ; dict['rearKneeR'] = self.L2R(self.rearKneeJo)
-  dict['neck'] = self.L2R(self.neckJo[0]) ; dict['neck1'] = self.L2R(self.neckJo[1])
+  dict['neck'] = self.L2R(self.neckJo[0]) ; dict['neck1'] = self.L2R(self.neckJo[1]) ; dict['chest'] = self.chestJo
+  
   
   if n == 'pelvisR' :
    self.consCheck('pelvis')
