@@ -538,6 +538,7 @@ global proc uca_quatRot(string $axis){
   createNode -name ("q2e_"+$x+$axis) quatToEuler ;
   if($axis=="Y") setAttr ("q2e_"+$x+$axis+".inputRotateOrder") 1 ;
   connectAttr ($x+".rotate") ("e2q_"+$x+$axis+".inputRotate") ;
+  connectAttr ($x+".rotateOrder") ("e2q_"+$x+$axis+".inputRotateOrder") ;
   connectAttr ("e2q_"+$x+$axis+".outputQuat"+$axis) ("q2e_"+$x+$axis+".inputQuat"+$axis) ;
   connectAttr ("e2q_"+$x+$axis+".outputQuatW") ("q2e_"+$x+$axis+".inputQuatW") ;
   addAttr -ln ("quat"+$axis) -at double -keyable true $x ;

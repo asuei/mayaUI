@@ -1,0 +1,648 @@
+global proc laMise_ctrlProc(){
+
+ if(`window -exists LA_CP`) deleteUI -window LA_CP ;
+window -title "ctrl Procedure" LA_CP ;
+
+ formLayout MainForm;
+ radioCollection rbtc ;
+ radioButton -label "Locator" -onCommand ("rbActive(\"locator\")") rbt_locator ;
+ radioButton -label "Cube" -onCommand ("rbActive(\"cube\")") rbt_cube ;
+ radioButton -label "Crystal" -onCommand ("rbActive(\"crystal\")") rbt_crytal ;
+ radioButton -label "Sphere" -onCommand ("rbActive(\"sphere\")") rbt_sphere ;
+ radioButton -label "Circle" -onCommand ("rbActive(\"circle\")") rbt_circle ;
+ radioButton -label "Gear" -onCommand ("rbActive(\"gear\")") rbt_gear ;
+ radioButton -label "Projection" -onCommand ("rbActive(\"projection\")") rbt_proje ;
+ radioButton -label "Cylinder" -onCommand ("rbActive(\"cylinder\")") rbt_cylin ;
+ radioButton -label "RotArrow" -onCommand ("rbActive(\"rotArrow\")") rbt_aArror ;
+ radioButton -label "CurvyCircle" -onCommand ("rbActive(\"cCircle\")") rbt_cCircle ;
+ radioButton -label "Star" -onCommand ("rbActive(\"star\")") rbt_star ;
+ radioButton -label "ArcCube" -onCommand ("rbActive(\"arcCube\")") rbt_arcCube ;
+ button -label "Generate" -width 80 -height 30 -command ("lacp_active(\"\")") bt_gnrt ;
+ button -label "Be Ctrl" -width 80 -height 30 -command ("lacp_beCtrlActive") bt_bCtrl ;
+ button -label "CV Ctrl" -width 80 -height 30 -command ("lacp_cvCtrlActive") bt_cvCtrl ;
+
+ formLayout -backgroundColor .2 .2 .2 exForm ;
+  text -label "Name : " txt_name ;
+  textField -width 100 -height 20 -text "ctrl_" tf_name ;
+  text -label "Diameter : " -enable 0 txt_diameter ;
+  floatField -width 100 -height 20 -value 1 -enable 0 ff_diameter ;
+  text -label "Sections : " -enable 0 txt_sections ;
+  intField -width 100 -height 20 -value 20 -minValue 1 -maxValue 360 -enable 0 if_sections ;
+  text -label "Width = x : " -enable 0 txt_width ;
+  floatField -width 100 -height 20 -value 1 -enable 0 ff_width ;
+  text -label "Height = y : " -enable 0 txt_height ;
+  floatField -width 100 -height 20 -value 1 -enable 0 ff_height ;
+  text -label "Depth = z : " -enable 0 txt_depth ;
+  floatField -width 100 -height 20 -value 1 -enable 0 ff_depth ;
+  text -label "Direction : " -enable 0 txt_direct ;
+  radioCollection rbtc_direct ;
+  radioButton -label "x" -enable 0 rbt_dirX ;
+  radioButton -label "y" -enable 0 -select rbt_dirY ;
+  radioButton -label "z" -enable 0 rbt_dirZ ;
+  text -label "Thickness : " -enable 0 txt_thickness ;
+  floatField -width 100 -height 20 -value 0.1 -enable 0 ff_thickness ;
+  text -label "Sweep : " -enable 0 txt_sweep ;
+  floatSliderGrp -field 1 -minValue 0.0 -maxValue 360.0 -fieldMinValue 0.0 -fieldMaxValue 360.0 -value 45 -columnWidth2 35 60 -columnAlign 1 left -enable 0 fsg_sweep ;
+  text -label "Start Angle : " -enable 0 txt_sAngle ;
+  floatSliderGrp -field 1 -minValue 0.0 -maxValue 360.0 -fieldMinValue 0.0 -fieldMaxValue 360.0 -value 0 -columnWidth2 35 60 -columnAlign 1 left -enable 0 fsg_sAngle ;
+  setParent ..;
+
+ setParent ..;
+	
+ formLayout -edit
+  -af rbt_locator "top" 5
+  -af rbt_locator "left" 5
+  -ac rbt_crytal "top" 5 rbt_locator
+  -af rbt_crytal "left" 5
+  -ac rbt_sphere "top" 5 rbt_crytal
+  -af rbt_sphere "left" 5
+  -ac rbt_circle "top" 5 rbt_sphere
+  -af rbt_circle "left" 5
+  -ac rbt_gear "top" 5 rbt_circle
+  -af rbt_gear "left" 5
+  -ac rbt_proje "top" 4 rbt_gear
+  -af rbt_proje "left" 5
+  -ac rbt_cube "top" 5 rbt_proje
+  -af rbt_cube "left" 5
+  -ac rbt_cylin "top" 5 rbt_cube
+  -af rbt_cylin "left" 5
+  -ac rbt_aArror "top" 5 rbt_cylin
+  -af rbt_aArror "left" 5
+  -ac rbt_cCircle "top" 5 rbt_aArror
+  -af rbt_cCircle "left" 5
+  -ac rbt_star "top" 5 rbt_cCircle
+  -af rbt_star "left" 5
+  -ac rbt_arcCube "top" 5 rbt_star
+  -af rbt_arcCube "left" 5
+  -ac bt_gnrt "top" 5 rbt_arcCube
+  -af bt_gnrt "left" 5
+  -ac bt_bCtrl "top" 5 bt_gnrt
+  -af bt_bCtrl "left" 5
+  -ac bt_cvCtrl "top" 5 bt_bCtrl
+  -af bt_cvCtrl "left" 5
+  -af exForm "top" 5
+  -af exForm "right" 5
+  -af exForm "left" 90
+  -af exForm "bottom" 5
+ MainForm ;
+
+ formLayout -edit
+  -af txt_name "top" 5
+  -af txt_name "left" 10
+  -ac tf_name "top" 0 txt_name
+  -af tf_name "left" 5
+  -ac txt_diameter "top" 10 tf_name
+  -af txt_diameter "left" 10
+  -ac ff_diameter "top" 0 txt_diameter
+  -af ff_diameter "left" 5
+  -ac txt_sections "top" 2 ff_diameter
+  -af txt_sections "left" 10
+  -ac if_sections "top" 0 txt_sections
+  -af if_sections "left" 5
+  -ac txt_width "top" 10 if_sections
+  -af txt_width "left" 10
+  -ac ff_width "top" 0 txt_width
+  -af ff_width "left" 5
+  -ac txt_height "top" 2 ff_width
+  -af txt_height "left" 10
+  -ac ff_height "top" 0 txt_height
+  -af ff_height "left" 5
+  -ac txt_depth "top" 2 ff_height
+  -af txt_depth "left" 10
+  -ac ff_depth "top" 0 txt_depth
+  -af ff_depth "left" 5
+  -ac txt_direct "top" 10 ff_depth
+  -af txt_direct "left" 10
+  -ac rbt_dirX "top" 0 txt_direct
+  -af rbt_dirX "left" 5
+  -ac rbt_dirY "top" 0 txt_direct
+  -ac rbt_dirY "left" 5 rbt_dirX
+  -ac rbt_dirZ "top" 0 txt_direct
+  -ac rbt_dirZ "left" 5 rbt_dirY
+  -ac txt_thickness "top" 10 rbt_dirX
+  -af txt_thickness "left" 10
+  -ac ff_thickness "top" 0 txt_thickness
+  -af ff_thickness "left" 5
+  -ac txt_sweep "top" 10 ff_thickness
+  -af txt_sweep "left" 10
+  -ac fsg_sweep top 0 txt_sweep
+  -af fsg_sweep "left" 5
+  -ac txt_sAngle "top" 2 fsg_sweep
+  -af txt_sAngle "left" 10
+  -ac fsg_sAngle top 0 txt_sAngle
+  -af fsg_sAngle "left" 5
+
+ exForm ;
+
+//window -e -widthHeight 220 400 LA_CP ;
+window -e -resizeToFitChildren on LA_CP ;
+showWindow LA_CP ;
+}
+
+global proc rbActive(string $s){
+ int $btnEn[] = {0,0,0,0,0,0,0,0,0} ;
+ if($s=="cube") $btnEn={0,0,1,1,1,0,0,0,0} ;
+ if($s=="crystal") $btnEn={0,0,1,1,0,0,0,0,0} ;
+ if($s=="sphere") $btnEn={1,0,0,0,0,0,0,0,0} ;
+ if($s=="circle") $btnEn={1,1,0,0,0,0,0,0,0} ;
+ if($s=="gear") $btnEn={1,1,0,0,0,1,1,0,0} ;
+ if($s=="projection") $btnEn={1,0,0,1,0,0,0,0,0} ;
+ if($s=="locator") $btnEn={1,0,0,0,0,0,0,0,0} ;
+ if($s=="cylinder") $btnEn={1,1,0,1,0,0,0,0,0} ;
+ if($s=="rotArrow") $btnEn={1,0,0,0,0,1,1,1,1} ;
+ if($s=="cCircle") $btnEn={1,0,0,0,0,1,1,0,0} ;
+ if($s=="star") $btnEn={1,0,0,0,0,1,0,0,0} ;
+ if($s=="arcCube") $btnEn={1,0,1,0,0,1,1,1,1} ;
+ exContentActive($btnEn) ;
+}
+
+global proc exContentActive(int $en[]){
+ text -e -enable $en[0] txt_diameter ;
+ floatField -e -enable $en[0] ff_diameter ;
+ text -e -enable $en[1] txt_sections ;
+ intField -e -enable $en[1] if_sections ;
+ text -e -enable $en[2] txt_width ;
+ floatField -e -enable $en[2] ff_width ;
+ text -e -enable $en[3] txt_height ;
+ floatField -e -enable $en[3] ff_height ;
+ text -e -enable $en[4] txt_depth ;
+ floatField -e -enable $en[4] ff_depth ;
+ text -e -enable $en[5] txt_direct ;
+ radioButton -e -enable $en[5] rbt_dirX ;
+ radioButton -e -enable $en[5] rbt_dirY ;
+ radioButton -e -enable $en[5] rbt_dirZ ;
+ text -e -enable $en[6] txt_thickness ;
+ floatField -e -enable $en[6] ff_thickness ;
+ floatSliderGrp -e -enable $en[7] fsg_sweep ;
+ floatSliderGrp -e -enable $en[8] fsg_sAngle ;
+}
+
+global proc string lacp_active(string $s){
+ $d = ` radioCollection -q -select rbtc ` ;
+ $name = `textField -q -text tf_name` + $s ;
+ string $rn = $name ;
+ $rbtd = ` radioCollection -q -select rbtc_direct ` ;
+ int $dir = 0 ;
+ if($rbtd=="rbt_dirX") $dir = 0 ;
+ if($rbtd=="rbt_dirY") $dir = 1 ;
+ if($rbtd=="rbt_dirZ") $dir = 2 ;
+ if($d=="rbt_cube") $rn = curveCube(`floatField -q -value ff_width`,`floatField -q -value ff_height`,`floatField -q -value ff_depth`,$name) ;
+ if($d=="rbt_crytal") $rn = curveCrytal(`floatField -q -value ff_width`,`floatField -q -value ff_height`,$name) ;
+ if($d=="rbt_sphere") $rn = curveSphere(`floatField -q -value ff_diameter`,$name) ;
+ if($d=="rbt_circle") $rn = curveCircle(`floatField -q -value ff_diameter`,`intField -q -value if_sections`,$name) ;
+ if($d=="rbt_gear") $rn = curveGear(`floatField -q -value ff_diameter`,`floatField -q -value ff_thickness`,`intField -q -value if_sections`,$dir,$name) ;
+ if($d=="rbt_proje") $rn = curveProjection(`floatField -q -value ff_diameter`,`floatField -q -value ff_height`,$name) ;
+ if($d=="rbt_locator") $rn = curveLocator(`floatField -q -value ff_diameter`,$name) ;
+ if($d=="rbt_cylin") $rn = curveCylinder(`floatField -q -value ff_diameter`,`floatField -q -value ff_height`,`intField -q -value if_sections`,$name) ;
+ if($d=="rbt_aArror") $rn = curveRotArrow(`floatField -q -value ff_diameter`*2,`floatField -q -value ff_thickness`,`floatSliderGrp -q -value fsg_sAngle`,`floatSliderGrp -q -value fsg_sweep`,$dir,$name) ;
+ if($d=="rbt_cCircle") $rn = curveCurvyCircle(`floatField -q -value ff_diameter`*2,10,`floatField -q -value ff_thickness`,$dir,$name) ;
+ if($d=="rbt_star") $rn = curveStar(`floatField -q -value ff_diameter`*2,$dir,$name) ;
+ if($d=="rbt_arcCube") $rn = curveArcCube(`floatField -q -value ff_diameter`,`floatField -q -value ff_thickness`,`floatSliderGrp -q -value fsg_sAngle`,`floatSliderGrp -q -value fsg_sweep`,`floatField -q -value ff_width`,$dir,$name) ;
+ return $rn ;
+}
+
+global proc lacp_beCtrlActive(){
+ $sls = ` ls -selection ` ;
+ $sll = ` ls -selection -long ` ;
+ if(size($sls)>0){
+  $i = 0 ;
+  while($i<size($sls)){
+   $rn = lacp_active($sls[$i]) ;
+   createNode -name ($rn+"_trans") transform ;
+   parent $rn ($rn+"_trans") ;
+   delete (`parentConstraint $sll[$i] ($rn+"_trans")`) ;
+   parentConstraint $rn $sll[$i] ;
+   $i++;
+  }
+ }else print "Nothing selected." ;
+}
+
+
+global proc lacp_cvCtrlActive(){
+ $sls = ` ls -selection ` ;
+ $sll = ` ls -selection -long ` ;
+ if(size($sll)>0){
+  string $nc[] = {} ;
+  for($x in $sll){
+   $nt = ` nodeType $x ` ;
+   if($nt=="nurbsCurve") $nc[size($nc)] = $x ;
+   if($nt=="transform"){
+    $sp = ` listRelatives -fullPath -shapes $x ` ;
+    for($y in $sp){
+     $nt2 = ` nodeType $y ` ;
+     if($nt2=="nurbsCurve") $nc[size($nc)] = $y ;
+    }
+   }
+  }
+  if(size($nc)>0){
+   for($x in $nc){
+    $pn = `getAttr ($x+".spans")` + `getAttr ($x+".degree")` ;
+    $i = 0 ;
+    while($i<$pn){
+     createNode -name (shortNameOf($x)+$i+"_trans") transform ;
+     createNode -name (shortNameOf($x)+$i+"_v") -parent (shortNameOf($x)+$i+"_trans") transform ;
+     setAttr (shortNameOf($x)+$i+"_v.inheritsTransform") 0 ;
+     $rn = lacp_active($x+$i) ;
+     parent $rn (shortNameOf($x)+$i+"_trans") ;
+     $pos = ` xform -q -worldSpace -translation ($x+".cv["+$i+"]")  `;
+     move -absolute $pos[0] $pos[1] $pos[2] (shortNameOf($x)+$i+"_trans") ;
+     pointConstraint $rn (shortNameOf($x)+$i+"_v") ;
+     connectAttr (shortNameOf($x)+$i+"_v.translate") ($x+".controlPoints["+$i+"]") ;
+     $i++ ;
+    }
+   }
+  }else print "Havn't select nurbsCurve" ;
+ }else print "Nothing selected." ;
+}
+
+
+global proc lacp_shapeAdj(string $crv){
+ $lrs = ` listRelatives -shapes $crv ` ;
+ $attr = ` listAttr -keyable -multi -output $lrs[0] ` ;
+ for($x in $attr){
+  setAttr -keyable 0 ($lrs[0]+"."+$x) ;
+ }
+ rename $lrs[0] ($crv+"Shape") ;
+}
+
+
+global proc shiftCurve(string $curve,string $w,int $d,float $o){
+ $sp = ` listRelatives -shapes $curve ` ;
+ int $spans = ` getAttr ($sp[0]+".spans") ` ;
+ select -r ($curve+".cv[0:"+$spans+"]") ;
+ $i = 0 ;
+ while($i<=$spans){
+  $ga = ` getAttr ($sp[0]+".controlPoints["+$i+"]."+$w+"Value") ` ;
+  setAttr ($sp[0]+".controlPoints["+$i+"]."+$w+"Value") ($ga+$d*$o) ;
+  $i++;
+ }
+}
+
+
+global proc string curveLocator(float $a, string $s){
+ string $ce = "curve -d 1" ;
+ $ce = $ce + " -p " + $a + " 0 0 -p " + ($a*-1) + " 0 0 -p 0 0 0 -p 0 " + $a + " 0 -p 0 " + ($a*-1) + " 0 -p 0 0 0 -p 0 0 " + $a + " -p 0 0 " + ($a*-1) ;
+ $ce = $ce + " -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -n " + $s ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+
+global proc string curveCube(float $l,float $w,float $h,string $s){
+float $vpx[] ; clear $vpx ;
+float $vpy[] ; clear $vpy ;
+float $vpz[] ; clear $vpz ;
+
+$vpx[0] = $l/2 ; $vpy[0] = $w/2 ; $vpz[0] = $h/2 ;
+$vpx[1] = $l/-2 ; $vpy[1] = $w/2 ; $vpz[1] = $h/2 ;
+$vpx[2] = $l/-2 ; $vpy[2] = $w/2 ; $vpz[2] = $h/-2 ;
+$vpx[3] = $l/2 ; $vpy[3] = $w/2 ; $vpz[3] = $h/-2 ;
+$vpx[4] = $l/2 ; $vpy[4] = $w/-2 ; $vpz[4] = $h/2 ;
+$vpx[5] = $l/-2 ; $vpy[5] = $w/-2 ; $vpz[5] = $h/2 ;
+$vpx[6] = $l/-2 ; $vpy[6] = $w/-2 ; $vpz[6] = $h/-2 ;
+$vpx[7] = $l/2 ; $vpy[7] = $w/-2 ; $vpz[7] = $h/-2 ;
+
+$rn = ` curve -d 1 -p $vpx[0] $vpy[0] $vpz[0] -p $vpx[1] $vpy[1] $vpz[1]
+ -p $vpx[2] $vpy[2] $vpz[2] -p $vpx[3] $vpy[3] $vpz[3]
+ -p $vpx[0] $vpy[0] $vpz[0] -p $vpx[4] $vpy[4] $vpz[4]
+ -p $vpx[5] $vpy[5] $vpz[5] -p $vpx[1] $vpy[1] $vpz[1]
+ -p $vpx[5] $vpy[5] $vpz[5] -p $vpx[6] $vpy[6] $vpz[6]
+ -p $vpx[2] $vpy[2] $vpz[2] -p $vpx[6] $vpy[6] $vpz[6]
+ -p $vpx[7] $vpy[7] $vpz[7] -p $vpx[3] $vpy[3] $vpz[3]
+ -p $vpx[7] $vpy[7] $vpz[7] -p $vpx[4] $vpy[4] $vpz[4]
+ -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13 -k 14 -k 15
+ -n $s ` ;
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveCrytal(float $width,float $height,string $name){
+$w = $width ; $h = $height ;
+$rn = ` curve -d 1 -p 0 0 $w
+ -p 0 $h 0  -p 0 0 (-1*$w) -p 0 (-1*$h) 0 -p 0 0 $w
+ -p $w 0 0 -p 0 0 (-1*$w) -p (-1*$w) 0 0 -p 0 0 $w
+ -p $w 0 0
+ -p 0 $h 0 -p (-1*$w) 0 0 -p 0 (-1*$h) 0 -p $w 0 0
+ -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -k 12 -k 13
+ -n $name ` ;
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+
+global proc string curveSphere(float $d,string $s){
+ int $sd = 20 ;
+ float $a = 360.0 / $sd ;
+ int $sdp = $sd + 1 ;
+
+ string $ce = "curve -d 1" ;
+ $i = 0 ;
+ while($i<$sdp){
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " 0 " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $i++;
+ }
+ $i = 0 ;
+ while($i<$sdp){
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " "+ ( sin(deg_to_rad($a*$i))*$d ) + " 0" ;
+  $i++;
+ }
+ $i = 0 ;
+ while($i<($sdp*2)){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $s ;
+
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+
+global proc string curveCircle(float $d,int $p,string $s){
+ int $sd = $p ;
+ float $a = 360.0 / $sd ;
+ int $sdp = $sd + 1 ;
+ string $ce = "curve -d 1" ;
+ $i = 0 ;
+ while($i<$sdp){
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " 0 " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $i++;
+ }
+ $i = 0 ;
+ while($i<($sdp)){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $s ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+
+global proc string curveGear(float $d, float $ds, int $sd,int $dir, string $s){ // $dir is 0 or 1 or 2 
+ $sd = $sd * 2 ;
+ float $a = 360.0 / $sd ;
+ int $sdp = $sd + 1 ;
+
+ string $ce = "curve -d 1" ;
+ $i = 0 ;
+ while($i<$sdp){ $ic = $i%2 ;
+  if($ic==0){
+   if($dir==0){
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) + " 0" ;
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) + " 0" ;
+   }else if($dir==1){
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " 0 " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) ;
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " 0 " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) ;
+   }else if($dir==2){
+    $ce = $ce + " -p 0 " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) ;
+    $ce = $ce + " -p 0 " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) ;
+   }
+  }else{
+   if($dir==0){
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) + " 0" ;
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) + " 0" ;
+   }else if($dir==1){
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " 0 " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) ;
+    $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " 0 " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) ;
+   }else if($dir==2){
+    $ce = $ce + " -p 0 " + ( cos(deg_to_rad($a*$i))*($d-$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d-$ds) ) ;
+    $ce = $ce + " -p 0 " + ( cos(deg_to_rad($a*$i))*($d+$ds) ) + " " + ( sin(deg_to_rad($a*$i))*($d+$ds) ) ;
+   }
+  }
+  $i++;
+ }
+ $i = 0 ;
+ while($i<($sdp*2)){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $s ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveProjection(float $a, float $d, string $s){
+ string $ce = "curve -d 1" ;
+ $ce = $ce + " -p 0 0 0 -p " + ($a*.5) + " " + $d + " 0 " + " -p " + ($a*-.5) + " " + $d + " " + ($a*-.5) ;
+ $ce = $ce + " -p 0 0 0 -p " + ($a*-.5) + " " + $d + " " + ($a*-.5) + " -p " + ($a*-.5) + " " + $d + " " + ($a*.5) ;
+ $ce = $ce + " -p 0 0 0 -p " + ($a*-.5) + " " + $d + " " + ($a*.5) + " -p " + ($a*.5) + " " + $d + "  0" ;
+ $ce = $ce + " -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -n " + $s ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc curveProjectionO(float $a, float $d, string $s){
+string $ce = "curve -d 1" ;
+$ce = $ce + " -p 0 0 0 -p " + ($a*.5) + " " + $d + " " + ($a*.5) + " -p " + ($a*.5) + " " + $d + " " + ($a*-.5) ;
+$ce = $ce + " -p 0 0 0 -p " + ($a*.5) + " " + $d + " " + ($a*-.5) + " -p " + ($a*-.5) + " " + $d + " " + ($a*-.5) ;
+$ce = $ce + " -p 0 0 0 -p " + ($a*-.5) + " " + $d + " " + ($a*-.5) + " -p " + ($a*-.5) + " " + $d + " " + ($a*.5) ;
+$ce = $ce + " -p 0 0 0 -p " + ($a*-.5) + " " + $d + " " + ($a*.5) + " -p " + ($a*.5) + " " + $d + " " + ($a*.5) ;
+$ce = $ce + " -k 0 -k 1 -k 2 -k 3 -k 4 -k 5 -k 6 -k 7 -k 8 -k 9 -k 10 -k 11 -n " + $s ;
+eval($ce);
+}
+
+
+global proc string curveCylinder(float $radius,float $height,int $subdivisions,string $name){
+ $d = $radius ; $h = $height ; $sd = $subdivisions ; $n = $name ;
+ float $a = 360.0 / $sd ; int $sdp = $sd + 1 ;
+
+ string $ce = "curve -d 1" ;
+ $i = 0 ;
+ while($i<$sdp){
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " " + ($h/2) + " " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $i++;
+ }
+ $i = 0 ;
+ while($i<$sdp){
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " " + ($h/2*-1) + " " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " " + ($h/2) + " " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $ce = $ce + " -p " + ( cos(deg_to_rad($a*$i))*$d ) + " " + ($h/2*-1) + " " + ( sin(deg_to_rad($a*$i))*$d ) ;
+  $i++;
+ }
+ $i = 0 ;
+ while($i<($sdp*4)){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $n ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveRotArrow(float $diameter,float $weight,float $startAngle,float $sweep,int $vector,string $name){ //curveRotArrow(5,1,-90,70,2,"Yes123") ;
+ $r = $diameter/2 ;
+ $w = $weight ;
+ $s = $sweep ;
+ $v = $vector ;
+ int $sTime = $s/2/10+1 ;
+ float $sAngle = $s/2/$sTime ;
+ $arrowAngle = $w/($diameter*3.1416)*360 ;
+ int $sTimeLoop = ($sTime*2+4)*2 ;
+ string $ce = "curve -d 1 " ;
+
+ $i = 0 ;
+ while($i<$sTimeLoop){
+  $ti = $tic = ($sTimeLoop/2)-abs(-$i+($sTimeLoop/2))-($sTimeLoop/4) ;
+  if($ti>$sTime) $tic=$sTime;
+  if($ti<-$sTime) $tic=$sTime*-1;
+  float $wAdj = 0.0 ;
+  $plusAngle = 0.0 ;
+  if($i==0) $plusAngle = -$arrowAngle ;
+  else if($i==($sTimeLoop/2)) $plusAngle = $arrowAngle ;
+  else if($i<($sTimeLoop/2)) $wAdj = ($w/2) ;
+  else $wAdj = ($w/-2) ;
+  if(abs($ti)>$sTime) $wAdj = $wAdj * 2 ;
+  if($vector<0) $vector = 0 ;
+  if($vector>2) $vector = 2 ;
+
+  $angle = $startAngle + $sAngle*$tic+$plusAngle ;
+  if($vector==0) $ce = $ce + " -p " + $wAdj + " " + ( cos(deg_to_rad($angle))*$r ) + " " + ( sin(deg_to_rad($angle))*$r ) ;
+  if($vector==1) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$r ) + " " + $wAdj + " " + ( sin(deg_to_rad($angle))*$r ) ;
+  if($vector==2) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$r ) + " " + ( sin(deg_to_rad($angle))*$r ) + " " + $wAdj ;
+  $i++;
+ }
+
+ $i = 0 ;
+ while($i<$sTimeLoop){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $name ;
+ $rn = eval($ce);
+ closeCurve -replaceOriginal 1 $rn ;
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveCurvyCircle(float $diameter,int $frequency,float $amplitude,int $vector,string $name){ //curveCurvyCircle(3,6,0.25,1,"Yes123") ;
+ $r = $diameter/2 ;
+ $f = $frequency ;
+ $a = $amplitude ;
+ $v = $vector ;
+ $vn = 20 + $f*5 ;
+ $pa = 360.0 / $vn ;
+
+ string $ce = "curve -d 1 " ;
+ $i = 0 ;
+ while($i<=$vn){
+  $w = sin(deg_to_rad($i*$pa*$f)) * $a ;
+  $angle = $i * $pa ;
+  if($vector==0) $ce = $ce + " -p " + $w + " " + ( cos(deg_to_rad($angle))*$r ) + " " + ( sin(deg_to_rad($angle))*$r ) ;
+  if($vector==1) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$r ) + " " + $w + " " + ( sin(deg_to_rad($angle))*$r ) ;
+  if($vector==2) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$r ) + " " + ( sin(deg_to_rad($angle))*$r ) + " " + $w ;
+  $i++;
+ }
+
+ $i = 0 ;
+ while($i<$vn+1){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $name ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveStar(float $diameter,int $vector,string $name){ //curveStar(3,1,"Yes123") ;
+ $r = $diameter/2 ;
+ $v = $vector ;
+
+ string $ce = "curve -d 1 " ;
+ $i = 0 ;
+ while($i<=10){
+  $angle = $i * 36 ;
+  if($vector==1) $angle = $angle - 90 ;
+  if($vector==2) $angle = $angle + 90 ;
+  $re = $r ;
+  if($i%2==1) $re = $r * 0.38 ;
+  if($vector==0) $ce = $ce + " -p 0 " + ( cos(deg_to_rad($angle))*$re ) + " " + ( sin(deg_to_rad($angle))*$re ) ;
+  if($vector==1) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$re ) + " 0 " + ( sin(deg_to_rad($angle))*$re ) ;
+  if($vector==2) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$re ) + " " + ( sin(deg_to_rad($angle))*$re ) + " 0" ;
+  $i++;
+ }
+
+ $i = 0 ;
+ while($i<=10){
+  $ce = $ce + " -k " + $i ;
+  $i++;
+ }
+ $ce = $ce + " -n " + $name ;
+ $rn = eval($ce);
+ lacp_shapeAdj($rn) ;
+ return $rn ;
+}
+
+global proc string curveArcCube(float $radius,float $thickness,float $startAngle,float $sweep,float $width,int $vector,string $name){ //curveArcCube(5,3,0,35,2.5,2,"Yes123") ;
+$r = $radius ; $t = $thickness ; $w = $width ; $s = $sweep ; $v = $vector ;
+
+int $sTime = $s/10+1 ;
+float $sAngle = $s / ($sTime-1) ;
+int $sTimeLoop = $sTime*4+8 ;
+string $ce = "curve -d 1 " ;
+
+$i = 0 ;
+$adjI = -1 ;
+$adjW = $w*0.5 ;
+while($i<$sTimeLoop){
+$adjR = $r ;
+$phase = $i / ($sTimeLoop/4) ;
+if($phase==0){
+ $adjI = $i % ($sTime+2) ;
+ if($adjI==$sTime) $adjR = $r - $t ;
+ if($adjI>$sTime-1) $adjI = $sTime-1 ;
+ $adjW = $w*0.5 ;
+}
+if($phase==1){
+ $adjI = $i % ($sTime+2) ;
+ $wr = -0.5 ;
+ if($adjI>=$sTime) $adjR = $r - $t ;
+ if($adjI==$sTime+1) $wr = 0.5 ;
+ if($adjI>$sTime-1) $adjI = $sTime-1 ;
+ $adjI = ($sTime-1) - $adjI ;
+ $adjW = $w*$wr ;
+}
+if($phase==2){
+ $adjI = $i % ($sTime+2) ;
+ if($adjI==$sTime) $adjR = $r + $t ;
+ if($adjI>$sTime-1) $adjI = $sTime-1 ;
+ $adjW = $w*-.5 ;
+ $adjR = $adjR - $t ;
+}
+if($phase==3){
+ $adjI = $i % ($sTime+2) ;
+ $wr = 0.5 ;
+ if($adjI>=$sTime) $adjR = $r + $t ;
+ if($adjI==$sTime+1) $wr = -.5 ;
+ if($adjI>$sTime-1) $adjI = $sTime-1 ;
+ $adjI = ($sTime-1) - $adjI ;
+ $adjW = $w*$wr ;
+ $adjR = $adjR - $t ;
+}
+if($vector<0) $vector = 0 ; if($vector>2) $vector = 2 ;
+
+$angle = $startAngle + $sAngle*$adjI-($s*0.5) ;
+print ($sAngle+ "\n") ;
+if($vector==0) $ce = $ce + " -p " + $adjW + " " + ( cos(deg_to_rad($angle))*$adjR ) + " " + ( sin(deg_to_rad($angle))*$adjR ) ;
+if($vector==1) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$adjR ) + " " + $adjW + " " + ( sin(deg_to_rad($angle))*$adjR ) ;
+if($vector==2) $ce = $ce + " -p " + ( cos(deg_to_rad($angle))*$adjR ) + " " + ( sin(deg_to_rad($angle))*$adjR ) + " " + $adjW ;
+$i++;
+}
+
+$i = 0 ;
+while($i<$sTimeLoop){
+$ce = $ce + " -k " + $i ;
+$i++;
+}
+$ce = $ce + " -n " + $name ;
+$rn = eval($ce);
+lacp_shapeAdj($rn) ;
+return $rn ;
+}
