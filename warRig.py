@@ -1111,11 +1111,14 @@ class warRig:
    adjDict['earOutTipAdj'] = (0,2,0)
    # torso around adj
    adjDict['abdomeFrontAdj'] = (0,0,12.3)
-   adjDict['abdomeSideAdj'] = (14,0,0)
+   adjDict['abdomeSideAdj'] = (10.8,0,6.4)
+   adjDict['abdomeRearAdj'] = (12.3,0,-7.6)
    adjDict['spine1FrontAdj'] = (0,0,13.7)
-   adjDict['spine1SideAdj'] = (13,0,0)
+   adjDict['spine1SideAdj'] = (11.7,0,7.5)
+   adjDict['spine1RearAdj'] = (10.2,0,-7.7)
    adjDict['spine2FrontAdj'] = (0,0,15.2)
-   adjDict['spine2SideAdj'] = (14,0,0)
+   adjDict['spine2SideAdj'] = (13,0,9)
+   adjDict['spine2RearAdj'] = (13.8,0,-7.8)
    adjDict['chestFrontLowAdj'] = (0,0,14.6)
    adjDict['chestFrontUpAdj'] = (0,15.9,8)
    adjDict['chestSideLowAdj'] = (15.1,0,11)
@@ -1257,35 +1260,42 @@ class warRig:
    cmds.delete('tongueAdj')
    
  def extra_torsoAround(self,*a):
-  adjList = ['abdomeFrontAdj','abdomeSideAdj','spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj','grp_chestAroundAdj']
-  if self.exCheck(adjList) :
+  grpList = ['grp_abdomeAroundAdj','grp_spine1AroundAdj','grp_spine2AroundAdj','grp_chestAroundAdj']
+  if self.exCheck(grpList) :
    sys.stderr.write('Torso around adjuster already exist.')
   else :
+   cmds.createNode('transform',name='grp_abdomeAroundAdj',parent='rootAdj',skipSelect=1)
+   cmds.createNode('transform',name='grp_spine1AroundAdj',parent='spine1Adj',skipSelect=1)
+   cmds.createNode('transform',name='grp_spine2AroundAdj',parent='spine2Adj',skipSelect=1)
    cmds.createNode('transform',name='grp_chestAroundAdj',parent='chestAdj',skipSelect=1)
-   self.createAdj('abdomeFront','rootAdj',[2,0,0,1,1,1])
-   self.createAdj('abdomeSide','rootAdj',[0,0,0,1,1,1])
-   self.createAdj('spine1Front','spine1Adj',[2,0,0,1,1,1])
-   self.createAdj('spine1Side','spine1Adj',[0,0,0,1,1,1])
-   self.createAdj('spine2Front','spine2Adj',[2,0,0,1,1,1])
-   self.createAdj('spine2Side','spine2Adj',[0,0,0,1,1,1])
-   self.createAdj('chestFrontLow','grp_chestAroundAdj',[2,0,0,1,1,1])
-   self.createAdj('chestFrontUp','grp_chestAroundAdj',[2,0,0,1,1,1])
-   self.createAdj('chestSideLow','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestSideUp','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestRearLow','grp_chestAroundAdj',[0,0,0,1,1,1])
-   self.createAdj('chestRearUp','grp_chestAroundAdj',[0,0,0,1,1,1])
+   self.createAdj('abdomeFront','grp_abdomeAroundAdj',[2,0,0,1,1,1],'noLable')
+   self.createAdj('abdomeSide','grp_abdomeAroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('abdomeRear','grp_abdomeAroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('spine1Front','grp_spine1AroundAdj',[2,0,0,1,1,1],'noLable')
+   self.createAdj('spine1Side','grp_spine1AroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('spine1Rear','grp_spine1AroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('spine2Front','grp_spine2AroundAdj',[2,0,0,1,1,1],'noLable')
+   self.createAdj('spine2Side','grp_spine2AroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('spine2Rear','grp_spine2AroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('chestFrontLow','grp_chestAroundAdj',[2,0,0,1,1,1],'noLable')
+   self.createAdj('chestFrontUp','grp_chestAroundAdj',[2,0,0,1,1,1],'noLable')
+   self.createAdj('chestSideLow','grp_chestAroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('chestSideUp','grp_chestAroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('chestRearLow','grp_chestAroundAdj',[0,0,0,1,1,1],'noLable')
+   self.createAdj('chestRearUp','grp_chestAroundAdj',[0,0,0,1,1,1],'noLable')
    cmds.addAttr('chestFrontLowAdj',longName='jointNumber',attributeType='long')
    cmds.addAttr('chestSideLowAdj',longName='jointNumber',attributeType='long')
    cmds.connectAttr('chestAdj.jointNumber','chestFrontLowAdj.jointNumber')
    cmds.connectAttr('chestAdj.jointNumber','chestSideLowAdj.jointNumber')
    self.curveCtrled('gLine_chestFront',['abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj','chestFrontLowAdj'],2)
    self.curveCtrled('gLine_chestSide',['abdomeSideAdj','spine1SideAdj','spine2SideAdj','chestSideLowAdj'],2)
-   self.adjusterPosition('abdomeFrontAdj','abdomeSideAdj','chestFrontLowAdj','chestFrontUpAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj')
-   self.adjusterPosition('spine1FrontAdj','spine1SideAdj','spine2FrontAdj','spine2SideAdj')
-   crvCvList = ['chestSideUpAdj','chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj','chestSideLowAdj']
+   self.adjusterPosition('abdomeFrontAdj','abdomeSideAdj','abdomeRearAdj')
+   self.adjusterPosition('spine1FrontAdj','spine1SideAdj','spine1RearAdj','spine2FrontAdj','spine2SideAdj','spine2RearAdj')
+   self.adjusterPosition('chestFrontLowAdj','chestFrontUpAdj','chestSideLowAdj','chestSideUpAdj','chestRearLowAdj','chestRearUpAdj')
+   crvCvList = ['chestSideUpAdj','chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj','chestRearUpAdj','chestRearLowAdj','chestSideLowAdj']
    self.guildCrv('crv_chestFrontAdj',crvCvList,'grp_chestAroundAdj')
   if cmds.checkBox('cb_wrTorsoAround',q=1,value=1) == 0 :
-   cmds.delete(adjList)
+   cmds.delete(grpList)
 
 ##############################################################################################################
 ############################################## Joint Create Phase ############################################
@@ -6218,7 +6228,12 @@ class warRig:
   cmds.setAttr(jnj+'.overrideEnabled',1)
   cmds.setAttr(jnj+'.overrideColor',22)
   if len(a)>0 :
-   if a[0] != 'none' :
+   if a[0] == 'noLable' : 
+    jnjs = cmds.createNode('locator',parent=jnj,name=jn+'AdjShape',skipSelect=1)
+    cmds.setAttr(jnjs+'.overrideEnabled',1)
+    cmds.setAttr(jnjs+'.overrideColor',25)
+    cmds.setAttr(jnj+'.drawLabel',0)
+   elif a[0] != 'none' :
     if a[0] == 'fingerPlane' :
      cmds.curve(d=1,p=[(0,-.5,0),(0,.5,0),(1,-.5,0),(0,-.5,0),(1,.5,0),(1,-.5,0),(0,.5,0),(1,.5,0)],k=[0,1,2,3,4,5,6,7],name=jn+'AdjS')
     if a[0] == 'fingerPlaneZ' :
