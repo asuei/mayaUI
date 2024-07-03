@@ -31,7 +31,6 @@ class warRig:
   cmds.optionMenu('limbMenu',label='',changeCommand=self.limbMenuCmd,enable=0)
   #cmds.optionMenu('limbMenu',label='',changeComma nd=self.limbMenuCmd)
   cmds.optionMenu('extraMenu1',label='',changeCommand=self.extraMenu1Cmd)
-  cmds.menuItem( label='torsoAround')
   cmds.menuItem( label='extraArm')
   cmds.menuItem( label='extraLeg')
   cmds.menuItem( label='downBelow')
@@ -113,7 +112,7 @@ class warRig:
   cmds.checkBox('cb_wrTail',label='tail',value=cmds.objExists('tailAdj'),changeCommand=self.extra_tail)
   cmds.checkBox('cb_wrEar',label='ear',value=cmds.objExists('earRootAdj'),changeCommand=self.extra_ear)
   cmds.checkBox('cb_wrTongue',label='tongue',value=cmds.objExists('tongueAdj'),changeCommand=self.extra_tongue)
-  cmds.checkBox('cb_wrTorsoAround',label='torsoAround',changeCommand=self.extra_torsoAround)
+  cmds.checkBox('cb_wrTorsoAround',label='torsoAround',value=self.exCheck(['grp_abdomeAroundAdj','grp_spine1AroundAdj','grp_spine2AroundAdj','grp_chestAroundAdj']),changeCommand=self.extra_torsoAround)
   cmds.checkBox(label='extra arm')
   cmds.checkBox(label='extra leg')
   cmds.checkBox(label='downBelow')
@@ -520,50 +519,57 @@ class warRig:
   if cmds.objExists('faceAdj') == 0 :
    cmds.createNode('transform',name='grp_faceAdj',parent='headAdj',skipSelect=1)
    self.createAdj('face','grp_faceAdj',[2,0,0,1,1,1],'none')
+   self.posingSet(['faceAdj'],'faceAdj')
    cmds.addAttr('faceAdj',longName='level',attributeType='long',keyable=1)
-   cmds.createNode('transform',name='grp_faceDetailAdj',parent='faceAdj',skipSelect=1)
   
   # eye adj
   if fclv >= 1 and cmds.objExists('eyeAdj') == 0 :
    cmds.createNode('transform',name='eyeAdj_cons',parent='faceAdj',skipSelect=1)
    self.createAdj('eye','eyeAdj_cons',[0,0,0,0,0,0],'sphere')
    self.createAdj('sight','eyeAdj',[0,0,0,1,1,1],'none')
+   self.posingSet(['eyeAdj','sightAdj'],'faceAdj')
 
   # jaw adj
   if fclv >= 1  and cmds.objExists('jawAdj') == 0 :
    cmds.createNode('transform',name='jawAdj_cons',parent='faceAdj',skipSelect=1)
-   cmds.parentConstraint('headAdj','jawAdj_cons')
+   #cmds.parentConstraint('headAdj','jawAdj_cons')
    self.createAdj('jaw','jawAdj_cons',[2,0,0,0,0,0],'jaw')
    self.createAdj('jawTip','jawAdj',[2,0,0,1,1,1],'faceSpot')
    cmds.createNode('transform',name='jawTipAdj_v',parent='jawAdj_cons',skipSelect=1)
    cmds.pointConstraint('jawTipAdj','jawTipAdj_v')
+   self.posingSet(['jawAdj','jawTipAdj'],'faceAdj')
+  
+  if fclv >= 1 :
+   if cmds.objExists('grp_faceBasicAdj') == 0 :
+    cmds.createNode('transform',name='grp_faceBasicAdj',parent='faceAdj',skipSelect=1)
+    
+  if fclv >= 3 :
+   if cmds.objExists('grp_faceDetailAdj') == 0 :
+    cmds.createNode('transform',name='grp_faceDetailAdj',parent='faceAdj',skipSelect=1)
   
   # basic eyelid adj
-  if cmds.objExists('uplidMainAdj') == 0 :
-   if cmds.objExists('lidAdj_cons') == 0 :
-    cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj')
-    cmds.parentConstraint('headAdj','lidAdj_cons')
-   self.createAdj('uplidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
-   
-  if cmds.objExists('lowlidMainAdj') == 0 :
-   if cmds.objExists('lidAdj_cons') == 0 :
-    cmds.createNode('transform',name='lidAdj_cons',parent='eyeAdj')
-    cmds.parentConstraint('headAdj','lidAdj_cons')
-   self.createAdj('lowlidMain','lidAdj_cons',[0,0,0,0,0,0],'faceSpot')
+  nameList = ['uplidMain','lowlidMain']
+  grp = 'grp_lidAdj'
+  if cmds.objExists(grp) == 0 :
+   cmds.createNode('transform',name=grp,parent='grp_faceBasicAdj',skipSelect=1)
+   #cmds.parentConstraint('headAdj','lidAdj_cons')
+   self.createAdj('uplidMain',grp,[0,0,0,0,0,0],'faceSpot')
+   self.createAdj('lowlidMain',grp,[0,0,0,0,0,0],'faceSpot')
+   self.posingSet(['uplidMainAdj','lowlidMainAdj'],'faceAdj')
    
   # Advance eyelid adj
   nameList = ['canthusIn','uplidIn1','uplidOut1','lowlidIn1','lowlidOut1','canthusOut']
   grp = 'grp_advLidAdj'
   adjList = [ x+'Adj' for x in nameList ]
-  if self.exCheck(adjList) == 0 :
+  if cmds.objExists(grp) == 0 :
    if fclv >= 3 :
-    cmds.createNode('transform',name=grp,parent='lidAdj_cons',skipSelect=1)
+    cmds.createNode('transform',name=grp,parent='grp_faceDetailAdj',skipSelect=1)
     for adj in nameList : self.createAdj(adj,grp,[0,0,0,0,0,0],'faceSpot')
     self.posingSet(adjList,'faceAdj')
     crvCvList = [adjList[0],adjList[1],'uplidMainAdj',adjList[2],adjList[5],adjList[4],'lowlidMainAdj',adjList[3],adjList[0]]
     self.guildCrv('crv_uplidAdj',crvCvList,grp)
   else :
-   if fclv < 3 :
+   if fclv < 3:
     self.posingRem(adjList,'faceAdj')
     cmds.delete(grp)
     
@@ -605,7 +611,7 @@ class warRig:
     cmds.delete(grp)
 
   # brows around adj
-  nameList = ['glabella','browA','browB','browC','temple','cheekboneC','cheekboneB','cheekboneA']
+  nameList = ['glabella','browA','browB','browC','browD','temple','cheekboneC','cheekboneB','cheekboneA']
   grp = 'grp_browsAdj'
   adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
@@ -717,7 +723,7 @@ class warRig:
     cmds.delete(grp)
     
   # cheek adj
-  nameList = ['cheekA','cheekB','cheekC','gillA','gillB','gillC']
+  nameList = ['cheekA','cheekB','cheekC','gillA','gillB','gillC','brush']
   grp = 'grp_cheekAdj'
   adjList = [ x+'Adj' for x in nameList ]
   if self.exCheck(adjList) == 0 :
@@ -755,6 +761,12 @@ class warRig:
     self.guildCrv('crv_cheekCAdj',crvCvList,grp)
     crvCvList = ['cheekboneAAdj','nasolabialFoldAAdj','noseBridgeAdj']
     self.guildCrv('crv_NoseHBAdj',crvCvList,grp)
+    crvCvList = ['uplidMainAdj','hoodBAdj','browBAdj','contourUpBAdj']
+    self.guildCrv('crv_browsMidAdj',crvCvList,grp)
+    crvCvList = ['canthusOutAdj','hoodDAdj','templeAdj','contourSideBAdj']
+    self.guildCrv('crv_templeAdj',crvCvList,grp)
+    crvCvList = ['nasolabialFoldBAdj','brushAdj','cheekAAdj','gillAAdj','contourSideBAdj']
+    self.guildCrv('crv_brushAdj',crvCvList,grp)
   else :
    if fclv < 2 :
     cmds.delete(grp)
@@ -959,7 +971,7 @@ class warRig:
    adjDict['neckAdj'] = (0,17.6,-4.9)
    adjDict['topAdj'] = (0,16.4,0)
    # facial Adj
-   adjDict['faceAdj'] = (0,0,0)
+   adjDict['faceAdj'] = (0,0,1)
    adjDict['eyeAdj'] = (3.1,3.8,12.2)
    adjDict['sightAdj'] = (0,0,1.5)
    adjDict['jawAdj'] = (0,-2,5.5)
@@ -968,7 +980,8 @@ class warRig:
    adjDict['glabellaAdj'] = (0,5,14.6)
    adjDict['browAAdj'] = (1.5,5.1,14.4)
    adjDict['browBAdj'] = (3.5,5.5,13.9)
-   adjDict['browCAdj'] = (5.3,5.2,12.6)
+   adjDict['browCAdj'] = (4.4,5.3,13.2)
+   adjDict['browDAdj'] = (5.3,5.2,12.6)
    
    adjDict['uplidMainAdj'] = (3.2,4.4,13.7)
    adjDict['lowlidMainAdj'] = (3.2,3.2,13.7)
@@ -1036,6 +1049,7 @@ class warRig:
    adjDict['gillAAdj'] = (6.6,1,10.4)
    adjDict['gillBAdj'] = (6.6,-0.7,9.4)
    adjDict['gillCAdj'] = (6.2,-3.1,8.8)
+   adjDict['brushAdj'] = (4.2,0,13.2)
    
    adjDict['modiolusAAdj'] = (3,-3.1,13.5)
    adjDict['modiolusBAdj'] = (3,-3.8,13.4)
@@ -1323,7 +1337,7 @@ class warRig:
   self.pelvisSplitJo = 'jo_pelvisL'
   self.downBelong = ['jo_penis','jo_penisTip','jo_scrotumL','jo_scrotumTipL']
   self.spineJo = ['jo_spine0','jo_spine1','jo_spine2','jo_spine3','jo_spine4','jo_spine5','jo_spine6','jo_spine7','jo_spine8','jo_spine9']
-  self.spineFront = [ 'jo_spine0F','jo_spine1F','jo_spine2F','jo_spine3F','jo_spine4F','jo_spine5F','jo_spine6F','jo_spine7F','jo_spine8F','jo_spine9F' ]
+  self.spineFront = [ 'jo_spine0FL','jo_spine1FL','jo_spine2FL','jo_spine3FL','jo_spine4FL','jo_spine5FL','jo_spine6FL','jo_spine7FL','jo_spine8FL','jo_spine9FL' ]
   self.spineSide = [ 'jo_spine0L','jo_spine1L','jo_spine2L','jo_spine3L','jo_spine4L','jo_spine5L','jo_spine6L','jo_spine7L','jo_spine8L','jo_spine9L' ]
   self.tailJo = ['jo_tail0','jo_tail1','jo_tail2','jo_tail3','jo_tail4','jo_tail5','jo_tail6','jo_tail7','jo_tail8','jo_tail9']
   self.tailTip = 'jo_tailTip'
@@ -1487,6 +1501,7 @@ class warRig:
 
 # Create amd Posing joints
  def createSkeleton(self,*a):
+ 
   topPos = 0.0
   if cmds.objExists('rootAdj') == 0 :
    sys.stderr.write('No adjsuter.')
@@ -1509,11 +1524,12 @@ class warRig:
 
   # Torso Joint
   allList = [ ('rootAdj',self.rootJo,'',[]) ]
-  allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')))  
-  allList.append(('chestFrontLowAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj')))
+  allList.append(('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj'),'spine'))  
+  #allList.append(('chestFrontLowAdj',self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj')))
+  allList.append(('chestFrontLowAdj',self.spineFront,self.spineJo+self.chestJoList,'flowCenter',self.chestRound[0],('gLine_chestFront','abdomeFrontAdj','spine1FrontAdj','spine2FrontAdj'),('abdomeSideAdj','spine1SideAdj','spine2SideAdj')))
   allList.append(('chestSideLowAdj',self.spineSide,self.spineJo+self.chestJoList,self.chestRound[1],('gLine_chestSide','abdomeSideAdj','spine1SideAdj','spine2SideAdj')))
   #allList.append((['abdomeFrontAdj','chestFrontLowAdj'],self.spineFront,self.spineJo+self.chestJoList,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')))
-  allList.append(('chestFrontUpAdj','jo_chestFrontL',self.chestJo,'avgTransSnapNormal',['chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj']))
+  allList.append(('chestFrontUpAdj','jo_chestFrontL',self.chestJo,'surfaceCenter',['chestFrontUpAdj','chestFrontLowAdj','chestSideLowAdj','chestSideUpAdj']))
   
   neckDir = [0,1,0]
   if cmds.getAttr('neckAdj.tz')>cmds.getAttr('neckAdj.ty') : neckDir = [0,0,1]
@@ -1695,12 +1711,9 @@ class warRig:
           if xp != y : cmds.parent(x[1],y)
           break
 
- #allList += [ ('chestAdj',self.spineJo,self.rootJo,self.chestJo,('gLine_spineRebuild','spineAdj','spine1Adj','spine2Adj')) ]
- #allList += [ ('chestFrontAdj',self.spineFront,self.spineJo,self.chestRound[0],('gLine_chestFront','spineAdj','spine1FrontAdj','spine2FrontAdj')) ]
     if type(x[1]) == list :
      print x[0]
      pNum = cmds.getAttr(x[0]+'.jointNumber')
-     #pNum = cmds.getAttr('chestAdj.jointNumber')
      if type(x[2]) == str : pList = x[1][:] ; pList.insert(0,x[2]) # define created joint parent to upper hierachy joint
      if type(x[2]) == list :
       pList = x[2][:] # or parent to specific joint in list = x[2]
@@ -1739,10 +1752,45 @@ class warRig:
      cmds.delete(x[1])
      if cmds.objExists(self.L2R(x[1])) :	
 	  cmds.delete(self.L2R(x[1]))
-
+  
+  
 # locate joints loop
   invis = [self.jawJo[1]]
   boxStyle = [self.faceJo]
+  
+  def locateListJoint(exAdj,joNameList,endJo,parentNode,method='normal',adjList=[],gCrv=None):
+   spineList = []
+   for y in joNameList :
+    if cmds.objExists(y):
+     spineList.append(y)
+   print (spineList)
+   if cmds.objExists(adjList[0]):
+     cmds.xform(joNameList[0],t=cmds.xform(adjList[0],q=1,ws=1,t=1),ws=1,a=1)
+     cmds.xform(joNameList[0],ro=cmds.xform(adjList[1],q=1,ws=1,ro=1),ws=1,a=1)
+   if len(spineList) == 2 :
+    pos1 = cmds.xform(adjList[1],q=1,ws=1,t=1)
+    pos2 = cmds.xform(exAdj,q=1,ws=1,t=1)
+    pos = [ (pos1[0]+pos2[0])/2 , (pos1[1]+pos2[1])/2 , (pos1[2]+pos2[2])/2 ]
+    cmds.xform(spineList[1],t=pos,ws=1,a=1)
+    cmds.xform(endJo,t=cmds.xform(exAdj,q=1,ws=1,t=1),ws=1,a=1)
+   if len(spineList) == 3 :
+    cmds.xform(spineList[1],t=cmds.xform(adjList[1],q=1,ws=1,t=1),ro=cmds.xform(adjList[1],q=1,ws=1,ro=1),worldSpace=1,a=1)
+    cmds.xform(spineList[2],t=cmds.xform(adjList[2],q=1,ws=1,t=1),ro=cmds.xform(adjList[1],q=1,ws=1,ro=1),worldSpace=1,a=1)
+   if len(spineList) > 3 :
+    tempList = []
+    for i in range(len(spineList)) :
+     if len(x[4])>4 :
+      tmp = cmds.createNode('transform') ; tempList.append(tmp)
+      cmds.xform(tmp,t=cmds.pointOnCurve(gCrv,parameter=(1.0/(len(spineList))*(i+1)),position=1),ws=1,a=1)
+      tempList.append(cmds.aimConstraint(tmp,spineList[i],aimVector=x[4][4],upVector=[0,1,0],worldUpType='none')[0])
+     else : cmds.xform(spineList[i],ro=[0,0,0],ws=1,a=1)
+     cmds.xform(spineList[i],t=cmds.pointOnCurve(gCrv,parameter=(1.0/(len(spineList))*i),position=1),ws=1,a=1)
+    #cmds.delete(tempList)
+   cmds.xform(endJo,t=cmds.xform(exAdj,q=1,ws=1,t=1),ws=1,a=1)
+   cmds.xform(endJo,ro=cmds.xform(exAdj,q=1,ws=1,ro=1),ws=1,a=1)
+
+  def locateListJointB(exAdj,joNameList,endJo,parentNode,method='normal',adjList=[],gCrv=None):
+   pass
   
   for x in exList :
    print str(x[0])+" exist. Process it"
@@ -1784,54 +1832,36 @@ class warRig:
     cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
     cmds.makeIdentity(x[1],apply=True,translate=0,rotate=1,scale=0)
     cmds.delete(pcf[0])
-   if len(x) >= 4 and x[3] == 'avgTransSnapNormal' :
-    pCons = cmds.pointConstraint(x[4][0],x[4][3],x[1],weight=1)
-    cmds.pointConstraint(x[4][1],x[4][2],x[1],weight=3)
-    cmds.delete(pCons)
-    ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in x[4] ]
-    pcf = cmds.polyCreateFacet( p=ppList )
-    cmds.delete(cmds.normalConstraint(pcf[0],x[1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
+   
+   if len(x) >= 4 and x[3] == 'surfaceCenter' :
+    tList = []
+    for i in range(4):
+     a1 = cmds.createNode('transform',parent=x[2],skipSelect=1)
+     a2 = cmds.createNode('transform',parent=a1,skipSelect=1)
+     cmds.aimConstraint(x[4][i],a1,aimVector=[0,0,1],worldUpType='none')
+     cmds.pointConstraint(x[4][i],a2)
+     tList.append(a1)
+     tList.append(a2)
+    a1 = cmds.createNode('transform',parent=x[2],skipSelect=1)
+    pCons = cmds.orientConstraint(tList[0],tList[6],a1,weight=1)
+    pCons = cmds.orientConstraint(tList[2],tList[4],a1,weight=3)
+    a2 = cmds.createNode('transform',parent=a1,skipSelect=1)
+    zt1 = cmds.getAttr(tList[1]+'.tz')*0.125 + cmds.getAttr(tList[7]+'.tz') * 0.125
+    zt2 = cmds.getAttr(tList[3]+'.tz')*0.375 + cmds.getAttr(tList[5]+'.tz') * 0.375
+    cmds.setAttr(a2+'.tz',zt1+zt2)
+    pCons = cmds.parentConstraint(a2,x[1])
+    cmds.delete(pCons,a1,a2,tList)
     cmds.makeIdentity(x[1],apply=True,translate=0,rotate=1,scale=0)
-    cmds.delete(pcf[0])
 
    if x[1] in invis : cmds.setAttr(x[1]+'.drawStyle',2)
    if x[1] in boxStyle : cmds.setAttr(x[1]+'.drawStyle',1)
    
    if type(x[1]) == list :
-    print 'x = list'
     if len(x[1])>3 :
-     spineList = []
-     print x[1]
-     for y in x[1] :
-      print y
-      if cmds.objExists(y) :
-       spineList.append(y)
-     if cmds.objExists(x[4][1]) : 
-      cmds.xform(x[1][0],t=cmds.xform(x[4][1],q=1,ws=1,t=1),ws=1,a=1)
-      cmds.xform(x[1][0],ro=cmds.xform(x[4][2],q=1,ws=1,ro=1),ws=1,a=1)
-     print 'spineList is '
-     print spineList
-     if len(spineList) == 2 :
-      pos1 = cmds.xform(x[4][2],q=1,ws=1,t=1)
-      pos2 = cmds.xform(x[0],q=1,ws=1,t=1)
-      pos = [ (pos1[0]+pos2[0])/2 , (pos1[1]+pos2[1])/2 , (pos1[2]+pos2[2])/2 ]
-      cmds.xform(spineList[1],t=pos,ws=1,a=1)
-      cmds.xform(x[3],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
-     if len(spineList) == 3 :
-      cmds.xform(spineList[1],t=cmds.xform(x[4][2],q=1,ws=1,t=1),ro=cmds.xform(x[4][2],q=1,ws=1,ro=1),worldSpace=1,a=1)
-      cmds.xform(spineList[2],t=cmds.xform(x[4][3],q=1,ws=1,t=1),ro=cmds.xform(x[4][2],q=1,ws=1,ro=1),worldSpace=1,a=1)
-     if len(spineList) > 3 :
-      tempList = []
-      for i in range(len(spineList)) :
-       if len(x[4])>4 :
-        tmp = cmds.createNode('transform') ; tempList.append(tmp)
-        cmds.xform(tmp,t=cmds.pointOnCurve(x[4][0],parameter=(1.0/(len(spineList))*(i+1)),position=1),ws=1,a=1)
-        tempList.append(cmds.aimConstraint(tmp,spineList[i],aimVector=x[4][4],upVector=[0,1,0],worldUpType='none')[0])
-       else : cmds.xform(spineList[i],ro=[0,0,0],ws=1,a=1)
-       cmds.xform(spineList[i],t=cmds.pointOnCurve(x[4][0],parameter=(1.0/(len(spineList))*i),position=1),ws=1,a=1)
-      #cmds.delete(tempList)
-     cmds.xform(x[3],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
-     cmds.xform(x[3],ro=cmds.xform(x[0],q=1,ws=1,ro=1),ws=1,a=1)
+     print('process!!!!')
+     if x[3] == 'flowCenter' :
+      locateListJointB(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[5][1],x[5][2],x[5][3]],endJo=x[4],gCrv=x[5][0],adjList2=x[6])
+     else : locateListJoint(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[4][1],x[4][2],x[4][3]],endJo=x[3],gCrv=x[4][0])
 
    if type(x[1]) == dict :
     if x[0] == 'uplidMainAdj' and cmds.objExists('eyeAdj') and cmds.objExists('lowlidMainAdj') :
@@ -1877,6 +1907,7 @@ class warRig:
      self.freezeRotate(x[1][0])
      cmds.xform(x[1][1],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
      cmds.setAttr(x[1][0]+'.radius',0.25)
+
 
 # if joint what will be ikHandle and have no rotate value
   sJoCd = [ [self.elbowJo[0],'.ry','.tx',self.wristJo[0]] , [self.kneeJo[0],'.rx','.ty',self.ankleJo[0]] ]
@@ -6345,7 +6376,7 @@ class warRig:
   if parent :
    cmds.createNode('joint',name=name,parent=parent,skipSelect=1)
   else :
-   cmds.createNode('joint',name=name)
+   cmds.createNode('joint',name=name,skipSelect=1)
   print 'Create ' + name + '.'
   if self.joId.get(name[3:]) != None :
    cmds.addAttr(name,longName='orderID',attributeType='long',keyable=1)
