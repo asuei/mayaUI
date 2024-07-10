@@ -4107,17 +4107,18 @@ class warRig:
      #else :
      # cmds.connectAttr('xCons_'+ctrl[i]+'.outputTranslateZ','ctrlCons_'+ctrl[i]+'Jaw.translateZ')
 
-# Cheek Controller self.cheekJo = ['jlF35_cheekL','jlF40_nasalisL','jlF45_gillL']
-  if self.exCheck(self.cheekJo):
-   x1 = cmds.xform(self.cheekJo[0],q=1,t=1,worldSpace=1)
-   x2 = cmds.xform(self.cheekJo[1],q=1,t=1,worldSpace=1)
+# Cheek Controller
+  if self.exCheck(['jo_cheekboneAL','jo_cheekboneBL']):
+   x1 = cmds.xform('jo_cheekboneAL',q=1,t=1,worldSpace=1)
+   x2 = cmds.xform('jo_cheekboneBL',q=1,t=1,worldSpace=1)
    dis = math.pow((x1[0]-x2[0]),2) + math.pow((x1[1]-x2[1]),2) + math.pow((x1[2]-x2[2]),2)
    dis = math.sqrt(dis)
    sa = [180,0] ; nsa = [90,-90]
    for i,s in enumerate(['L','R']) :
-    self.ctrlCircleH('ctrl_cheek'+s,ch*0.02,2,sa[i],2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+    #self.ctrlCircleH('ctrl_cheek'+s,ch*0.02,2,sa[i],2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+    self.ctrlSquareD3('ctrl_cheek'+s,ch*0.06,ch*0.015,2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
     cmds.parent('ctrlTrans_cheek'+s,'ctrl_facial')
-    cmds.matchTransform('ctrlTrans_cheek'+s,self.L2R(self.cheekJo[0],i))
+    cmds.matchTransform('ctrlTrans_cheek'+s,self.L2R('jo_cheekboneAL',i))
     cmds.setAttr('ctrlTrans_cheek'+s+'.translateZ',cmds.getAttr('ctrlTrans_cheek'+s+'.translateZ')*1.05)
     cmds.setAttr('ctrlTrans_cheek'+s+'.scale',dis*.5,dis*.5,dis*.5,type='double3')
     cmds.createNode('clamp',name='clp_cheekY'+s)
@@ -4127,19 +4128,9 @@ class warRig:
     cmds.setAttr('clp_cheekY'+s+'.maxR',1)
     cmds.setAttr('clp_cheekY'+s+'.minG',-1)
     cmds.setAttr('clp_cheekY'+s+'.maxG',0)
-    cmds.connectAttr('clp_cheekY'+s+'.outputR','grp_facial.cheekRaise'+s)
-	
-    self.ctrlCircleH('ctrl_nasalis'+s,ch*0.02,2,nsa[i],2,[0,1,1,0,0,0,0,0,0,0],[0.35,0.1,0.35])
-    cmds.parent('ctrlTrans_nasalis'+s,'ctrl_facial')
-    cmds.matchTransform('ctrlTrans_nasalis'+s,self.L2R(self.cheekJo[1],i))
-    cmds.setAttr('ctrlTrans_nasalis'+s+'.rotateY',45)
-    cmds.setAttr('ctrlTrans_nasalis'+s+'.scale',dis*.5,dis*.5,dis*.5,type='double3')
-    cmds.setAttr('ctrl_nasalis'+s+'.translateZ',dis*0.1,lock=1,keyable=0,channelBox=0)
-    cmds.connectAttr('ctrl_nasalis'+s+'.translateY','clp_cheekY'+s+'.inputB')
-    cmds.setAttr('clp_cheekY'+s+'.minB',0)
-    cmds.setAttr('clp_cheekY'+s+'.maxB',1)
-    cmds.connectAttr('clp_cheekY'+s+'.outputB','grp_facial.noseWrinkle'+s)
-  
+    #cmds.connectAttr('clp_cheekY'+s+'.outputR','grp_facial.cheekRaise'+s)
+
+# lip = mouth Controller
   if self.exCheck(self.lipJo):
    csa = [-90,90] ; usa = [0,180] ; lsa = [180,0] ; ctrlDir = [1,-1]
    #cLoc = [self.lipJo[2],self.L2R(self.lipJo[2])]
@@ -4152,7 +4143,8 @@ class warRig:
    dis = math.pow((x1[0]-x2[0]),2) + math.pow((x1[1]-x2[1]),2) + math.pow((x1[2]-x2[2]),2)
    dis = math.sqrt(dis)
    for i,s in enumerate(['L','R']) :
-    self.ctrlCircleH('ctrl_mouthCorner'+s,ch*0.03,2,csa[i],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    #self.ctrlCircleH('ctrl_mouthCorner'+s,ch*0.03,2,csa[i],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlCorner('ctrl_mouthCorner'+s,ch*0.07,'Z',2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_mouthCorner'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_mouthCorner'+s,cLoc[i])
     cmds.setAttr('ctrlCons_mouthCorner'+s+'.translateZ',ch*0.02*ctrlDir[i])
@@ -4306,6 +4298,14 @@ class warRig:
       cmds.connectAttr('v_tongueL'+str(i)+'.rotate',self.tongueLJo[i]+'.rotate')
       cmds.connectAttr('v_tongueR'+str(i)+'.rotate',self.tongueRJo[i]+'.rotate')
 	
+# tear(temp) Controller
+  if self.exCheck('jo_noseAlaAL'):
+   sd = ['L','R']
+   for j,s in enumerate(sd) :
+    self.ctrlFingerY('ctrl_tear'+s,ch*0.01,ch*-0.04,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    cmds.parent('ctrlTrans_tear'+s,'ctrl_facial')
+    cmds.matchTransform('ctrlTrans_tear'+s,'jo_noseAlaA'+s)
+    
 # limd Controllers
   self.defineBType()
   if self.anyCheck([self.hipJo[0],self.hipJo[1],self.hip2Jo[0],self.shoulder2Jo[0]]) :
@@ -6476,6 +6476,13 @@ class warRig:
   ctrl = cmds.curve(d=1,p=[(x,y,z),(x,-y,z),(-x,-y,z),(-x,y,z),(x,y,z),(x,y,-z),(x,-y,-z),(x,-y,z),(x,-y,-z),(-x,-y,-z),(-x,y,-z),(x,y,-z),(-x,y,-z),(-x,y,z),(-x,-y,z),(-x,-y,-z)],k=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],name=n)
   self.ctrlOptimize(n,a)
   
+ def ctrlSquareD3(self,n,x,y,*a): # use for facial chin and cheek
+  x = x * 0.5
+  y = y * 0.5
+  ctrl = cmds.curve(d=3,p=[(0,y,0),(x,y,0),(x,0,0),(x,-y,0),(0,-y,0),(-x,-y,0),(-x,0,0),(-x,y,0)],k=[0,0,0,1,2,3,4,5,5,5],name=n)
+  cmds.closeCurve(n,constructionHistory=0,replaceOriginal=1,preserveShape=0)
+  self.ctrlOptimize(n,a)
+  
  def ctrlSphere(self,n,x,*a):
   x = x * 0.5
   ctrl = cmds.curve(d=1,p=[(0,0,x),(x*.7,0,x*.7),(x,0,0),(x*.7,0,x*-.7),(0,0,-x),(x*-.7,0,x*-.7),(-x,0,0),(x*-.7,0,x*.7),(0,0,x),(0,x*.7,x*.7),(0,x,0),(0,x*.7,x*-.7),(0,0,-x),(0,x*-.7,x*-.7),(0,-x,0),(0,x*-.7,x*.7),(0,0,x),(0,x*.7,x*.7),(0,x,0),(x*-.7,x*.7,0),(-x,0,0),(x*-.7,x*-.7,0),(0,-x,0),(x*.7,x*-.7,0),(x,0,0),(x*.7,x*.7,0),(0,x,0)],k=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],name=n)
@@ -6518,7 +6525,7 @@ class warRig:
   ctrl = mel.eval(ce)
   self.ctrlOptimize(name,a)
 
- def ctrlCircleH(self,name,radius,vector,startAngle,*a):
+ def ctrlCircleH(self,name,radius,vector,startAngle,*a): # use for fk ctrl
   sa = startAngle
   ce = 'curve -d 1 '
   i = 0
@@ -6678,6 +6685,14 @@ class warRig:
   if direction in ['z','+z','-z'] : temp = y[:] ; y = z[:] ; z = temp[:]
   for i in range(len(x)): pList.append((x[i],y[i],z[i]))
   cmds.curve(degree=1,p=pList,k=[0,1,2,3,4,5,6,7,8,9,10,11],name=name)
+  self.ctrlOptimize(name,a)
+  
+ def ctrlCorner(self,name,radius,direction='Z',*a): # use for mouth corner
+  r = radius
+  x = [0,r*0.2,r*1.267,r*0.2,0,r*-.2,r*-1.267,r*-.2]
+  y = [r*1.267,r*0.2,0,r*-.2,r*-1.267,r*-.2,0,r*0.2]
+  cmds.curve(degree=3,p=[(x[0],y[0],0),(x[1],y[1],0),(x[2],y[2],0),(x[3],y[3],0),(x[4],y[4],0),(x[5],y[5],0),(x[6],y[6],0),(x[7],y[7],0)],k=[0,0,0,1,2,3,4,5,5,5],name=name)
+  cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1,preserveShape=0)
   self.ctrlOptimize(name,a)
   
  def ctrlJaw(self,name,rJo,tJo,*a):
