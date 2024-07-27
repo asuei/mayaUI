@@ -14,7 +14,7 @@ class as_maxMinConnect :
   cmds.textField('tf_mmcNN')
   cmds.separator('sprt_agr',style='in')
   cmds.button('btn_mmcT',label='Translate',height=30,command=self.transferEnforce)
-  cmds.button('btn_mmcR',label='Rotate',height=30,command=self.transferEnforce)
+  cmds.button('btn_mmcR',label='Rotate',height=30,command=self.transferEnforceR)
 
   cmds.formLayout('form_mmcMain',e=1,af=[('txt_mmcNN','top',5),('txt_mmcNN','left',5)])
   cmds.formLayout('form_mmcMain',e=1,ac=('btn_mmcNN','top',5,'txt_mmcNN'),af=('btn_mmcNN','left',5))
@@ -33,7 +33,6 @@ class as_maxMinConnect :
   cmds.textField('tf_mmcNN',e=1,text=lss)
 
  def transferEnforce(self,*a):
-  print attr
   n = cmds.textField('tf_mmcNN',q=1,text=1)
   sl = cmds.ls(selection=1)
   sL = cmds.ls(selection=1,long=1)
@@ -68,6 +67,41 @@ class as_maxMinConnect :
     cmds.connectAttr(cds+'.outColor.outColorG',clamp+'.min.min'+b)
 
    if(i==len(sl)-3) : cmds.connectAttr(clampList[-1]+'.output',sL[-1]+'.translate')
-  return 0
+
+ def transferEnforceR(self,*a):
+  n = cmds.textField('tf_mmcNN',q=1,text=1)
+  sl = cmds.ls(selection=1)
+  sL = cmds.ls(selection=1,long=1)
+  
+  clampList = []
+  for i in range(len(sl)-2):
+   
+   plus = cmds.createNode('plusMinusAverage',name='plus_'+n+'Ro',skipSelect=1)
+   if i == 0 : cmds.connectAttr(sL[i]+'.rotate',plus+'.input3D[0]')
+   else : cmds.connectAttr(clampList[-1]+'.output',plus+'.input3D[0]')
+   cmds.connectAttr(sL[i+1]+'.rotate',plus+'.input3D[1]')
+   clamp = cmds.createNode('clamp',name='clp_'+n+'Ro',skipSelect=1)
+   clampList.append(clamp)
+   cmds.connectAttr(plus+'.output3D',clamp+'.input')
+
+   listA = ['X','Y','Z'] ; listB = ['R','G','B']
+   for a,b in zip(listA,listB):
+    cds = cmds.createNode('condition',name='cds_'+n+a+'Ro',skipSelect=1)
+    cmds.setAttr(cds+'.operation',2)
+    if i == 0 :
+     cmds.connectAttr(sL[i]+'.rotate'+a,cds+'.firstTerm')
+     cmds.connectAttr(sL[i]+'.rotate'+a,cds+'.colorIfTrue.colorIfTrueR')
+     cmds.connectAttr(sL[i]+'.rotate'+a,cds+'.colorIfFalse.colorIfFalseG')
+    else :
+     cmds.connectAttr(clampList[i-1]+'.output'+b,cds+'.firstTerm')
+     cmds.connectAttr(clampList[i-1]+'.output'+b,cds+'.colorIfTrue.colorIfTrueR')
+     cmds.connectAttr(clampList[i-1]+'.output'+b,cds+'.colorIfFalse.colorIfFalseG')
+    cmds.connectAttr(sL[i+1]+'.rotate'+a,cds+'.secondTerm')
+    cmds.connectAttr(sL[i+1]+'.rotate'+a,cds+'.colorIfFalse.colorIfFalseR')
+    cmds.connectAttr(sL[i+1]+'.rotate'+a,cds+'.colorIfTrue.colorIfTrueG')
+    cmds.connectAttr(cds+'.outColor.outColorR',clamp+'.max.max'+b)
+    cmds.connectAttr(cds+'.outColor.outColorG',clamp+'.min.min'+b)
+
+   if(i==len(sl)-3) : cmds.connectAttr(clampList[-1]+'.output',sL[-1]+'.rotate')
 
 as_maxMinConnect()
