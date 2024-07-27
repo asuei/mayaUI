@@ -1860,7 +1860,7 @@ class warRig:
     if len(x[1])>3 :
      print('process!!!!')
      if x[3] == 'flowCenter' :
-      locateListJointB(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[5][1],x[5][2],x[5][3]],endJo=x[4],gCrv=x[5][0],adjList2=x[6])
+      locateListJointB(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[5][1],x[5][2],x[5][3]],endJo=x[4],gCrv=x[5][0])
      else : locateListJoint(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[4][1],x[4][2],x[4][3]],endJo=x[3],gCrv=x[4][0])
 
    if type(x[1]) == dict :
@@ -3679,22 +3679,26 @@ class warRig:
 	  
      x = cmds.xform(eyeList[i],q=1,worldSpace=1,translation=1)
      eyeAngle = 0
-     #self.ctrlCircle('ctrl_'+nList[i],ch*0.03,2,2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
-     self.ctrlLocator('ctrl_'+nList[i],ch*0.05,2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+     #self.ctrlLocator('ctrl_'+nList[i],ch*0.05,2,[1,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+     self.ctrlArrow('ctrl_'+nList[i],ch*0.125,ch*0.015,'Z',2,[0,0,0,1,1,1,0,0,0,0],[0.35,0.1,0.35])
      #cmds.addAttr('ctrl_eyeL',longName='irisScale',attributeType='double',min=0,max=1,defaultValue=0,keyable=1)
      #cmds.addAttr('ctrl_eyeL',longName='pupilScale',attributeType='double',min=0,max=1,defaultValue=0,keyable=1)
      cmds.parent('ctrlTrans_'+nList[i],'ctrl_facial')
-     tn = cmds.createNode('transform',parent=eyeList[i],skipSelect=1)
-     if nList[i][-1] == 'R' : cmds.setAttr(tn+'.rotateX',180)
-     cmds.setAttr(tn+'.translateZ',cmds.getAttr(lidList[i][0]+'.translateZ')+cmds.getAttr(lidList[i][1]+'.translateZ'))
-     cmds.matchTransform('ctrlTrans_'+nList[i],tn)
-     cmds.delete(tn)
-     os = cmds.createNode('transform',name='ctrlAim_'+nList[i]+'Os',parent='ctrl_facial')
-     cmds.createNode('transform',name='ctrlAim_'+nList[i],parent=os)
-     cmds.matchTransform(os,eyeList[i],position=1)
-     cmds.setAttr(os+'.rotateX',rotX[i])
-     cmds.aimConstraint('ctrl_'+nList[i],'ctrlAim_'+nList[i],aimVector=aVec[i],upVector=aUp[i],worldUpType='none')
-     cmds.connectAttr('ctrlAim_'+nList[i]+'.rotate',eyeList[i]+'.rotate')
+     if nList[i][-1] == 'L' : cmds.matchTransform('ctrlTrans_'+nList[i],eyeList[i])
+     if nList[i][-1] == 'R' :
+      lSide = 'ctrlTrans_'+nList[i]
+      lSide = lSide[:-1]+'L'
+      t = cmds.getAttr(lSide+'.translate')[0]
+      ro = cmds.getAttr(lSide+'.rotate')[0]
+      cmds.setAttr('ctrlTrans_'+nList[i]+'.translate',-t[0],t[1],t[2],type='double3')
+      cmds.setAttr('ctrlTrans_'+nList[i]+'.rotate',ro[0],-ro[1],-ro[2],type='double3')
+     pinOs = cmds.createNode('transform',name='ctrlPinOs_'+nList[i],parent='ctrl_'+nList[i])
+     pin = cmds.createNode('transform',name='ctrlPin_'+nList[i],parent=pinOs)
+     cmds.matchTransform(pinOs,eyeList[i])
+     #cmds.setAttr(os+'.rotateX',rotX[i])
+     #cmds.orientConstraint('ctrl_'+nList[i],eyeList[i])
+     cmds.orientConstraint(pin,eyeList[i])
+     #cmds.connectAttr('ctrlAim_'+nList[i]+'.rotate',eyeList[i]+'.rotate')
    
    x = cmds.xform(eyeList[0],q=1,worldSpace=1,translation=1)
    if eyeAngle < 50 :
@@ -6685,6 +6689,11 @@ class warRig:
   if direction in ['z','+z','-z'] : temp = y[:] ; y = z[:] ; z = temp[:]
   for i in range(len(x)): pList.append((x[i],y[i],z[i]))
   cmds.curve(degree=1,p=pList,k=[0,1,2,3,4,5,6,7,8,9,10,11],name=name)
+  self.ctrlOptimize(name,a)
+  
+ def ctrlArrow(self,name,length,arrowSize,direction='Z',*a):
+  endPos = length - arrowSize
+  cmds.curve(degree=1,p=[(0,0,0),(0,0,length),(0,arrowSize,endPos),(0,0,length),(arrowSize,0,endPos),(0,0,length),(0,-arrowSize,endPos),(0,0,length),(-arrowSize,0,endPos)],k=[0,1,2,3,4,5,6,7,8],name=name)
   self.ctrlOptimize(name,a)
   
  def ctrlCorner(self,name,radius,direction='Z',*a): # use for mouth corner
