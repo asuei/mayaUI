@@ -974,101 +974,100 @@ class warRig:
    adjDict['faceAdj'] = (0,0,1)
    adjDict['eyeAdj'] = (3.1,3.8,12.2)
    adjDict['sightAdj'] = (0,0,1.5)
-   adjDict['jawAdj'] = (0,-2,5.5)
+   adjDict['jawAdj'] = (0,-2,4.5)
    adjDict['jawTipAdj'] = (0,-5.1,8.5)
    
-   adjDict['glabellaAdj'] = (0,5,14.6)
-   adjDict['browAAdj'] = (1.5,5.1,14.4)
-   adjDict['browBAdj'] = (3.5,5.5,13.9)
-   adjDict['browCAdj'] = (4.4,5.3,13.2)
-   adjDict['browDAdj'] = (5.3,5.2,12.6)
+   adjDict['glabellaAdj'] = (0,5,13.6)
+   adjDict['browAAdj'] = (1.3,5.1,13.4)
+   adjDict['browBAdj'] = (2.7,5.5,13.2)
+   adjDict['browCAdj'] = (4.2,5.4,12.4)
+   adjDict['browDAdj'] = (5.4,4.9,11.5)
    
-   adjDict['uplidMainAdj'] = (3.2,4.4,13.7)
-   adjDict['lowlidMainAdj'] = (3.2,3.2,13.7)
-   adjDict['canthusInAdj'] = (1.8,3.3,13.4)
-   adjDict['uplidIn1Adj'] = (2.4,4.2,13.6)
-   adjDict['uplidOut1Adj'] = (4.1,4.1,13.5)
-   adjDict['lowlidIn1Adj'] = (2.4,3.2,13.6)
-   adjDict['lowlidOut1Adj'] = (4,3.3,13.4)
-   adjDict['canthusOutAdj'] = (4.7,3.7,12.9)
+   adjDict['uplidMainAdj'] = (3.2,4.4,12.7)
+   adjDict['lowlidMainAdj'] = (3.2,3.2,12.7)
+   adjDict['canthusInAdj'] = (1.8,3.3,12.4)
+   adjDict['uplidIn1Adj'] = (2.4,4.2,12.6)
+   adjDict['uplidOut1Adj'] = (4.1,4.1,12.5)
+   adjDict['lowlidIn1Adj'] = (2.4,3.2,12.6)
+   adjDict['lowlidOut1Adj'] = (4,3.3,12.4)
+   adjDict['canthusOutAdj'] = (4.7,3.7,11.9)
    adjDict['thirdEyeAdj'] = (0,5.4,7.24)
    adjDict['thirdSightAdj'] = (0,0,2)
    adjDict['thirdUplidMainAdj'] = (0,5.76,8.93)
    adjDict['thirdLowlidMainAdj'] = (0,4.78,8.8)
    
-   
-   adjDict['upLipMAdj'] = (0,-3.2,14.9)
-   adjDict['upLipL1Adj'] = (1.3,-3.2,14.3)
-   adjDict['upLipL2Adj'] = (1.8,-3.3,14)
-   adjDict['cornerAdj'] = (2.3,-3.5,13.5)
-   adjDict['loLipL1Adj'] = (1.3,-3.9,14.4)
-   adjDict['loLipL2Adj'] = (1.8,-3.7,14)
-   adjDict['loLipMAdj'] = (0,-4,14.6)
+   adjDict['upLipMAdj'] = (0,-3.2,13.9)
+   adjDict['upLipL1Adj'] = (1.3,-3.2,13.3)
+   adjDict['upLipL2Adj'] = (1.8,-3.3,13)
+   adjDict['cornerAdj'] = (2.3,-3.5,12.5)
+   adjDict['loLipL1Adj'] = (1.3,-3.9,13.4)
+   adjDict['loLipL2Adj'] = (1.8,-3.7,13)
+   adjDict['loLipMAdj'] = (0,-4,13.6)
    adjDict['tongueAdj'] = (0,-2.4,4.9)
    adjDict['tongueTipAdj'] = (0,0.8,3.6)
    #adjDict['cheekAdj'] = (3.5,3.42,8.8)
    #adjDict['nasalisAdj'] = (1.75,1.85,9.9)
    #adjDict['gillAdj'] = (5,-.42,6.64)
-   adjDict['noseRootAdj'] = (0,3.5,14.5)
-   adjDict['noseBridgeAdj'] = (0.9,1.7,14.5)
-   adjDict['noseUnderAdj'] = (0,-1.5,15.1)
+   adjDict['noseRootAdj'] = (0,3.5,13.5)
+   adjDict['noseBridgeAdj'] = (0.9,1.7,13.5)
+   adjDict['noseUnderAdj'] = (0,-1.5,14.1)
    #adjDict['noseAlaAdj'] = (1.6,-1.4,8.2)
-   adjDict['noseAlaAAdj'] = (1.6,0,14.2)
-   adjDict['noseAlaBAdj'] = (1.5,-1.2,14.5)
-   adjDict['noseTipAdj'] = (0,-0.3,16.3)
-   adjDict['nasolabialFoldAAdj'] = (1.7,1.5,13.9)
-   adjDict['nasolabialFoldBAdj'] = (3,-0.3,13.7)
-   adjDict['nasolabialFoldCAdj'] = (3.9,-2.3,13.3)
-   adjDict['nasolabialFoldDAdj'] = (3.5,-3.9,12.8)
-   adjDict['nasolabialFoldEAdj'] = (2.8,-5.2,13.2)
-   adjDict['chinAAdj'] = (1.9,-5.6,13.8)
-   adjDict['chinBAdj'] = (0,-5.3,14.3)
+   adjDict['noseAlaAAdj'] = (1.6,0,13.2)
+   adjDict['noseAlaBAdj'] = (1.5,-1.2,13.5)
+   adjDict['noseTipAdj'] = (0,-0.3,15.3)
+   adjDict['nasolabialFoldAAdj'] = (1.7,1.5,12.9)
+   adjDict['nasolabialFoldBAdj'] = (3,-0.3,12.7)
+   adjDict['nasolabialFoldCAdj'] = (3.9,-2.3,12.3)
+   adjDict['nasolabialFoldDAdj'] = (3.5,-3.9,11.8)
+   adjDict['nasolabialFoldEAdj'] = (2.8,-5.2,12.2)
+   adjDict['chinAAdj'] = (1.9,-5.6,12.8)
+   adjDict['chinBAdj'] = (0,-5.3,13.3)
    
-   adjDict['canthusInBAdj'] = (1.1,3.4,14)
-   adjDict['hoodAAdj'] = (2.1,4.5,14)
-   adjDict['hoodBAdj'] = (3.4,4.8,13.8)
-   adjDict['hoodCAdj'] = (4.8,4.3,13)
-   adjDict['hoodDAdj'] = (5.3,3.8,12.3)
-   adjDict['lyingAAdj'] = (1.6,2.7,13.8)
-   adjDict['lyingBAdj'] = (2.8,2.4,13.6)
-   adjDict['lyingCAdj'] = (4.2,2.4,13.3)
-   adjDict['lyingDAdj'] = (5.1,2.9,12.6)
+   adjDict['canthusInBAdj'] = (1.1,3.4,13)
+   adjDict['hoodAAdj'] = (2.1,4.5,13)
+   adjDict['hoodBAdj'] = (3.4,4.8,12.8)
+   adjDict['hoodCAdj'] = (4.8,4.3,12)
+   adjDict['hoodDAdj'] = (5.3,3.8,11.3)
+   adjDict['lyingAAdj'] = (1.6,2.7,12.8)
+   adjDict['lyingBAdj'] = (2.8,2.4,12.6)
+   adjDict['lyingCAdj'] = (4.2,2.4,12.3)
+   adjDict['lyingDAdj'] = (5.1,2.9,11.6)
    
-   adjDict['cheekboneAAdj'] = (3,1.7,13.6)
-   adjDict['cheekboneBAdj'] = (4.8,1.4,12.8)
-   adjDict['cheekboneCAdj'] = (6.2,2.4,11.5)
-   adjDict['templeAdj'] = (6.4,3.9,11)
+   adjDict['cheekboneAAdj'] = (3,1.7,12.6)
+   adjDict['cheekboneBAdj'] = (4.8,1.4,11.8)
+   adjDict['cheekboneCAdj'] = (6.2,2.4,10.5)
+   adjDict['templeAdj'] = (6.4,3.9,10)
    
-   adjDict['corniceMAdj'] = (0,-2.3,15)
-   adjDict['corniceAAdj'] = (1.5,-2.7,14.6)
-   adjDict['corniceBAdj'] = (2.7,-2.4,14)
+   adjDict['corniceMAdj'] = (0,-2.3,14)
+   adjDict['corniceAAdj'] = (1.5,-2.7,13.6)
+   adjDict['corniceBAdj'] = (2.7,-2.4,13)
    
-   adjDict['cheekAAdj'] = (5.2,0.1,12.1)
-   adjDict['cheekBAdj'] = (5.2,-1.6,11.7)
-   adjDict['cheekCAdj'] = (5,-3.9,11)
-   adjDict['gillAAdj'] = (6.6,1,10.4)
-   adjDict['gillBAdj'] = (6.6,-0.7,9.4)
-   adjDict['gillCAdj'] = (6.2,-3.1,8.8)
-   adjDict['brushAdj'] = (4.2,0,13.2)
+   adjDict['cheekAAdj'] = (5.3,0.1,11.2)
+   adjDict['cheekBAdj'] = (5.2,-1.6,10.7)
+   adjDict['cheekCAdj'] = (5,-3.9,10)
+   adjDict['gillAAdj'] = (6.6,1,9.4)
+   adjDict['gillBAdj'] = (6.6,-0.7,8.4)
+   adjDict['gillCAdj'] = (6.2,-3.1,7.8)
+   adjDict['brushAdj'] = (4.2,0,12.2)
    
-   adjDict['modiolusAAdj'] = (3,-3.1,13.5)
-   adjDict['modiolusBAdj'] = (3,-3.8,13.4)
-   adjDict['submanAAdj'] = (1.5,-4.7,14.2)
-   adjDict['submanBAdj'] = (2.4,-4.5,13.6)
-   adjDict['submanMAdj'] = (0,-4.8,14.4)
+   adjDict['modiolusAAdj'] = (3,-3.1,12.5)
+   adjDict['modiolusBAdj'] = (3,-3.8,12.4)
+   adjDict['submanAAdj'] = (1.5,-4.7,13.2)
+   adjDict['submanBAdj'] = (2.4,-4.5,12.6)
+   adjDict['submanMAdj'] = (0,-4.8,13.4)
    
-   adjDict['contourUpAAdj'] = (0.0,10.4,13.4)
-   adjDict['contourUpBAdj'] = (3.3,10.4,12.9)
-   adjDict['contourUpCAdj'] = (5.9,9.7,10.7)
-   adjDict['contourUpDAdj'] = (7,8.4,8.7)
-   adjDict['contourSideAAdj'] = (7.7,6.4,6.5)
-   adjDict['contourSideBAdj'] = (8,4,5.4)
-   adjDict['contourSideCAdj'] = (7.8,1.4,5.6)
-   adjDict['contourSideDAdj'] = (7.1,-1.8,5.9)
-   adjDict['contourLowAAdj'] = (6.3,-4,7.1)
-   adjDict['contourLowBAdj'] = (5.3,-5.2,8.6)
-   adjDict['contourLowCAdj'] = (3.7,-6.2,10.9)
-   adjDict['contourLowDAdj'] = (1.8,-6.9,13.2)
+   adjDict['contourUpAAdj'] = (0.0,10.4,12.4)
+   adjDict['contourUpBAdj'] = (3.3,10.4,11.9)
+   adjDict['contourUpCAdj'] = (5.9,9.7,9.7)
+   adjDict['contourUpDAdj'] = (7,8.4,7.7)
+   adjDict['contourSideAAdj'] = (7.7,6.4,5.5)
+   adjDict['contourSideBAdj'] = (8,4,4.4)
+   adjDict['contourSideCAdj'] = (7.8,1.4,4.6)
+   adjDict['contourSideDAdj'] = (7.1,-1.8,4.9)
+   adjDict['contourLowAAdj'] = (6.3,-4,6.1)
+   adjDict['contourLowBAdj'] = (5.3,-5.2,7.6)
+   adjDict['contourLowCAdj'] = (3.7,-6.2,9.9)
+   adjDict['contourLowDAdj'] = (1.8,-6.9,12.2)
    # arm and leg adj
    adjDict['shoulderAdj'] = (1.3,14.6,-3.6)
    adjDict['armAdj'] = (19,0,-1.55)
@@ -1348,7 +1347,7 @@ class warRig:
   self.headJo = 'jo_head'
   self.topJo = 'jo_top'
   self.faceJo = 'jo_face'
-  self.browJo = ['jo_glabella','jo_browL','jo_browMidL','jo_browEndL']
+  self.browJo = ['jo_glabella','jo_browAL','jo_browBL','jo_browCL','jo_browDL']
   
   self.eyeJo = 'jo_eyeL'
   self.specJo = ['jlF21_specAL','jlF22_specBL']
@@ -1357,7 +1356,7 @@ class warRig:
   self.thirdEyeJo = 'jcF20_thirdeye'
 
 
-  self.lidJo = ['jo_upLidRotL','jo_upLidL','jo_loLidRotL','jo_loLidL']
+  self.lidJo = ['jo_upLidRotL','jo_upLidML','jo_loLidRotL','jo_loLidML']
   self.thirdLidJo = ['jo_thirdUpLidRot','jo_thirdUpLid','jo_thirdLoLidRotL','jo_thirdLoLidL']
   self.lidHalfJo = [['jlF25_upLidHalfRotL','jlF26_upLidHalfL','jlF29_loLidHalfRotL','jlF30_loLidHalfL'],[]]
   
@@ -1546,14 +1545,16 @@ class warRig:
   # Face Joint
   allList.append(('faceAdj',self.faceJo,self.headJo))
   allList.append(('eyeAdj',self.eyeJo,self.faceJo,['sightAdj',[0,0,1]]))
-  allList.append(('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyeAdj'))
-  allList.append(('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyeAdj'))
-  allList.append(('canthusInAdj','jo_canthusInL',self.faceJo,'snapNormal',['lowlidIn1Adj','uplidIn1Adj','canthusInAdj']))
-  allList.append(('uplidIn1Adj','jo_uplidIn1L',self.faceJo,'snapNormal',['uplidMainAdj','uplidIn1Adj','canthusInAdj']))
-  allList.append(('uplidOut1Adj','jo_uplidOut1L',self.faceJo))
-  allList.append(('lowlidIn1Adj','jo_lowlidIn1L',self.faceJo))
-  allList.append(('lowlidOut1Adj','jo_lowlidOut1L',self.faceJo))
-  allList.append(('canthusOutAdj','jo_canthusOutL',self.faceJo))
+  allList.append(('uplidMainAdj',(self.lidJo[0],self.lidJo[1]),self.faceJo,'eyelid',['eyeAdj','lowlidMainAdj',-1,['uplidIn1Adj','lowlidIn1Adj','lowlidOut1Adj','uplidOut1Adj']]))
+  allList.append(('lowlidMainAdj',(self.lidJo[2],self.lidJo[3]),self.faceJo,'eyelid',['eyeAdj','uplidMainAdj',1,['uplidIn1Adj','lowlidIn1Adj','lowlidOut1Adj','uplidOut1Adj']]))
+  #allList.append(('thirdUplidMainAdj',(self.thirdLidJo[0],self.thirdLidJo[1]),'thirdEyeAdj'))
+  #allList.append(('thirdLowlidMainAdj',(self.thirdLidJo[2],self.thirdLidJo[3]),'thirdEyeAdj'))
+  allList.append(('uplidIn1Adj',('jo_uplidIn1RotL','jo_uplidIn1L'),self.faceJo,'eyelid',['eyeAdj','lowlidIn1Adj',-1,['uplidMainAdj','canthusInAdj','lowlidMainAdj']]))
+  allList.append(('uplidOut1Adj',('jo_uplidOut1RotL','jo_uplidOut1L'),self.faceJo,'eyelid',['eyeAdj','uplidIn1Adj',1,['uplidMainAdj','lowlidMainAdj','canthusOutAdj']]))
+  allList.append(('lowlidIn1Adj',('jo_lowlidIn1RotL','jo_lowlidIn1L'),self.faceJo,'eyelid',['eyeAdj','uplidIn1Adj',1,['uplidMainAdj','canthusInAdj','lowlidMainAdj']]))
+  allList.append(('lowlidOut1Adj',('jo_lowlidOut1RotL','jo_lowlidOut1L'),self.faceJo,'eyelid',['eyeAdj','uplidOut1Adj',1,['uplidMainAdj','lowlidMainAdj','canthusOutAdj']]))
+  allList.append(('canthusInAdj','jo_canthusInL',self.faceJo,'snapNormal',['uplidIn1Adj','canthusInBAdj','lowlidIn1Adj']))
+  allList.append(('canthusOutAdj','jo_canthusOutL',self.faceJo,'snapNormal',['uplidOut1Adj','lowlidOut1Adj','hoodDAdj']))
   allList.append(('jawAdj',self.jawJo[0],self.faceJo))
   allList.append(('jawTipAdj',self.jawJo[1],self.jawJo[0]))
   allList.append(('upLipMAdj',self.lipJo[0],self.faceJo,'snapNormal',['corniceMAdj','upLipL1AdjR','loLipMAdj','upLipL1Adj']))
@@ -1575,7 +1576,8 @@ class warRig:
   allList.append(('glabellaAdj',self.browJo[0],self.faceJo))
   allList.append(('browAAdj',self.browJo[1],self.faceJo,'snapNormal',['contourUpBAdj','contourUpAAdj','glabellaAdj','browBAdj']))
   allList.append(('browBAdj',self.browJo[2],self.faceJo,'snapNormal',['contourUpBAdj','browAAdj','browCAdj']))
-  allList.append(('browCAdj',self.browJo[3],self.faceJo,'snapNormal',['contourUpCAdj','browBAdj','templeAdj']))
+  allList.append(('browCAdj',self.browJo[3],self.faceJo,'snapNormal',['contourUpBAdj','browBAdj','browDAdj']))
+  allList.append(('browDAdj',self.browJo[4],self.faceJo,'snapNormal',['contourUpCAdj','browBAdj','templeAdj']))
   allList.append(('templeAdj','jo_templeL',self.faceJo,'snapNormal',['browCAdj','cheekboneCAdj','contourSideBAdj','contourSideAAdj']))
   allList.append(('cheekboneAAdj','jo_cheekboneAL',self.faceJo,'snapNormal',['lyingBAdj','nasolabialFoldAAdj','nasolabialFoldBAdj','cheekboneBAdj']))
   allList.append(('cheekboneBAdj','jo_cheekboneBL',self.faceJo,'snapNormal',['lyingCAdj','cheekboneAAdj','cheekAAdj','cheekboneCAdj']))
@@ -1615,8 +1617,6 @@ class warRig:
   allList.append(('earOutAdj',self.earJo[4],self.earJo[1]))
   allList.append(('earOutTipAdj',self.earJo[5],self.earJo[4]))
   allList.append(('thirdEyeAdj',self.thirdEyeJo,self.faceJo,['thirdSightAdj',[0,0,1]]))
-  allList.append(('thirdUplidMainAdj',{self.thirdLidJo[0]:self.faceJo,self.thirdLidJo[1]:self.thirdLidJo[0]},self.rootJo))
-  allList.append(('thirdLowlidMainAdj',{self.thirdLidJo[2]:self.faceJo,self.thirdLidJo[3]:self.thirdLidJo[2]},self.rootJo))
  
   #allList.append()
   # leg joint
@@ -1755,8 +1755,8 @@ class warRig:
   
   
 # locate joints loop
-  invis = [self.jawJo[1]]
-  boxStyle = [self.faceJo]
+  invis = [self.faceJo]
+  boxStyle = []
   
   def locateListJoint(exAdj,joNameList,endJo,parentNode,method='normal',adjList=[],gCrv=None):
    spineList = []
@@ -1863,41 +1863,21 @@ class warRig:
       locateListJointB(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[5][1],x[5][2],x[5][3]],endJo=x[4],gCrv=x[5][0])
      else : locateListJoint(exAdj=x[0],joNameList=x[1],parentNode=x[2],adjList=[x[4][1],x[4][2],x[4][3]],endJo=x[3],gCrv=x[4][0])
 
-   if type(x[1]) == dict :
-    if x[0] == 'uplidMainAdj' and cmds.objExists('eyeAdj') and cmds.objExists('lowlidMainAdj') :
-     kList = x[1].keys()
-     kList.reverse()
-     cmds.xform(kList[0],t=cmds.xform('eyeAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.delete(cmds.aimConstraint('uplidMainAdj',kList[0],aimVector=[0,0,1],upVector=[0,-1,0],worldUpType='object',worldUpObject='lowlidMainAdj'))
-     self.freezeRotate(kList[0])
-     cmds.xform(kList[1],t=cmds.xform('uplidMainAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.setAttr(kList[0]+'.radius',0.25)
-    if x[0] == 'lowlidMainAdj' and cmds.objExists('eyeAdj') and cmds.objExists('uplidMainAdj') :
-     kList = x[1].keys()
-     kList.sort()
-     cmds.xform(kList[0],t=cmds.xform('eyeAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.delete(cmds.aimConstraint('lowlidMainAdj',kList[0],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='object',worldUpObject='uplidMainAdj'))
-     self.freezeRotate(kList[0])
-     cmds.xform(kList[1],t=cmds.xform('lowlidMainAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.setAttr(kList[0]+'.radius',0.25)
-    if x[0] == 'thirdUplidMainAdj' and cmds.objExists('thirdEyeAdj') and cmds.objExists('thirdLowlidMainAdj') :
-     kList = x[1].keys()
-     #kList.reverse()
-     cmds.xform(kList[0],t=cmds.xform('thirdEyeAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.delete(cmds.aimConstraint('thirdUplidMainAdj',kList[0],aimVector=[0,0,1],upVector=[0,-1,0],worldUpType='object',worldUpObject='thirdLowlidMainAdj'))
-     self.freezeRotate(kList[0])
-     cmds.xform(kList[1],t=cmds.xform('thirdUplidMainAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.setAttr(kList[0]+'.radius',0.25)
-    if x[0] == 'thirdLowlidMainAdj' and cmds.objExists('thirdEyeAdj') and cmds.objExists('thirdUplidMainAdj') :
-     kList = x[1].keys()
-     #kList.sort()
-     cmds.xform(kList[0],t=cmds.xform('thirdEyeAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.delete(cmds.aimConstraint('thirdLowlidMainAdj',kList[0],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='object',worldUpObject='thirdUplidMainAdj'))
-     self.freezeRotate(kList[0])
-     cmds.xform(kList[1],t=cmds.xform('thirdLowlidMainAdj',q=1,ws=1,t=1),ws=1,a=1)
-     cmds.setAttr(kList[0]+'.radius',0.25)
-    else :
-     pass
+   if len(x) >= 4 and x[3] == 'eyelid' :
+    centre = x[4][0]
+    worldUpObject = x[4][1]
+    upVector = x[4][2]
+    normalVertices = x[4][3]
+    cmds.xform(x[1][0],t=cmds.xform(centre ,q=1,ws=1,t=1),ws=1,a=1)
+    cmds.delete(cmds.aimConstraint(x[0],x[1][0],aimVector=[0,0,1],upVector=[0,upVector,0],worldUpType='object',worldUpObject=worldUpObject))
+    self.freezeRotate(x[1][0])
+    cmds.setAttr(x[1][0]+'.radius',0.25)
+    cmds.xform(x[1][1],t=cmds.xform(x[0],q=1,ws=1,t=1),ws=1,a=1)
+    ppList = [ cmds.xform(pp,q=1,t=1,ws=1) for pp in normalVertices ]
+    pcf = cmds.polyCreateFacet( p=ppList )
+    cmds.delete(cmds.normalConstraint(pcf[0],x[1][1],aimVector=[0,0,1],upVector=[0,1,0],worldUpType='vector'))
+    cmds.makeIdentity(x[1][1],apply=True,translate=0,rotate=1,scale=0)
+    cmds.delete(pcf[0])    
 
    if type(x[1]) == tuple :
     print 'x = tuple'
@@ -1959,7 +1939,10 @@ class warRig:
 
   print rightJo
   for i in range(len(leftJo)) :
-   if leftParent[i] == rightParent[i] :
+   inFaceJo = cmds.listRelatives('jo_face',allDescendents=1)
+   if rightJo[i] in inFaceJo :
+    self.rSideJoint(rightJo[i],rightParent[i],leftJo[i],'onFace')
+   elif leftParent[i] == rightParent[i] :
     self.rSideJoint(rightJo[i],rightParent[i],leftJo[i],'onRoot')
    else :
     self.rSideJoint(rightJo[i],rightParent[i],leftJo[i])
@@ -3721,28 +3704,46 @@ class warRig:
     cmds.connectAttr('aim_eyeR.rotate','ctrlCons_eyeR.rotate')
     cmds.parent('ctrlTrans_eyesAim','ctrl_facial')
   
-# brow Controller self.browJo = ['jcF05_browM','jlF10_browL','jlF15_browMidL']
+# brow Controller
   if self.exCheck(self.browJo):
-   
-   ctrl = ['glabella','browL','browR']
+
    #ctrl = ['ctrl_glabella','ctrl_browL','ctrl_browMidL','ctrl_browTailL']
-   loc = [self.browJo[0],self.browJo[1],self.L2R(self.browJo[1])]
-   exCd = [self.browJo[0],self.browJo[1],self.L2R(self.browJo[1])]
+   loc = [self.browJo[0],self.browJo[1],self.L2R(self.browJo[1]),self.browJo[2],self.browJo[3]]
+   #exCd = [self.browJo[0],self.browJo[1],self.L2R(self.browJo[1])]
+   
    posA = cmds.xform(self.browJo[0],q=1,worldSpace=1,translation=1)
    posB = cmds.xform(self.browJo[1],q=1,worldSpace=1,translation=1)
    dis = math.sqrt( math.pow(posA[0]-posB[0],2) + math.pow(posA[1]-posB[1],2) + math.pow(posA[2]-posB[2],2) )
-   size = [0.015,0.02,0.02]
    
+   self.ctrlFaceCrystal('ctrl_glabella',ch*0.03,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browL',ch*0.02,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browMidL',ch*0.017,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browTailL',ch*0.013,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browR',ch*0.02,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browMidR',ch*0.017,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlCircle('ctrl_browTailR',ch*0.013,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   
+   cmds.matchTransform('ctrlTrans_glabella',self.browJo[0],position=1)
+   cmds.matchTransform('ctrlTrans_browL',self.browJo[1],position=1)
+   pc = cmds.parentConstraint(self.browJo[2],'ctrlTrans_browMidL',weight=0.7)
+   cmds.parentConstraint(self.browJo[3],'ctrlTrans_browMidL',weight=0.3)
+   cmds.delete(pc)
+   cmds.matchTransform('ctrlTrans_browTailL',self.browJo[4],position=1,rotation=1)
+   cmds.matchTransform('ctrlTrans_browR','jo_browAR',position=1)
+   pc = cmds.parentConstraint('jo_browBR','ctrlTrans_browMidR',weight=0.7)
+   cmds.parentConstraint('jo_browCR','ctrlTrans_browMidR',weight=0.3)
+   cmds.delete(pc)
+   cmds.matchTransform('ctrlTrans_browTailR','jo_browDR',position=1,rotation=1)
+   
+   ctrl = ['glabella','browL','browMidL','browTailL','browR','browMidR','browTailR']
    for i in range(len(ctrl)):
-    if cmds.objExists(exCd[i]):
-     self.ctrlCircle('ctrl_'+ctrl[i],ch*size[i],2,1,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
-     cmds.parent('ctrlTrans_'+ctrl[i],'ctrl_facial')
-     cmds.matchTransform('ctrlTrans_'+ctrl[i],loc[i],position=1)
-     cmds.setAttr('ctrlTrans_'+ctrl[i]+'.translateZ',cmds.getAttr('ctrlTrans_'+ctrl[i]+'.translateZ')*1.05)
-     cmds.setAttr('ctrlTrans_'+ctrl[i]+'.scale',dis*0.5,dis*0.5,dis*0.5)
+    cmds.parent('ctrlTrans_'+ctrl[i],'ctrl_facial')
+    cmds.setAttr('ctrlTrans_'+ctrl[i]+'.translateZ',cmds.getAttr('ctrlTrans_'+ctrl[i]+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_'+ctrl[i]+'.scale',dis*0.5,dis*0.5,dis*0.5)
    
    weight = [ [ ['ctrl_glabella',[0,1,0]],['ctrl_browL',[0,0.4,0]],['ctrl_browR',[0,0.4,0]] ] ]
    weight += [ [ ['ctrl_glabella',[0,0.5,0]],['ctrl_browL',[0.08,0.92,0],[0.5,0.5,0]] ] ]
+   weight += [ [ ['ctrl_browL',[0,0.5,0],[0.5,0.5,0]] ] ]
    weight += [ [ ['ctrl_browL',[0,0.5,0],[0.5,0.5,0]] ] ]
    weight += [ [ ['ctrl_browL',[0,0.5,0],[0.5,0.5,0]] ] ]
    for i in range(len(self.browJo)):
@@ -3807,26 +3808,39 @@ class warRig:
   openAttr = ['upperLidOpenRotate','upperLidOpenRotate','thirdUpLidOpenRotate']
   lowOpenAttr = ['lowerLidOpenRotate','lowerLidOpenRotate','thirdLoLidOpenRotate']
   eyeList = [self.eyeJo,self.L2R(self.eyeJo),self.thirdEyeJo]
+  allJoList = []
+  allJoList.append(['jo_canthusInL','jo_uplidIn1L',self.lidJo[1],'jo_uplidOut1L','jo_lowlidIn1L',self.lidJo[3],'jo_lowlidOut1L','jo_canthusOutL'])
+  allJoList.append(self.L2R(allJoList[0]))
   for i,x in enumerate(lidsList) :
    if self.exCheck(x) :
     upLidRo = x[0] ; upLidJo = x[1] ; loLidRo = x[2] ; loLidJo = x[3] ; s = sideList[i]
-    tt = cmds.createNode('transform',parent=upLidRo,skipSelect=1) # prepare uplid ctrl position
-    cmds.setAttr(tt+'.translateZ',cmds.getAttr(upLidJo+'.tz')*1.8)
-    self.ctrlCircleH('ctrl_upLid'+s,ch*.025,2,0,2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35]) # generate uplid ctrl
-    cmds.matchTransform('ctrlTrans_upLid'+s,tt,position=1)
+    
+    for y in allJoList[i]:
+     if cmds.objExists(y):
+      self.ctrlCircle(y.replace('jo_','ctrl_'),ch*.012,2,2,[1,1,1,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+      trans = y.replace('jo_','ctrlTrans_')
+      cmds.parent(trans,'ctrl_facial')
+      cmds.matchTransform(trans,y,position=1)
+      cmds.setAttr(trans+'.translateZ',cmds.getAttr(trans+'.translateZ')*1.02)
+      cmds.setAttr(trans+'.translateX',cmds.getAttr(trans+'.translateX')*1.02)
+    
+    self.ctrlCircleH('ctrl_upLid'+s,ch*.025,2,0,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55]) # generate uplid ctrl
+    cmds.matchTransform('ctrlTrans_upLid'+s,upLidJo,position=1)
     cmds.transformLimits('ctrl_upLid'+s,enableTranslationY=[1,1],translationY=[-1,0.5],enableTranslationX=[1,1],translationX=[-.5,0.5])
-
-    cmds.parent(tt,loLidRo,relative=1) # prepare lolid ctrl position
-    cmds.setAttr(tt+'.translateZ',cmds.getAttr(loLidJo+'.tz')*1.8)
-    self.ctrlCircleH('ctrl_loLid'+s,ch*.02,2,180,2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35]) # generate lolid ctrl
+    self.ctrlCircleH('ctrl_loLid'+s,ch*.02,2,180,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55]) # generate lolid ctrl
     cmds.transformLimits('ctrl_loLid'+s,enableTranslationY=[1,1],translationY=[-.5,0.5],enableTranslationX=[1,1],translationX=[-.5,0.5])
-    cmds.matchTransform('ctrlTrans_loLid'+s,tt,position=1)
+    cmds.matchTransform('ctrlTrans_loLid'+s,loLidJo,position=1)
     loPlus = cmds.createNode('plusMinusAverage',name='plus_lodLid'+s,skipSelect=1)
     cmds.connectAttr(loPlus+'.output3D','ctrlCons_loLid'+s+'.translate')
-
     cmds.delete(cmds.aimConstraint('ctrl_loLid'+s,'ctrlTrans_upLid'+s,aimVector=[0,-1,0],upVector=[0,1,0],worldUpType='none'))
     cmds.delete(cmds.aimConstraint('ctrl_upLid'+s,'ctrlTrans_loLid'+s,aimVector=[0,1,0],upVector=[0,1,0],worldUpType='none'))
-    cmds.parent('ctrlTrans_upLid'+s,'ctrlTrans_loLid'+s,'ctrl_facial')	
+    cmds.parent('ctrlTrans_upLid'+s,'ctrlTrans_loLid'+s,'ctrl_facial')
+    cmds.setAttr('ctrlTrans_upLid'+s+'.translateZ',cmds.getAttr('ctrlTrans_upLid'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_upLid'+s+'.translateX',cmds.getAttr('ctrlTrans_upLid'+s+'.translateX')*1.05)
+    cmds.setAttr('ctrlTrans_loLid'+s+'.translateZ',cmds.getAttr('ctrlTrans_loLid'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_loLid'+s+'.translateX',cmds.getAttr('ctrlTrans_loLid'+s+'.translateX')*1.05)
+   
+    tt = cmds.createNode('transform',parent=loLidRo,skipSelect=1) # prepare uplid ctrl position
     cmds.orientConstraint(upLidRo,tt)
     ag = cmds.getAttr(tt+'.rotateX') # angle between uplidJo and lolidJo
     cmds.delete(tt)
@@ -4032,6 +4046,12 @@ class warRig:
    # cmds.connectAttr('srg_jawBs.outValueY','grp_facial.jawStretch')
    # cmds.connectAttr('srg_jawBs.outValueZ','grp_facial.jawDrop')
    
+  if self.exCheck(['jo_chinB']) :
+   self.ctrlSquareD3('ctrl_chin',ch*0.06,ch*0.015,2,[0,1,0,0,0,0,0,0,0,0],[0.35,0.1,0.35])
+   cmds.parent('ctrlTrans_chin','ctrl_facial')
+   cmds.matchTransform('ctrlTrans_chin','jo_chinB')
+   cmds.setAttr('ctrlTrans_chin'+'.translateZ',cmds.getAttr('ctrlTrans_chin'+'.translateZ')*1.05)
+   
 # Lip Controller
    if self.exCheck(self.lipJo) :
     #if cmds.objExists('xCons_jaw') == 0 :
@@ -4134,6 +4154,15 @@ class warRig:
     cmds.setAttr('clp_cheekY'+s+'.maxG',0)
     #cmds.connectAttr('clp_cheekY'+s+'.outputR','grp_facial.cheekRaise'+s)
 
+  if self.exCheck(['jo_nasolabialFoldCL','jo_nasolabialFoldDL','jo_cheekCL','jo_cheekBL']):
+   for i,s in enumerate(['L','R']) :
+    self.ctrlCircle('ctrl_cheekMid'+s,ch*0.035,2,1,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    pc = cmds.parentConstraint('jo_nasolabialFoldC'+s,'jo_nasolabialFoldD'+s,'ctrlTrans_cheekMid'+s,weight=0.3)
+    cmds.parentConstraint('jo_cheekB'+s,'jo_cheekC'+s,'ctrlTrans_cheekMid'+s,weight=0.2)
+    cmds.delete(pc)
+    cmds.parent('ctrlTrans_cheekMid'+s,'ctrl_facial')
+    cmds.setAttr('ctrlTrans_cheekMid'+s+'.translateZ',cmds.getAttr('ctrlTrans_cheekMid'+s+'.translateZ')*1.05)
+
 # lip = mouth Controller
   if self.exCheck(self.lipJo):
    csa = [-90,90] ; usa = [0,180] ; lsa = [180,0] ; ctrlDir = [1,-1]
@@ -4146,20 +4175,26 @@ class warRig:
    x2 = cmds.xform(self.lipJo[2],q=1,t=1,worldSpace=1)
    dis = math.pow((x1[0]-x2[0]),2) + math.pow((x1[1]-x2[1]),2) + math.pow((x1[2]-x2[2]),2)
    dis = math.sqrt(dis)
+   self.ctrlSphere('ctrl_upMouth',ch*0.045,2,[1,1,1,1,1,1,0,0,0,0],[0.55,0.3,0.55])
+   cmds.parent('ctrlTrans_upMouth','ctrl_facial')
+   cmds.matchTransform('ctrlTrans_upMouth','ctrlTrans_lipUp')
+   self.ctrlSphere('ctrl_loMouth',ch*0.045,2,[1,1,1,1,1,1,0,0,0,0],[0.55,0.3,0.55])
+   cmds.parent('ctrlTrans_loMouth','ctrl_facial')
+   cmds.matchTransform('ctrlTrans_loMouth','ctrlTrans_lipLo')
    for i,s in enumerate(['L','R']) :
-    #self.ctrlCircleH('ctrl_mouthCorner'+s,ch*0.03,2,csa[i],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     self.ctrlCorner('ctrl_mouthCorner'+s,ch*0.07,'Z',2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_mouthCorner'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_mouthCorner'+s,cLoc[i])
-    cmds.setAttr('ctrlCons_mouthCorner'+s+'.translateZ',ch*0.02*ctrlDir[i])
+    cmds.setAttr('ctrlTrans_mouthCorner'+s+'.translateZ',cmds.getAttr('ctrlTrans_mouthCorner'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_mouthCorner'+s+'.translateX',cmds.getAttr('ctrlTrans_mouthCorner'+s+'.translateX')*1.05)
 
     cmds.setAttr('ctrlCons_mouthCorner'+s+'.rotateX',0)
     cmds.setAttr('ctrlCons_mouthCorner'+s+'.rotateZ',0)
     cmds.setAttr('ctrl_mouthCorner'+s+'.translateZ',dis*0.03,lock=1,keyable=0,channelBox=0)
     cmds.setAttr('ctrlCons_mouthCorner'+s+'.scale',dis*.3,dis*.3,dis*.3,type='double3')
 	
-    self.ctrlCircleH('ctrl_uplip'+s,ch*0.02,2,usa[i],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-    self.ctrlCircleH('ctrl_lolip'+s,ch*0.02,2,lsa[i],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_uplip'+s,ch*0.02,2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_lolip'+s,ch*0.02,2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_uplip'+s,'ctrl_facial')
     cmds.parent('ctrlTrans_lolip'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_uplip'+s,uLoc[i])
@@ -4170,8 +4205,17 @@ class warRig:
     cmds.setAttr('ctrlCons_lolip'+s+'.translateZ',ch*0.02*-1)
     cmds.setAttr('ctrlCons_uplip'+s+'.scale',dis*.3,dis*.3,dis*.3,type='double3')
     cmds.setAttr('ctrlCons_lolip'+s+'.scale',dis*.3,dis*.3,dis*.3,type='double3')
-    cmds.setAttr('ctrl_uplip'+s+'.translateZ',dis*0.03,lock=1,keyable=0,channelBox=0)
-    cmds.setAttr('ctrl_lolip'+s+'.translateZ',dis*0.03,lock=1,keyable=0,channelBox=0)
+    
+    self.ctrlCircle('ctrl_upCorner'+s,ch*0.01,2,1,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlCircle('ctrl_loCorner'+s,ch*0.01,2,1,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    cmds.parent('ctrlTrans_upCorner'+s,'ctrl_facial')
+    cmds.parent('ctrlTrans_loCorner'+s,'ctrl_facial')
+    cmds.matchTransform('ctrlTrans_upCorner'+s,'jo_lipUpB'+s)
+    cmds.matchTransform('ctrlTrans_loCorner'+s,'jo_lipLoB'+s)
+    cmds.setAttr('ctrlTrans_upCorner'+s+'.translateZ',cmds.getAttr('ctrlTrans_upCorner'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_upCorner'+s+'.translateX',cmds.getAttr('ctrlTrans_upCorner'+s+'.translateX')*1.05)
+    cmds.setAttr('ctrlTrans_loCorner'+s+'.translateZ',cmds.getAttr('ctrlTrans_loCorner'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_loCorner'+s+'.translateX',cmds.getAttr('ctrlTrans_loCorner'+s+'.translateX')*1.05)
 
     if cmds.objExists('grp_facial.cornerPull'+s) :
      cmds.createNode('clamp',name='clp_cornerX'+s)
@@ -4306,9 +4350,11 @@ class warRig:
   if self.exCheck('jo_noseAlaAL'):
    sd = ['L','R']
    for j,s in enumerate(sd) :
-    self.ctrlFingerY('ctrl_tear'+s,ch*0.01,ch*-0.04,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_tear'+s,ch*0.03,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_tear'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_tear'+s,'jo_noseAlaA'+s)
+    cmds.setAttr('ctrlTrans_tear'+s+'.translateZ',cmds.getAttr('ctrlTrans_tear'+s+'.translateZ')*1.05)
+    cmds.setAttr('ctrlTrans_tear'+s+'.translateX',cmds.getAttr('ctrlTrans_tear'+s+'.translateX')*1.05)
     
 # limd Controllers
   self.defineBType()
@@ -6431,6 +6477,16 @@ class warRig:
     cmds.setAttr(jn+'.translateZ',cmds.getAttr(lj+'.translateZ'))
   except :
    pass
+  try :
+   if a[0] == 'onFace' :
+    cmds.setAttr(jn+'.translateX',cmds.getAttr(lj+'.translateX')*-1)
+    cmds.setAttr(jn+'.translateY',cmds.getAttr(lj+'.translateY'))
+    cmds.setAttr(jn+'.translateZ',cmds.getAttr(lj+'.translateZ'))
+    cmds.setAttr(jn+'.jointOrientX',cmds.getAttr(lj+'.jointOrientX'))
+    cmds.setAttr(jn+'.jointOrientY',cmds.getAttr(lj+'.jointOrientY')*-1)
+    cmds.setAttr(jn+'.jointOrientZ',cmds.getAttr(lj+'.jointOrientZ')*-1)
+  except :
+   pass
 
  def freezeRotate(self,jo,*a):
   tmp = cmds.createNode('decomposeMatrix',skipSelect=1)
@@ -6628,6 +6684,12 @@ class warRig:
  def ctrlCrystal(self,name,height,weight,*a):
   h = height ; w = weight
   cmds.curve(d=1,p=[(-w,0,0),(0,h,0),(0,0,w),(0,-h,0),(w,0,0),(0,h,0),(0,0,-w),(0,-h,0),(-w,0,0),(0,0,w),(w,0,0),(0,0,-w),(-w,0,0)],k=[0,1,2,3,4,5,6,7,8,9,10,11,12],name=name)
+  self.ctrlOptimize(name,a)
+
+ def ctrlFaceCrystal(self,name,size,*a):
+  s = size * 0.5
+  ctrl = cmds.curve(d=1,p=[(s,0,0),(0,-s,0),(-s,0,0),(0,s*2.5,0)],k=[0,1,2,3],name=name)
+  cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1,preserveShape=0)
   self.ctrlOptimize(name,a)
 
  def ctrlPaper(self,name,radius,offset,vector,*a): 
