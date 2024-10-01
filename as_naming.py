@@ -100,15 +100,24 @@ class as_naming :
   return sw
   
  def addPrefix(self,*a):
+  sa = len(cmds.ls(selection=1))
   txt = cmds.textField('txt_anmPS',q=1,text=1)
-  for x in cmds.ls(selection=1):
-   cmds.rename(x,txt+x)
-
+  ts = cmds.sets(cmds.ls(selection=1))
+  for i in range(sa):
+   lx = cmds.sets(ts,q=1)[i]
+   sx = lx.split('|')[-1]
+   cmds.rename(lx,sx+x)
+  cmds.delete(ts)
 
  def addSuffix(self,*a):
+  sa = len(cmds.ls(selection=1))
   txt = cmds.textField('txt_anmPS',q=1,text=1)
-  for x in cmds.ls(selection=1):
-   cmds.rename(x,x+txt)
+  ts = cmds.sets(cmds.ls(selection=1))
+  for i in range(sa):
+   lx = cmds.sets(ts,q=1)[i]
+   sx = lx.split('|')[-1]
+   cmds.rename(lx,sx+txt)
+  cmds.delete(ts)
    
  def correntShapeName(self,*a):
   for x in cmds.ls(selection=1):
