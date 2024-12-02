@@ -7,10 +7,6 @@ from maya import OpenMayaUI as omui
 from PySide2 import QtWidgets, QtGui, QtCore
 from shiboken2 import wrapInstance
 
-from PySide2.QtWidgets import QGraphicsRectItem, QGraphicsScene, QGraphicsView, QApplication
-from PySide2.QtGui import QBrush, QColor, QPen, QPainter
-from PySide2.QtCore import QRectF, Qt
-
 def mayaMainWindow():
     """Get the Maya main window as parent"""
     main_window_ptr = omui.MQtUtil.mainWindow()
@@ -36,14 +32,14 @@ class CustomGraphicsItem(QtWidgets.QGraphicsItem):
         painter.drawPolygon(shape)
        
 class CustomRectItem(QtWidgets.QGraphicsRectItem):
-    def __init__(self, rect, selObj, parent=None):
+    def __init__(self, rect, selObj, colorName='darkblue', parent=None):
         super(CustomRectItem, self).__init__(rect, parent)
-        self.setBrush(QtGui.QBrush(QtGui.QColor("lightblue")))
-        self.setPen(QtGui.QPen(QtGui.QColor("black"), 2))
+        self.setBrush(QtGui.QBrush(QtGui.QColor(colorName)))
+        self.setPen(QtGui.QPen(QtGui.QColor('gray'), 1))
         
         self.setFlags(
             #QGraphicsRectItem.ItemIsMovable |
-            QGraphicsRectItem.ItemIsSelectable
+            QtWidgets.QGraphicsRectItem.ItemIsSelectable
             #QGraphicsRectItem.ItemSendsGeometryChanges
         )
         self.selObj = selObj
@@ -52,6 +48,15 @@ class CustomRectItem(QtWidgets.QGraphicsRectItem):
         #print(f"Rectangle clicked at {event.pos()}")
         cmds.select(self.selObj,r=1)
         super(CustomRectItem, self).mousePressEvent(event)
+        
+    def itemChange(self, change, value):
+        if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
+         if value:
+          if cmds.objExists(self.selObj): pass
+           #cmds.select(self.selObj, r=True)
+          else: pass
+           #print('Object '+self.selObj+' does not exist in the scene.')
+        return super(CustomRectItem, self).itemChange(change, value)
 
 class CustomGraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, scene, parent=None):
@@ -59,6 +64,7 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         self.setScene(scene)
 
         self.start_pos = None
+        #self.selection_rect = QtWidgets.QGraphicsRectItem()
         self.selection_rect = QtWidgets.QGraphicsRectItem()
         self.selection_rect.setPen(QtGui.QPen(QtCore.Qt.DashLine))
         self.selection_rect.setBrush(QtGui.QBrush(QtCore.Qt.transparent))
@@ -128,16 +134,21 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
     def select_items_in_rect(self, rect):
         """Select items within the rectangle"""
         items_in_rect = self.scene().items(rect, QtCore.Qt.IntersectsItemShape)
+        items_in_rect = items_in_rect[1:]
+        selList = []
         for item in items_in_rect:
-            item.setSelected(True)
+         item.setSelected(True)
+         selList.append(item.selObj)
+         #cmds.select(selList,r=1)
         
         if items_in_rect:
-         self.perform_action_on_selection(items_in_rect)
-         
-    def perform_action_on_selection(self, items):
-        for item in items:
-         print(item.rect())
-
+         for item in items_in_rect:
+          item.setSelected(True)
+          selList.append(item.selObj)
+          cmds.select(selList,r=1)
+        else :
+         cmds.select(cl=1)
+        
 class warAnimUI(QtWidgets.QDialog):
     def __init__(self, parent=mayaMainWindow()):
         super(warAnimUI, self).__init__(parent)
@@ -204,15 +215,62 @@ class warAnimUI(QtWidgets.QDialog):
       tab_layout.addWidget(gView)
     
     def add_items(self,scene,ctrls):
-     print(ctrls)
-     for i in range(len(ctrls)):
-      item = QtWidgets.QGraphicsRectItem(50 + i * 60, 50, 50, 50)
-      item.setBrush(QtGui.QBrush(QtCore.Qt.blue))
-      item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
-      scene.addItem(item)
+     colorList = ['gray','black','darkgray','lightgray','darkred','darkblue'
+     ,'blue','darkgreen','darkpurple','magenta','brown','darkbrown','tan'
+     ,'red','green','indigo','white','lightyellow','lightblue','lightgreen'
+     ,'pink','orange','lightyellow','green','brown','darkyellow','grass'
+     ,'green','cyan','blue','purple','darkred']
+     ci = 5
+     ns = self.dropdown.currentText()
+     if ns == ':' : ns = ''
+     else : ns = ns + ':'
+     ''' Start ctrl loop '''
+     for i,x in enumerate(ctrls) :
+      print(x)
+      #item = QtWidgets.QGraphicsRectItem(50 + i * 60, 50, 50, 50)
+      #item.setBrush(QtGui.QBrush(QtCore.Qt.blue))
+      #item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+      #scene.addItem(item)
       
-      gItem = CustomRectItem(QtCore.QRectF(0, -100, 100, 50),ctrls[i])
-      #rect_item.setPos(150, 100)
+      w = 10
+      h = 10
+      if cmds.objExists(x+'.warWidth'): w = cmds.getAttr(x+'.warWidth')
+      if cmds.objExists(x+'.warHeight'): h = cmds.getAttr(x+'.warHeight')
+      
+      posX = 0
+      posY = 0
+      if cmds.objExists(x+'.warPosX'): posX = cmds.getAttr(x+'.warPosX')
+      if cmds.objExists(x+'.warPosY'): posX = cmds.getAttr(x+'.warPosY')
+      ''' Start finding attach position  '''
+      if cmds.objExists(x+'.warAttach') and cmds.objExists(x+'.warAttachSide') :    
+       ac = cmds.getAttr(x+'.warAttach',asString=1)
+       al = cmds.getAttr(x+'.warAttachSide',asString=1)
+       ac = ns + 'ctrl_'+ac
+       if cmds.objExists(ac+'.warPosX'):
+        posX = cmds.getAttr(ac+'.warPosX')
+        acw = cmds.getAttr(ac+'.warWidth')
+        if (al=='right') :
+         posX = posX + acw + 25
+         if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
+        if (al=='left') :
+         posX = posX - acw - 25
+         if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
+       if cmds.objExists(ac+'.warPosY'):
+        posY = cmds.getAttr(ac+'.warPosY')
+        ach = cmds.getAttr(ac+'.warHeight')
+        if (al=='top') :
+         posY = posY - ach - 25
+         if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
+        if (al=='bottom') :
+         posY = posY + ach + 25
+         if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
+         
+      ''' Start finding color  '''
+      s = cmds.listRelatives(x,shapes=1)[0]
+      if cmds.getAttr(s+'.overrideEnabled') :
+       ci = cmds.getAttr(s+'.overrideColor')
+      
+      gItem = CustomRectItem(QtCore.QRectF(posX-w,posY-h,w*2,h*2),x,colorName=colorList[ci])
       scene.addItem(gItem)
 
 
