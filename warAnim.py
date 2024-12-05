@@ -11,26 +11,15 @@ def mayaMainWindow():
     """Get the Maya main window as parent"""
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget) 
-
-class CustomGraphicsItem(QtWidgets.QGraphicsItem):
-    def __init__(self, parent=None):
-        super(CustomGraphicsItem).__init__(parent)
-        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
-        self.setVisible(True)
-
-    def boundingRect(self):
-        return QtCore.QRectF(-50, -50, 100, 100)
-
-    def paint(self, painter, option, widget=None):
-        shape = QtGui.QPolygonF([
-            QtCore.QPointF(0, -50),
-            QtCore.QPointF(50, 50),
-            QtCore.QPointF(-50, 50)
-        ])
-        painter.setBrush(QtGui.QBrush(QtCore.Qt.yellow))
-        painter.setPen(QtGui.QPen(QtCore.Qt.black, 2))
-        painter.drawPolygon(shape)
-       
+    
+class CustomButton(QtWidgets.QPushButton):
+    def __init__(self, text, parent=None):
+        super(CustomButton, self).__init__(text, parent)
+        self.clicked.connect(self.select)
+        
+    def select(self):
+        cmds.select(self.text(),r=1)
+    
 class CustomRectItem(QtWidgets.QGraphicsRectItem):
     def __init__(self, rect, selObj, colorName='darkblue', parent=None):
         super(CustomRectItem, self).__init__(rect, parent)
@@ -57,6 +46,27 @@ class CustomRectItem(QtWidgets.QGraphicsRectItem):
           else: pass
            #print('Object '+self.selObj+' does not exist in the scene.')
         return super(CustomRectItem, self).itemChange(change, value)
+
+    def contextMenuEvent(self, event):
+        menu = QtWidgets.QMenu()
+        actDef = menu.addAction("Set Default Value")
+        
+        selected_action = menu.exec_(event.screenPos())
+        
+        if selected_action == actDef:
+         #cb = cmds.channelBox('mainChannelBox',q=1,selectedMainAttributes=1)
+         la = cmds.listAttr(self.selObj,keyable=1,unlocked=1)
+         for x in la :
+          if x == 'translateX' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'translateY' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'translateZ' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'rotateX' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'rotateY' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'rotateZ' : cmds.setAttr(self.selObj+'.'+x,0)
+          if x == 'scaleX' : cmds.setAttr(self.selObj+'.'+x,1)
+          if x == 'scaleY' : cmds.setAttr(self.selObj+'.'+x,1)
+          if x == 'scaleZ' : cmds.setAttr(self.selObj+'.'+x,1)
+         print('Set '+self.selObj+' default value.')
 
 class CustomGraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, scene, parent=None):
@@ -169,35 +179,51 @@ class warAnimUI(QtWidgets.QDialog):
         self.dropdown.addItems(self.dropdownList)
         vLayout.addWidget(self.dropdown)
         
+        self.toolBar = QtWidgets.QToolBar()
+        self.toolBar.setIconSize(QtCore.QSize(24, 24))
+        emptyAction = QtWidgets.QPushButton('normal')
+        self.toolBar.addWidget(emptyAction)
+        emptyActionB = QtWidgets.QPushButton('spacial')
+        self.toolBar.addWidget(emptyActionB)
+        vLayout.addWidget(self.toolBar)
+        
         self.tab_widget = QtWidgets.QTabWidget()
         vLayout.addWidget(self.tab_widget)
-        self.update_tabs()
-
+        self.updateTabs()
+    
         self.resize(600,800)
         
     def create_connections(self):
-     self.dropdown.currentIndexChanged.connect(self.on_dropdown_change)
+     self.dropdown.currentIndexChanged.connect(self.dropdownChange)
 
-    def on_dropdown_change(self):
-     self.update_tabs()
+    def dropdownChange(self):
+     self.updateTabs()
     
-    def update_tabs(self):
+    def updateTabs(self):
      selTxt = self.dropdown.currentText()
      print('Start update '+selTxt+' tabs.')
      topName = selTxt+':'+self.ctrlTop
      if selTxt == ':' : topName = self.ctrlTop
      allCrv = cmds.listRelatives(topName,allDescendents=1,type='nurbsCurve')
      allCtrl = [ cmds.listRelatives(x,parent=1)[0] for x in allCrv ]
+
      allTabList = []
+     self.globalCtrl = []
      for x in allCtrl :
       if cmds.objExists(x+'.warTab'):
-       tab = cmds.getAttr(x+'.warTab')
+       #print(x)
+       tab = cmds.getAttr(x+'.warTab',asString=1)
        if tab not in allTabList : allTabList.append(tab)
-     tabList = [ x for x in allTabList if x != 'all']
-     print(tabList)
+       if tab == 'global' : self.globalCtrl.append(x)
+     tabList = [ x for x in allTabList if x != 'global']
+     #print(tabList)
+     
+     self.toolBar.clear()
+     for i,x in enumerate(self.globalCtrl) :
+      qButton = CustomButton(x) # add global button
+      self.toolBar.addWidget(qButton)
      
      self.tab_widget.clear()
-     #for i in range(count):
      for x in tabList :
       tab = QtWidgets.QWidget()
       tab_layout = QtWidgets.QVBoxLayout(tab)
@@ -206,7 +232,7 @@ class warAnimUI(QtWidgets.QDialog):
       tabCtrl = []
       for y in allCtrl :
        if cmds.objExists(y+'.warTab'):
-        tab = cmds.getAttr(y+'.warTab')
+        tab = cmds.getAttr(y+'.warTab',asString=1)
         if tab == x : tabCtrl.append(y)
       
       gScene = QtWidgets.QGraphicsScene()
@@ -225,8 +251,9 @@ class warAnimUI(QtWidgets.QDialog):
      if ns == ':' : ns = ''
      else : ns = ns + ':'
      ''' Start ctrl loop '''
+     print(ctrls)
      for i,x in enumerate(ctrls) :
-      print(x)
+      #print(x)
       #item = QtWidgets.QGraphicsRectItem(50 + i * 60, 50, 50, 50)
       #item.setBrush(QtGui.QBrush(QtCore.Qt.blue))
       #item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
@@ -244,24 +271,27 @@ class warAnimUI(QtWidgets.QDialog):
       ''' Start finding attach position  '''
       if cmds.objExists(x+'.warAttach') and cmds.objExists(x+'.warAttachSide') :    
        ac = cmds.getAttr(x+'.warAttach',asString=1)
+       enumList = cmds.addAttr(x+'.warAttach',q=1,enumName=1).split(':')
+       for y in enumList :
+        if y in ctrls: ac = y
        al = cmds.getAttr(x+'.warAttachSide',asString=1)
-       ac = ns + 'ctrl_'+ac
+       ac = ns + ac
        if cmds.objExists(ac+'.warPosX'):
         posX = cmds.getAttr(ac+'.warPosX')
         acw = cmds.getAttr(ac+'.warWidth')
-        if (al=='right') :
+        if al in ['right','topRight','bottomRight'] :
          posX = posX + acw + 25
          if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
-        if (al=='left') :
+        if al in ['left','topLeft','bottomLeft'] :
          posX = posX - acw - 25
          if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
        if cmds.objExists(ac+'.warPosY'):
         posY = cmds.getAttr(ac+'.warPosY')
         ach = cmds.getAttr(ac+'.warHeight')
-        if (al=='top') :
+        if al in ['top','topLeft','topRight'] :
          posY = posY - ach - 25
          if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
-        if (al=='bottom') :
+        if al in ['bottom','bottomLeft','bottomRight'] :
          posY = posY + ach + 25
          if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
          
@@ -272,7 +302,6 @@ class warAnimUI(QtWidgets.QDialog):
       
       gItem = CustomRectItem(QtCore.QRectF(posX-w,posY-h,w*2,h*2),x,colorName=colorList[ci])
       scene.addItem(gItem)
-
 
 def warAnim():
  global ui
