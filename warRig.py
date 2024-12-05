@@ -2562,68 +2562,25 @@ class warRig:
  # 0.666 indigo  : leg, foot
  # 0.777 purple  : facial
  # 0.888 magenta : wing
-  self.ctrlPos = {
-  'torso':     ['rRect',0,0,0,4,1.6]
-  ,'waist':    ['rect',0,42,0,2.5,1]
-  ,'chest':    ['chest',0,80,0,2,2]
-  ,'neck':     ['rect',0,110,0,1.2,0.5]
-  ,'head':     ['moon',0,160,0,1.2,2.4]
-  ,'pelvis':   ['trig',0,-35,0,3,2,0]
-  ,'shoulderL':['trig',40,92,0,1.8,1.7]
-  ,'upperarmL':['rect',85,85,0,3,0.75]
-  ,'forearmL': ['rect',150,85,0,3,0.75]
-  ,'wristL':   ['circ',105,-52,0,1.2,1.2]
-  ,'elbowL':   ['rect',135,25,45,1,1]
-  ,'handL':    ['rect',135,-52,0,1.5,1.5]
-  ,'thighL':   ['rect',25,-75,0,1,3]
-  ,'shankL':   ['rect',25,-140,0,1,3]
-  ,'ankleL':   ['rect',25,-190,0,1.2,1.2]
-  ,'kneeL':    ['rect',55,-110,0,1,1]
-  ,'heelL':    ['rect',55,-162,0,0.8,0.8]
-  ,'legL':     ['rect',55,-190,0,1.5,1.5]
-  ,'toeL':     ['trig',40,-215,0,1,1]
-  
-  ,'fingerL': ['rect',120,-85,0,2,1]
-  ,'thumb0L': ['trig',90,-85,0,0.7,1.4]
-  ,'thumb1L': ['trig',90,-105,0,0.7,1.4]
-  ,'thumb2L': ['trig',90,-125,0,0.7,1.4]
-  ,'index1L': ['trig',108,-108,0,0.7,1.4]
-  ,'index2L': ['trig',108,-128,0,0.7,1.4]
-  ,'index3L': ['trig',108,-148,0,0.7,1.4]
-  ,'middle1L': ['trig',121,-108,0,0.7,1.4]
-  ,'middle2L': ['trig',121,-128,0,0.7,1.4]
-  ,'middle3L': ['trig',121,-148,0,0.7,1.4]
-  ,'ring1L': ['trig',135,-108,0,0.7,1.4]
-  ,'ring2L': ['trig',135,-128,0,0.7,1.4]
-  ,'ring3L': ['trig',135,-148,0,0.7,1.4]
-  ,'little1L': ['trig',149,-108,0,0.7,1.4]
-  ,'little2L': ['trig',149,-128,0,0.7,1.4]
-  ,'little3L': ['trig',149,-148,0,0.7,1.4]
-  
-  ,'jaw':['moon',0,160,0,1,1.2]
-  ,'eyeL':['rect',20,195,0,0.25,0.2]
-  ,'browL':['rect',20,210,0,0.25,0.2]
-  ,'glabella':['rect',0,155,0,0.25,0.2]
-  ,'upLidL':['moon',20,200,180,1,1]
-  ,'loLidL':['moon',20,190,0,1,1]
-  ,'cheekL':['rect',12,135,0,0.25,0.2]
-  ,'nasalisL':['rect',4,135,0,0.25,0.2]
-  ,'gillL':['rect',0,140,0,0.25,0.2]
-  ,'upLip':['rect',0,130,0,0.25,0.2]
-  ,'uplipL':['rect',4,130,0,0.25,0.2]
-  ,'cornerL':['rect',8,125,0,0.25,0.2]
-  ,'loLipL':['rect',4,120,0,0.25,0.2]
-  ,'loLip':['rect',0,120,0,0.25,0.2]
-  
-  ,'ribcage':['rect',0,-250,0,1,1]
-  ,'belly':['rect',0,-275,0,1,1]
-  ,'rearPelvis':['rect',0,-300,0,1,1]
+  self.ctrlPos = { # tab, [posX, posY], [attachObjsList], attachSide, shape, [widthHeight]
+  'ctrl_move':  ['global',(0,0),'rect',(16,8)]
+  ,'ctrl_torso': ['body',(0,0),'rect',(16,8)]
+  ,'ctrl_waist': ['body',(0,0),'rect',(10,5),'top',['torso']]
+  ,'ctrl_chest': ['body',(0,0),'rect',(10,5),'top',['waist']]
+  ,'ctrl_neck': ['body',(0,0),'rect',(8,3),'top',['chest']]
+  ,'ctrl_head': ['body',(0,0),'circle',(10,10),'top',['neck2','neck1','neck','chest']]
+  ,'ctrl_pelvis': ['body',(0,0),'trigD',(10,5),'bottom',['torso']]
+  ,'ctrl_thighL': ['body',(0,0),'rect',(8,20),'bottomRight',['torso','pelvis']]
+  ,'ctrl_thighR': ['body',(0,0),'rect',(8,20),'bottomLeft',['torso','pelvis']]
+  ,'ctrl_kneeL': ['body',(0,0),'circle',(10,10),'bottom',['thighL']]
+  ,'ctrl_kneeR': ['body',(0,0),'circle',(10,10),'bottom',['thighR']]
+  ,'ctrl_shankL': ['body',(0,0),'rect',(8,20),'bottom',['kneeL']]
+  #,'ctrl_shankR': ['body',(0,0),'rect',(8,20),'bottom',['kneeR']]
+  ,'ctrl_ankleL': ['body',(0,0),'circle',(10,10),'bottom',['shankL']]
+  #,'ctrl_ankleL': ['body',(0,0),'circle',(10,10),'bottom',['shankR']]
+  ,'ctrl_shoulderL': ['body',(0,0),'rect',(8,3),'right',['chest']]
+  ,'ctrl_jaw': ['face',(0,0),'rect',(8,8)]
   }
-  for x,y in self.ctrlPos.items():
-   if x[-1] == 'L' :
-    r = x[:-1]+'R'
-    self.ctrlPos[r] = y[:]
-    self.ctrlPos[r][1] = self.ctrlPos[r][1] * -1
 
  def createCtrl(self,*a):
 
@@ -2668,7 +2625,7 @@ class warRig:
    ctrlSize = [1.4,0.7,1.1]
    if ctrlDir == 2 : temp = ctrlSize[1] ; ctrlSize[1] = ctrlSize[2] ; ctrlSize[2] = temp
    #self.ctrlSquare('ctrl_pelvis',ch*ctrlSize[0],ch*ctrlSize[1],ch*ctrlSize[2],0,[0,0,0,1,1,1,0,0,0,0],[0.01,0.05,0.01])
-   self.ctrlPrism('ctrl_pelvis',ch*ctrlSize[0],ch*ctrlSize[1],ch*ctrlSize[2],'-y',0,[0,0,0,1,1,1,0,0,0,0],self.ctrlPos['pelvis'][6])
+   self.ctrlPrism('ctrl_pelvis',ch*ctrlSize[0],ch*ctrlSize[1],ch*ctrlSize[2],'-y',0,[0,0,0,1,1,1,0,0,0,0],[0.01,0.05,0.01])
    #self.ctrlOffset('ctrl_pelvis',[0,ga[1],ga[2]])
    cmds.createNode('transform',name='pin_pelvis',parent='ctrl_pelvis',skipSelect=1)
    cmds.setAttr('pin_pelvis.ty', cmds.getAttr(self.pelvisJo+'.ty'))
@@ -3715,13 +3672,13 @@ class warRig:
    posB = cmds.xform(self.browJo[1],q=1,worldSpace=1,translation=1)
    dis = math.sqrt( math.pow(posA[0]-posB[0],2) + math.pow(posA[1]-posB[1],2) + math.pow(posA[2]-posB[2],2) )
    
-   self.ctrlFaceCrystal('ctrl_glabella',ch*0.03,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browL',ch*0.02,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browMidL',ch*0.017,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browTailL',ch*0.013,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browR',ch*0.02,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browMidR',ch*0.017,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-   self.ctrlCircle('ctrl_browTailR',ch*0.013,2,1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_glabella',ch*0.04,[1,1,1,3.6],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browL',ch*0.05,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browMidL',ch*0.045,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browTailL',ch*0.04,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browR',ch*0.05,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browMidR',ch*0.045,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+   self.ctrlFaceCrystal('ctrl_browTailR',ch*0.04,[1,1,1,1],1,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
    
    cmds.matchTransform('ctrlTrans_glabella',self.browJo[0],position=1)
    cmds.matchTransform('ctrlTrans_browL',self.browJo[1],position=1)
@@ -4193,8 +4150,8 @@ class warRig:
     cmds.setAttr('ctrl_mouthCorner'+s+'.translateZ',dis*0.03,lock=1,keyable=0,channelBox=0)
     cmds.setAttr('ctrlCons_mouthCorner'+s+'.scale',dis*.3,dis*.3,dis*.3,type='double3')
 	
-    self.ctrlFaceCrystal('ctrl_uplip'+s,ch*0.02,2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
-    self.ctrlFaceCrystal('ctrl_lolip'+s,ch*0.02,2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_uplip'+s,ch*0.02,[1,1,1,1],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_lolip'+s,ch*0.02,[1,1,1,1],2,[1,1,1,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_uplip'+s,'ctrl_facial')
     cmds.parent('ctrlTrans_lolip'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_uplip'+s,uLoc[i])
@@ -4350,7 +4307,7 @@ class warRig:
   if self.exCheck('jo_noseAlaAL'):
    sd = ['L','R']
    for j,s in enumerate(sd) :
-    self.ctrlFaceCrystal('ctrl_tear'+s,ch*0.03,2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
+    self.ctrlFaceCrystal('ctrl_tear'+s,ch*0.025,[1,1,1,3.6],2,[0,1,0,0,0,0,0,0,0,0],[0.55,0.3,0.55])
     cmds.parent('ctrlTrans_tear'+s,'ctrl_facial')
     cmds.matchTransform('ctrlTrans_tear'+s,'jo_noseAlaA'+s)
     cmds.setAttr('ctrlTrans_tear'+s+'.translateZ',cmds.getAttr('ctrlTrans_tear'+s+'.translateZ')*1.05)
@@ -6686,9 +6643,9 @@ class warRig:
   cmds.curve(d=1,p=[(-w,0,0),(0,h,0),(0,0,w),(0,-h,0),(w,0,0),(0,h,0),(0,0,-w),(0,-h,0),(-w,0,0),(0,0,w),(w,0,0),(0,0,-w),(-w,0,0)],k=[0,1,2,3,4,5,6,7,8,9,10,11,12],name=name)
   self.ctrlOptimize(name,a)
 
- def ctrlFaceCrystal(self,name,size,*a):
+ def ctrlFaceCrystal(self,name,size,whList=[1,1,1,1],*a):
   s = size * 0.5
-  ctrl = cmds.curve(d=1,p=[(s,0,0),(0,-s,0),(-s,0,0),(0,s*2.5,0)],k=[0,1,2,3],name=name)
+  ctrl = cmds.curve(d=1,p=[(s*whList[0],0,0),(0,-s*whList[1],0),(-s*whList[2],0,0),(0,s*whList[3],0)],k=[0,1,2,3],name=name)
   cmds.closeCurve(name,constructionHistory=0,replaceOriginal=1,preserveShape=0)
   self.ctrlOptimize(name,a)
 
@@ -6835,30 +6792,63 @@ class warRig:
     if type(aInput[2]) == list : self.ctrlColor(ctrl,aInput[2])
   cmds.sets(ctrl,e=1,addElement='ctrlSet')
   
-  if self.ctrlPos.get(ctrl[5:]) != None :
-   cmds.addAttr(ctrl,longName='warAnim_shape',dt='string')
-   cmds.addAttr(ctrl,longName='warAnim_x',attributeType='long')
-   cmds.addAttr(ctrl,longName='warAnim_y',attributeType='long')
-   cmds.addAttr(ctrl,longName='warAnim_ro',attributeType='double')
-   cmds.addAttr(ctrl,longName='warAnim_sx',attributeType='double')
-   cmds.addAttr(ctrl,longName='warAnim_sy',attributeType='double')
-   cmds.addAttr(ctrl,longName='warAnim_r',attributeType='double')
-   cmds.addAttr(ctrl,longName='warAnim_g',attributeType='double')
-   cmds.addAttr(ctrl,longName='warAnim_b',attributeType='double')
-   cmds.setAttr(ctrl+'.warAnim_shape',self.ctrlPos[ctrl[5:]][0],type='string')
-   #
-   if type(self.ctrlPos[ctrl[5:]][1]) == list :
-    orderList = self.ctrlPos[ctrl[5:]][1]
-    cmds.addAttr(ctrl,ln='warAlignObj',at='enum',en=orderList[0]+':',keyable=1)
-    cmds.setAttr(ctrl+'.warAnim_x',0)
-   else : cmds.setAttr(ctrl+'.warAnim_x',self.ctrlPos[ctrl[5:]][1])
-   if type(self.ctrlPos[ctrl[5:]][2]) == str :
-    cmds.addAttr(ctrl,ln='warAlignObj',at='string',en=orderList[0]+':',keyable=1)
-    
-   else: cmds.setAttr(ctrl+'.warAnim_y',self.ctrlPos[ctrl[5:]][2])
-   cmds.setAttr(ctrl+'.warAnim_ro',self.ctrlPos[ctrl[5:]][3])
-   cmds.setAttr(ctrl+'.warAnim_sx',self.ctrlPos[ctrl[5:]][4])
-   cmds.setAttr(ctrl+'.warAnim_sy',self.ctrlPos[ctrl[5:]][5])
+  if self.ctrlPos.get(ctrl) != None :
+   print('start warTab Process :'+ctrl)
+   tab = self.ctrlPos[ctrl][0] # string
+   pos = self.ctrlPos[ctrl][1] # axis
+   shape = self.ctrlPos[ctrl][2] # string
+   widthHeight = self.ctrlPos[ctrl][3]
+   try: attachSide = self.ctrlPos[ctrl][4] # string
+   except: attachSide = ''
+   try: attachList = self.ctrlPos[ctrl][5] # list
+   except: attachList = []
+
+   if cmds.objExists(ctrl+'.warTab') == 0 :
+    print(ctrl)
+    cmds.addAttr(ctrl,longName='warTab',attributeType='enum',enumName='global:body:face:parts:')
+   if tab == 'global' : cmds.setAttr(ctrl+'.warTab',0)
+   if tab == 'body' : cmds.setAttr(ctrl+'.warTab',1)
+   if tab == 'face' : cmds.setAttr(ctrl+'.warTab',2)
+   if tab == 'parts' : cmds.setAttr(ctrl+'.warTab',3)
+   
+   if cmds.objExists(ctrl+'.warPosX') == 0 :
+    cmds.addAttr(ctrl,longName='warPosX',attributeType='long')
+   cmds.setAttr(ctrl+'.warPosX',pos[0])
+   if cmds.objExists(ctrl+'.warPosY') == 0 :
+    cmds.addAttr(ctrl,longName='warPosY',attributeType='long')
+   cmds.setAttr(ctrl+'.warPosY',pos[1])
+   
+   eList = ''
+   print(attachList)
+   for i,x in enumerate(attachList):
+    eList = eList + 'ctrl_' + x + ':'
+   if eList != '' :
+    if cmds.objExists(ctrl+'.warAttach') == 0 :
+     cmds.addAttr(ctrl,longName='warAttach',attributeType='enum',enumName=eList)
+
+   if cmds.objExists(ctrl+'.warAttachSide') == 0 :
+    cmds.addAttr(ctrl,longName='warAttachSide',attributeType='enum',enumName='top:bottom:left:right:topLeft:topRight:bottomLeft:bottomRight')
+   if attachSide == 'top' : cmds.setAttr(ctrl+'.warAttachSide',0)
+   if attachSide == 'bottom' : cmds.setAttr(ctrl+'.warAttachSide',1)
+   if attachSide == 'left' : cmds.setAttr(ctrl+'.warAttachSide',2)
+   if attachSide == 'right' : cmds.setAttr(ctrl+'.warAttachSide',3)
+   if attachSide == 'topLeft' : cmds.setAttr(ctrl+'.warAttachSide',4)
+   if attachSide == 'topRight' : cmds.setAttr(ctrl+'.warAttachSide',5)
+   if attachSide == 'bottomLeft' : cmds.setAttr(ctrl+'.warAttachSide',6)
+   if attachSide == 'bottomRight' : cmds.setAttr(ctrl+'.warAttachSide',7)
+   
+   if cmds.objExists(ctrl+'.warShape') == 0 :
+    cmds.addAttr(ctrl,longName='warShape',attributeType='enum',enumName='rect:circle:trigU:trgB:trigL:trigR:diamond:trapezoidU:trapezoidD:hexagon:')
+   if attachSide == 'rect' : cmds.setAttr(ctrl+'.warShape',0)
+   if attachSide == 'circle' : cmds.setAttr(ctrl+'.warShape',1)
+   if attachSide == 'trigU' : cmds.setAttr(ctrl+'.warShape',2)
+   
+   if cmds.objExists(ctrl+'.warWidth') == 0 :
+    cmds.addAttr(ctrl,longName='warWidth',attributeType='long')
+    cmds.setAttr(ctrl+'.warWidth',widthHeight[0])
+   if cmds.objExists(ctrl+'.warHeight') == 0 :
+    cmds.addAttr(ctrl,longName='warHeight',attributeType='long')
+    cmds.setAttr(ctrl+'.warHeight',widthHeight[1])
 
  def ctrlOffset(self,ctrl,value,*a):
   nc = cmds.listRelatives(ctrl,type='nurbsCurve')[0]
