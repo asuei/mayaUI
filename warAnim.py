@@ -252,6 +252,19 @@ class warAnimUI(QtWidgets.QDialog):
      else : ns = ns + ':'
      ''' Start ctrl loop '''
      print(ctrls)
+     
+     for i in range(len(ctrls)):
+      if cmds.objExists(ctrls[i]+'.warAttach') :
+       en = cmds.addAttr(ctrls[i]+'.warAttach',q=1,enumName=1)
+       eList = en.split(':')
+       for j in range(len(eList)):
+        if eList[j] in ctrls:
+         eIndex = ctrls.index(eList[j])
+         if eIndex > i :
+          ctrls[i],ctrls[eIndex] = ctrls[eIndex],ctrls[i]
+          j = j - 1
+     print(ctrls)
+     
      for i,x in enumerate(ctrls) :
       #print(x)
       #item = QtWidgets.QGraphicsRectItem(50 + i * 60, 50, 50, 50)
@@ -267,39 +280,45 @@ class warAnimUI(QtWidgets.QDialog):
       posX = 0
       posY = 0
       if cmds.objExists(x+'.warPosX'): posX = cmds.getAttr(x+'.warPosX')
-      if cmds.objExists(x+'.warPosY'): posX = cmds.getAttr(x+'.warPosY')
+      if cmds.objExists(x+'.warPosY'): posY = cmds.getAttr(x+'.warPosY')
       ''' Start finding attach position  '''
       if cmds.objExists(x+'.warAttach') and cmds.objExists(x+'.warAttachSide') :    
        ac = cmds.getAttr(x+'.warAttach',asString=1)
        enumList = cmds.addAttr(x+'.warAttach',q=1,enumName=1).split(':')
        for y in enumList :
-        if y in ctrls: ac = y
+        if y in ctrls:
+         ac = y
+         cmds.setAttr(x+'.warAttach',enumList.index(y))
+         break
        al = cmds.getAttr(x+'.warAttachSide',asString=1)
        ac = ns + ac
        if cmds.objExists(ac+'.warPosX'):
         posX = cmds.getAttr(ac+'.warPosX')
+        acX = cmds.getAttr(ac+'.warPosX')
+        cmds.setAttr(x+'.warPosX',acX)
         acw = cmds.getAttr(ac+'.warWidth')
         if al in ['right','topRight','bottomRight'] :
-         posX = posX + acw + 25
+         posX = acX + acw + w + 2
          if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
         if al in ['left','topLeft','bottomLeft'] :
-         posX = posX - acw - 25
+         posX = acX - acw - w - 2
          if cmds.objExists(x+'.warPosX'): cmds.setAttr(x+'.warPosX',posX)
        if cmds.objExists(ac+'.warPosY'):
-        posY = cmds.getAttr(ac+'.warPosY')
+        acY = cmds.getAttr(ac+'.warPosY')
+        cmds.setAttr(x+'.warPosY',acY)
         ach = cmds.getAttr(ac+'.warHeight')
         if al in ['top','topLeft','topRight'] :
-         posY = posY - ach - 25
+         posY = acY - ach - h - 2
          if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
         if al in ['bottom','bottomLeft','bottomRight'] :
-         posY = posY + ach + 25
+         posY = acY + ach + h + 2
          if cmds.objExists(x+'.warPosY'): cmds.setAttr(x+'.warPosY',posY)
          
       ''' Start finding color  '''
       s = cmds.listRelatives(x,shapes=1)[0]
       if cmds.getAttr(s+'.overrideEnabled') :
        ci = cmds.getAttr(s+'.overrideColor')
-      
+      print('add item '+x+' posY: '+str(posY))
       gItem = CustomRectItem(QtCore.QRectF(posX-w,posY-h,w*2,h*2),x,colorName=colorList[ci])
       scene.addItem(gItem)
 
