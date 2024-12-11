@@ -2564,24 +2564,31 @@ class warRig:
  # 0.888 magenta : wing
   self.ctrlPos = { # tab, [posX, posY], [attachObjsList], attachSide, shape, [widthHeight]
   'ctrl_move':  ['global',(0,0),'rect',(16,8)]
+  ,'ctrl_spin':  ['global',(0,0),'rect',(16,8)]
   ,'ctrl_torso': ['body',(0,0),'rect',(16,8)]
   ,'ctrl_waist': ['body',(0,0),'rect',(12,6),'top',['torso']]
   ,'ctrl_chest': ['body',(0,0),'rect',(12,6),'top',['waist']]
   ,'ctrl_neck': ['body',(0,0),'rect',(6,3),'top',['chest']]
   ,'ctrl_head': ['body',(0,0),'circle',(8,8),'top',['neck2','neck1','neck','chest']]
+  ,'ctrl_neck1': ['body',(0,0),'rect',(6,3),'top',['chest']]
+  ,'ctrl_neck2': ['body',(0,0),'rect',(6,3),'top',['neck1','chest']]
   ,'ctrl_pelvis': ['body',(0,0),'trigD',(10,5),'bottom',['torso']]
+  
   ,'ctrl_thighL': ['body',(0,0),'rect',(5,10),'bottomRight',['pelvis','torso']]
   ,'ctrl_thighR': ['body',(0,0),'rect',(5,10),'bottomLeft',['pelvis','torso']]
   ,'ctrl_kneeL': ['body',(0,0),'circle',(6,6),'bottom',['thighL']]
   ,'ctrl_kneeR': ['body',(0,0),'circle',(6,6),'bottom',['thighR']]
   ,'ctrl_shankL': ['body',(0,0),'rect',(5,10),'bottom',['kneeL']]
   ,'ctrl_shankR': ['body',(0,0),'rect',(5,10),'bottom',['kneeR']]
-  ,'ctrl_ankleL': ['body',(0,0),'circle',(5,5),'bottomLeft',['shankL']]
-  ,'ctrl_ankleR': ['body',(0,0),'circle',(5,5),'bottomRight',['shankR']]
-  ,'ctrl_legL': ['body',(0,0),'circle',(5,5),'bottomRight',['shankL']]
-  ,'ctrl_legR': ['body',(0,0),'circle',(5,5),'bottomLeft',['shankR']]
+  ,'ctrl_ankleL': ['body',(0,0),'circle',(5,5),'bottom',['shankL']]
+  ,'ctrl_ankleR': ['body',(0,0),'circle',(5,5),'bottom',['shankR']]
+  ,'ctrl_legL': ['body',(0,0),'circle',(5,5),'right',['ankleL']]
+  ,'ctrl_legR': ['body',(0,0),'circle',(5,5),'left',['ankleR']]
   ,'ctrl_toeL': ['body',(0,0),'circle',(3,3),'bottom',['legL']]
   ,'ctrl_toeR': ['body',(0,0),'circle',(3,3),'bottom',['legR']]
+  ,'ctrl_heelL': ['body',(0,0),'circle',(3,3),'top',['legL']]
+  ,'ctrl_heelR': ['body',(0,0),'circle',(3,3),'top',['legR']]
+  
   ,'ctrl_shoulderL': ['body',(0,0),'rect',(8,3),'topRight',['chest']]
   ,'ctrl_shoulderR': ['body',(0,0),'rect',(8,3),'topLeft',['chest']]
   ,'ctrl_upperarmL': ['body',(0,0),'rect',(10,5),'right',['chest']]
@@ -2590,8 +2597,41 @@ class warRig:
   ,'ctrl_forearmR': ['body',(0,0),'rect',(10,5),'left',['upperarmR']]
   ,'ctrl_wristL': ['body',(0,0),'rect',(8,8),'right',['forearmL']]
   ,'ctrl_wristR': ['body',(0,0),'rect',(8,8),'left',['forearmR']]
-  ,'ctrl_fingerL': ['body',(0,0),'rect',(10,10),'right',['wristL']]
-  ,'ctrl_fingerR': ['body',(0,0),'rect',(10,10),'left',['wristR']]
+  
+  ,'ctrl_fingerL': ['body',(0,0),'rect',(6,6),'right',['wristL']]
+  ,'ctrl_thumb0L': ['body',(0,0),'rect',(3,1),'top',['fingerL']]
+  ,'ctrl_thumb1L': ['body',(0,0),'rect',(2,1),'right',['thumb0L']]
+  ,'ctrl_thumb2L': ['body',(0,0),'rect',(1,1),'right',['thumb1L']]
+  ,'ctrl_middle1L': ['body',(0,0),'rect',(3,1),'right',['fingerL']]
+  ,'ctrl_middle2L': ['body',(0,0),'rect',(2,1),'right',['middle1L']]
+  ,'ctrl_middle3L': ['body',(0,0),'rect',(1,1),'right',['middle2L']]
+  ,'ctrl_index1L': ['body',(0,0),'rect',(3,1),'top',['middle1L']]
+  ,'ctrl_index2L': ['body',(0,0),'rect',(2,1),'top',['middle2L']]
+  ,'ctrl_index3L': ['body',(0,0),'rect',(1,1),'top',['middle3L']]
+  ,'ctrl_ring1L': ['body',(0,0),'rect',(3,1),'bottom',['middle1L']]
+  ,'ctrl_ring2L': ['body',(0,0),'rect',(2,1),'bottom',['middle2L']]
+  ,'ctrl_ring3L': ['body',(0,0),'rect',(1,1),'bottom',['middle3L']]
+  ,'ctrl_little1L': ['body',(0,0),'rect',(3,1),'bottom',['ring1L']]
+  ,'ctrl_little2L': ['body',(0,0),'rect',(2,1),'bottom',['ring2L']]
+  ,'ctrl_little3L': ['body',(0,0),'rect',(1,1),'bottom',['ring3L']]
+  
+  ,'ctrl_fingerR': ['body',(0,0),'rect',(6,6),'left',['wristR']]
+  ,'ctrl_thumb0R': ['body',(0,0),'rect',(3,1),'top',['fingerR']]
+  ,'ctrl_thumb1R': ['body',(0,0),'rect',(2,1),'left',['thumb0R']]
+  ,'ctrl_thumb2R': ['body',(0,0),'rect',(1,1),'left',['thumb1R']]
+  ,'ctrl_middle1R': ['body',(0,0),'rect',(3,1),'left',['fingerR']]
+  ,'ctrl_middle2R': ['body',(0,0),'rect',(2,1),'left',['middle1R']]
+  ,'ctrl_middle3R': ['body',(0,0),'rect',(1,1),'left',['middle2R']]
+  ,'ctrl_index1R': ['body',(0,0),'rect',(3,1),'top',['middle1R']]
+  ,'ctrl_index2R': ['body',(0,0),'rect',(2,1),'top',['middle2R']]
+  ,'ctrl_index3R': ['body',(0,0),'rect',(1,1),'top',['middle3R']]
+  ,'ctrl_ring1R': ['body',(0,0),'rect',(3,1),'bottom',['middle1R']]
+  ,'ctrl_ring2R': ['body',(0,0),'rect',(2,1),'bottom',['middle2R']]
+  ,'ctrl_ring3R': ['body',(0,0),'rect',(1,1),'bottom',['middle3R']]
+  ,'ctrl_little1R': ['body',(0,0),'rect',(3,1),'bottom',['ring1R']]
+  ,'ctrl_little2R': ['body',(0,0),'rect',(2,1),'bottom',['ring2R']]
+  ,'ctrl_little3R': ['body',(0,0),'rect',(1,1),'bottom',['ring3R']]
+  
   ,'ctrl_jaw': ['face',(0,0),'rect',(8,8)]
   }
 
@@ -6832,29 +6872,26 @@ class warRig:
    cmds.setAttr(ctrl+'.warPosY',pos[1])
    
    eList = ''
-   print(attachList)
+   #print(attachList)
    for i,x in enumerate(attachList):
     eList = eList + 'ctrl_' + x + ':'
    if eList != '' :
     if cmds.objExists(ctrl+'.warAttach') == 0 :
      cmds.addAttr(ctrl,longName='warAttach',attributeType='enum',enumName=eList)
 
+   en = 'top:bottom:left:right:topLeft:topRight:bottomLeft:bottomRight:topMidLeft:topMidRight:bottomMidLeft:bottomMidRight'
+   enList = en.split(':')
    if cmds.objExists(ctrl+'.warAttachSide') == 0 :
-    cmds.addAttr(ctrl,longName='warAttachSide',attributeType='enum',enumName='top:bottom:left:right:topLeft:topRight:bottomLeft:bottomRight')
-   if attachSide == 'top' : cmds.setAttr(ctrl+'.warAttachSide',0)
-   if attachSide == 'bottom' : cmds.setAttr(ctrl+'.warAttachSide',1)
-   if attachSide == 'left' : cmds.setAttr(ctrl+'.warAttachSide',2)
-   if attachSide == 'right' : cmds.setAttr(ctrl+'.warAttachSide',3)
-   if attachSide == 'topLeft' : cmds.setAttr(ctrl+'.warAttachSide',4)
-   if attachSide == 'topRight' : cmds.setAttr(ctrl+'.warAttachSide',5)
-   if attachSide == 'bottomLeft' : cmds.setAttr(ctrl+'.warAttachSide',6)
-   if attachSide == 'bottomRight' : cmds.setAttr(ctrl+'.warAttachSide',7)
+    cmds.addAttr(ctrl,longName='warAttachSide',attributeType='enum',enumName=en)
+   if attachSide in enList :
+    cmds.setAttr(ctrl+'.warAttachSide',enList.index(attachSide))
+   else : cmds.warning(attachSide+' not in list.')
    
+   en = 'rect:circle:trigU:trigD:trigL:trigR:diamond:trapezoidU:trapezoidD:hexagon'
+   enList = en.split(':')
    if cmds.objExists(ctrl+'.warShape') == 0 :
-    cmds.addAttr(ctrl,longName='warShape',attributeType='enum',enumName='rect:circle:trigU:trgB:trigL:trigR:diamond:trapezoidU:trapezoidD:hexagon:')
-   if attachSide == 'rect' : cmds.setAttr(ctrl+'.warShape',0)
-   if attachSide == 'circle' : cmds.setAttr(ctrl+'.warShape',1)
-   if attachSide == 'trigU' : cmds.setAttr(ctrl+'.warShape',2)
+    cmds.addAttr(ctrl,longName='warShape',attributeType='enum',enumName=en)
+   cmds.setAttr(ctrl+'.warShape',enList.index(shape))
    
    if cmds.objExists(ctrl+'.warWidth') == 0 :
     cmds.addAttr(ctrl,longName='warWidth',attributeType='long')
