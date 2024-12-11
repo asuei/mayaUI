@@ -32,66 +32,6 @@ class CustomButton(QtWidgets.QPushButton):
         
     def select(self):
         cmds.select(self.ns+self.text(),r=1)
-    
-class CustomRectItem(QtWidgets.QGraphicsRectItem):
-    def __init__(self, rect, selObj, parent=None):
-        super(CustomRectItem, self).__init__(rect, parent)
-        self.setPen(QtGui.QPen(QtGui.QColor('gray'), 1))
-        
-        colorName='darkblue'
-        s = cmds.listRelatives(selObj,shapes=1)[0]
-        if cmds.getAttr(s+'.overrideEnabled') :
-         ci = cmds.getAttr(s+'.overrideColor')
-         if cmds.getAttr(s+'.overrideRGBColors'):
-          cr = cmds.getAttr(s+'.overrideColorR') * 255
-          cg = cmds.getAttr(s+'.overrideColorG') * 255
-          cb = cmds.getAttr(s+'.overrideColorB') * 255
-          self.setBrush(QtGui.QBrush(QtGui.QColor(cr,cg,cb)))
-         else:
-          colorName = colorIndexList[ci]
-          self.setBrush(QtGui.QBrush(QtGui.QColor(colorName)))
-        else: self.setBrush(QtGui.QBrush(QtGui.QColor(colorName)))
-        
-        self.setFlags(
-         #QGraphicsRectItem.ItemIsMovable |
-         QtWidgets.QGraphicsRectItem.ItemIsSelectable
-         #QGraphicsRectItem.ItemSendsGeometryChanges
-        )
-        self.selObj = selObj
-        
-    def mousePressEvent(self, event):
-        cmds.select(self.selObj,r=1)
-        super(CustomRectItem, self).mousePressEvent(event)
-        
-    def itemChange(self, change, value): # now unnecessary
-        if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
-         if value:
-          if cmds.objExists(self.selObj): pass
-           #cmds.select(self.selObj, r=True)
-          else: pass
-           #print('Object '+self.selObj+' does not exist in the scene.')
-        return super(CustomRectItem, self).itemChange(change, value)
-
-    def contextMenuEvent(self, event):
-        menu = QtWidgets.QMenu()
-        actDef = menu.addAction("Set Default Value")
-        
-        selected_action = menu.exec_(event.screenPos())
-        
-        if selected_action == actDef:
-         #cb = cmds.channelBox('mainChannelBox',q=1,selectedMainAttributes=1)
-         la = cmds.listAttr(self.selObj,keyable=1,unlocked=1)
-         for x in la :
-          if x == 'translateX' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'translateY' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'translateZ' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateX' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateY' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateZ' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'scaleX' : cmds.setAttr(self.selObj+'.'+x,1)
-          if x == 'scaleY' : cmds.setAttr(self.selObj+'.'+x,1)
-          if x == 'scaleZ' : cmds.setAttr(self.selObj+'.'+x,1)
-         print('Set '+self.selObj+' default value.')
 
 class CustomPolygonItem(QtWidgets.QGraphicsPolygonItem):
     def __init__(self, selObj, parent=None):
@@ -137,19 +77,6 @@ class CustomPolygonItem(QtWidgets.QGraphicsPolygonItem):
         )
         self.selObj = selObj
         
-    def mousePressEvent(self, event):
-        cmds.select(self.selObj,r=1)
-        super(CustomPolygonItem, self).mousePressEvent(event)
-        
-    def itemChange(self, change, value): # now unnecessary
-        if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
-         if value:
-          if cmds.objExists(self.selObj): pass
-           #cmds.select(self.selObj, r=True)
-          else: pass
-           #print('Object '+self.selObj+' does not exist in the scene.')
-        return super(CustomPolygonItem, self).itemChange(change, value)
-        
     def circleShape(self,w,h):
         posList = []
         i = 0
@@ -182,28 +109,7 @@ class CustomPolygonItem(QtWidgets.QGraphicsPolygonItem):
         return [(-1*w,-1*h),(-0.8*w,1*h),(0.8*w,1*h),(1*w,-1*h)]
         
     def hexagonShape(self,w,h):
-        return [(-0.5*w,-1*h),(-1*w,0),(-0.5*w,1*h),(0.5*w,1*h),(1*w,0),(0.5*w,-1*h)]
-
-    def contextMenuEvent(self, event):
-        menu = QtWidgets.QMenu()
-        actDef = menu.addAction("Set Default Value")
-        
-        selected_action = menu.exec_(event.screenPos())
-        
-        if selected_action == actDef:
-         #cb = cmds.channelBox('mainChannelBox',q=1,selectedMainAttributes=1)
-         la = cmds.listAttr(self.selObj,keyable=1,unlocked=1)
-         for x in la :
-          if x == 'translateX' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'translateY' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'translateZ' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateX' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateY' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'rotateZ' : cmds.setAttr(self.selObj+'.'+x,0)
-          if x == 'scaleX' : cmds.setAttr(self.selObj+'.'+x,1)
-          if x == 'scaleY' : cmds.setAttr(self.selObj+'.'+x,1)
-          if x == 'scaleZ' : cmds.setAttr(self.selObj+'.'+x,1)
-         print('Set '+self.selObj+' default value.')
+        return [(-0.67*w,-1*h),(-1*w,0),(-0.67*w,1*h),(0.67*w,1*h),(1*w,0),(0.67*w,-1*h)]
 
 class CustomGraphicsView(QtWidgets.QGraphicsView):
     def __init__(self, scene, parent=None):
@@ -211,7 +117,6 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         self.setScene(scene)
 
         self.start_pos = None
-        #self.selection_rect = QtWidgets.QGraphicsRectItem()
         self.selection_rect = QtWidgets.QGraphicsRectItem()
         self.selection_rect.setPen(QtGui.QPen(QtCore.Qt.DashLine))
         self.selection_rect.setBrush(QtGui.QBrush(QtCore.Qt.transparent))
@@ -223,6 +128,7 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         self._pan_start = None
         self._is_scaling = False
         self._scale_start = None
+        self.scene().selectionChanged.connect(self.selectItemChange)
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MiddleButton:
@@ -230,18 +136,26 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
          self._is_panning = True
          self._pan_start = event.pos()
          self.setCursor(QtCore.Qt.ClosedHandCursor)
+         return
+         
         elif event.button() == QtCore.Qt.LeftButton:
          # Start selection rectangle
          self.start_pos = self.mapToScene(event.pos())
          self.selection_rect.setRect(QtCore.QRectF(self.start_pos, self.start_pos))
          self.selection_rect.setVisible(True)
          item = self.scene().itemAt(self.start_pos, QtGui.QTransform())
+         if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.ShiftModifier:
+          if item : item.setSelected(True)
+          return
          if item is None : cmds.select(cl=1)
-        elif event.button() == QtCore.Qt.RightButton and QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.AltModifier:
-         # Start scaling mode
-         self._is_scaling = True
-         self._scale_start = event.pos()
-         self.setCursor(QtCore.Qt.SizeHorCursor)
+         
+        elif event.button() == QtCore.Qt.RightButton:
+         if QtWidgets.QApplication.keyboardModifiers() == QtCore.Qt.AltModifier:
+          # Start scaling mode
+          self._is_scaling = True
+          self._scale_start = event.pos()
+          self.setCursor(QtCore.Qt.SizeHorCursor)
+         return
         super(CustomGraphicsView, self).mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
@@ -275,29 +189,53 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
          self.setCursor(QtCore.Qt.ArrowCursor)
         elif event.button() == QtCore.Qt.LeftButton and self.start_pos:
          # Complete selection
-         self.select_items_in_rect(self.selection_rect.rect())
+         self.selectItemInRect(self.selection_rect.rect())
          self.start_pos = None
          self.selection_rect.setVisible(False)
         super(CustomGraphicsView, self).mouseReleaseEvent(event)
 
-    def select_items_in_rect(self, rect):
+    def selectItemInRect(self, rect):
         """Select items within the rectangle"""
-        items_in_rect = self.scene().items(rect, QtCore.Qt.IntersectsItemShape)
-        items_in_rect = items_in_rect[1:]
-        selList = []
-        for item in items_in_rect:
-         item.setSelected(True)
-         selList.append(item.selObj)
-         #cmds.select(selList,r=1)
+        itemsInRect = self.scene().items(rect, QtCore.Qt.IntersectsItemShape)
+        itemsInRect = itemsInRect[1:]
         
-        if items_in_rect:
-         for item in items_in_rect:
+        for item in itemsInRect:
+         item.setSelected(True)
+        
+        if itemsInRect:
+         for item in itemsInRect:
           item.setSelected(True)
-          selList.append(item.selObj)
-          cmds.select(selList,r=1)
-        else :
-         area = rect.width() * rect.height()
-         if area > 2 : cmds.select(cl=1)
+        #else :
+        # area = rect.width() * rect.height()
+        # if area > 2 : cmds.select(cl=1)
+         
+    def selectItemChange(self):
+        selItem = self.scene().selectedItems()
+        objList = [ x.selObj for x in selItem ]
+        #print(objList)
+        cmds.select(objList,r=1)
+        
+    def contextMenuEvent(self, event):
+        menu = QtWidgets.QMenu(self)
+        actDef = menu.addAction("Set Default Value")
+        action = menu.exec_(event.globalPos())
+        
+        if action == actDef:
+         selItem = self.scene().selectedItems()
+         objList = [ x.selObj for x in selItem ]
+         print(objList)
+         for obj in objList :
+         #cb = cmds.channelBox('mainChannelBox',q=1,selectedMainAttributes=1)
+          la = cmds.listAttr(obj,keyable=1,unlocked=1)
+          for x in la :
+           if x == 'translateX' : cmds.setAttr(obj+'.'+x,0)
+           if x == 'translateY' : cmds.setAttr(obj+'.'+x,0)
+           if x == 'translateZ' : cmds.setAttr(obj+'.'+x,0)
+           if x == 'rotateX' : cmds.setAttr(obj+'.'+x,0)
+           if x == 'rotateY' : cmds.setAttr(obj+'.'+x,0)
+           if x == 'rotateZ' : cmds.setAttr(obj+'.'+x,0)
+           if x in ['scaleX','scaleY','scaleZ'] : cmds.setAttr(obj+'.'+x,1)
+          print('Set '+obj+' default value.')
         
 class warAnimUI(QtWidgets.QDialog):
     def __init__(self, parent=mayaMainWindow()):
@@ -331,7 +269,7 @@ class warAnimUI(QtWidgets.QDialog):
         vLayout.addWidget(self.tab_widget)
         self.updateTabs()
     
-        self.resize(400,600)
+        self.resize(400,550)
         
     def create_connections(self):
      self.dropdown.currentIndexChanged.connect(self.dropdownChange)
@@ -367,7 +305,6 @@ class warAnimUI(QtWidgets.QDialog):
      for x in tabList :
       tab = QtWidgets.QWidget()
       tab_layout = QtWidgets.QVBoxLayout(tab)
-      tab_layout.addWidget(QtWidgets.QLabel(x))
       self.tab_widget.addTab(tab, x)
       tabCtrl = []
       for y in allCtrl :
@@ -377,33 +314,36 @@ class warAnimUI(QtWidgets.QDialog):
       
       gScene = QtWidgets.QGraphicsScene()
       gView = CustomGraphicsView(gScene, self)
-      self.add_items(gScene,tabCtrl)
+      gSize = self.add_items(gScene,tabCtrl) 
       tab_layout.addWidget(gView)
+      #print(gSize)
+      gScene.setSceneRect(-gSize[0]/2,-gSize[1]/2,gSize[0],gSize[1])
+      #viewRect = gView.viewport().rect()
+      #sx = float(viewRect.width()) / float(gSize[0])
+      #sy = float(viewRect.height()) / float(gSize[1])
+      gView.scale(1.2,1.2)
     
     def add_items(self,scene,ctrls):
-     colorList = ['gray','black','darkgray','lightgray','darkred','darkblue'
-     ,'blue','darkgreen','darkpurple','magenta','brown','darkbrown','tan'
-     ,'red','green','indigo','white','lightyellow','lightblue','lightgreen'
-     ,'pink','orange','lightyellow','green','brown','darkyellow','grass'
-     ,'green','cyan','blue','purple','darkred']
-     ci = 5
+     ci = 5 # default color index
      ns = self.dropdown.currentText()
      if ns == ':' : ns = ''
      else : ns = ns + ':'
-     ''' Start ctrl loop '''
-     #print(ctrls)
+     gWidth = 100 ; gHeight = 100 # default sSize
      
+     ''' Start ctrl loop '''
+     #print(ctrls) # ctrl list before sorting
      for i in range(len(ctrls)):
       if cmds.objExists(ctrls[i]+'.warAttach') :
        en = cmds.addAttr(ctrls[i]+'.warAttach',q=1,enumName=1)
        eList = en.split(':')
        for j in range(len(eList)):
-        if eList[j] in ctrls:
-         eIndex = ctrls.index(eList[j])
+        eStr = ns + eList[j]
+        if eStr in ctrls:
+         eIndex = ctrls.index(eStr)
          if eIndex > i :
           ctrls[i],ctrls[eIndex] = ctrls[eIndex],ctrls[i]
           j = j - 1
-     print(ctrls)
+     print(ctrls) # ctrl list after sorting
      
      for i,x in enumerate(ctrls) :
       #print(x)
@@ -441,26 +381,32 @@ class warAnimUI(QtWidgets.QDialog):
         acX = cmds.getAttr(ac+'.warPosX')
         acw = cmds.getAttr(ac+'.warWidth')
         posX = acX
-        if al in ['right','topRight','bottomRight'] :
+        if al in ['right','topRight','bottomRight','rightToTop'] :
          posX = acX + acw + w + 2
-        if al in ['left','topLeft','bottomLeft'] :
+        if al in ['left','topLeft','bottomLeft','leftToTop'] :
          posX = acX - acw - w - 2
-        if al in ['topMidRight','bottomMidRight'] :
-         posX = acX + acw + 2
-        if al in ['topMidLeft','bottomMidLeft'] :
-         posX = acX - acw - 2
+        if al in ['topToRight','bottomToRight'] :
+         posX = acX + acw - w + 2
+        if al in ['topToLeft','bottomToLeft'] :
+         posX = acX - acw + w - 2
         cmds.setAttr(x+'.warPosX',posX)
+        if (posX+w+20)*2 > gWidth : gWidth = (posX+w+20)*2
         
        ''' Calculate Y '''
        if cmds.objExists(ac+'.warPosY'):
         acY = cmds.getAttr(ac+'.warPosY')
         ach = cmds.getAttr(ac+'.warHeight')
         posY = acY
-        if al in ['top','topLeft','topRight','topMidLeft','topMidRight'] :
-         posY = acY - ach - h - 2
-        if al in ['bottom','bottomLeft','bottomRight','bottomMidRight','bottomMidLeft'] :
-         posY = acY + ach + h + 2
+        if al in ['top','topLeft','topRight','topToLeft','topToRight']:
+         posY = acY - ach - h - max(round(max(ach,h)*0.2),2)
+        if al in ['bottom','bottomLeft','bottomRight','bottomToRight','bottomToLeft']:
+         posY = acY + ach + h + max(round(max(ach,h)*0.2),2)
+        if al in ['leftToTop','rightToTop']:
+         posY = acY - ach + h
+        if al in ['leftToBottom','rightToBottom']:
+         posY = acY + ach - h
         cmds.setAttr(x+'.warPosY',posY)
+        if (posY+h+20)*2 > gHeight : gHeight = (posY+h+20)*2
          
       ''' Start finding color  '''
       s = cmds.listRelatives(x,shapes=1)[0]
@@ -478,6 +424,7 @@ class warAnimUI(QtWidgets.QDialog):
       # gItem = CustomPolygonItem(x)
       gItem.setPos(posX,posY)
       scene.addItem(gItem)
+     return [gWidth,gHeight] 
 
 def warAnim():
  global ui
