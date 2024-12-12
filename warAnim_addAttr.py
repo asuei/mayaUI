@@ -11,9 +11,9 @@ class as_warAttr :
 
   cmds.formLayout('form_waaMain')
   #cmds.button('btn_waaATB',label='Add Body Tab',height=30,command=self.addTag)
-  cmds.button('btn_waaATB',label='Add Body Tab',height=30,command=lambda *_: self.addTag('body'))
-  cmds.button('btn_waaATF',label='Add Face Tab',height=30,command=lambda *_: self.addTag('face'))
-  cmds.button('btn_waaATC',label='Add Tab (Input Below)',height=30,command=lambda *_: self.addTag('inputBelow'))
+  cmds.button('btn_waaATB',label='Add Body Tab',height=30,command=lambda *_: self.addTab('body'))
+  cmds.button('btn_waaATF',label='Add Face Tab',height=30,command=lambda *_: self.addTab('face'))
+  cmds.button('btn_waaATC',label='Add Tab (Input Below)',height=30,command=lambda *_: self.addTab('inputBelow'))
   cmds.textField('txt_waaATC',text='',height=23)
   cmds.separator('sprt1',style='in')
   cmds.button('btn_waaPXY',label='Add Pos XY',height=30,command=self.addPosXY)
@@ -42,15 +42,19 @@ class as_warAttr :
   cmds.window('win_warAttr',e=1,widthHeight=[200,30],resizeToFitChildren=1)
   cmds.showWindow('win_warAttr')
 
- def addTag(self,txt,*a):
+ def addTab(self,txt,*a):
   if(txt=='inputBelow'): txt = cmds.textField('txt_waaATC',q=1,text=1)
-
+  en = 'global:body:face'
+  enList = en.split(':')
+  if txt not in enList :
+   en = en + ':' + txt
+   enList.append(txt)
   for x in cmds.ls(selection=1):
-   if cmds.objExists(x+'.warTag') == 0 :
-    cmds.addAttr(x,longName='warTag',dataType='string')
-    cmds.setAttr(x+'.warTag',txt,type='string')
+   if cmds.objExists(x+'.warTab') == 0 :
+    cmds.addAttr(x,longName='warTab',attributeType='enum',enumName=en)
+    cmds.setAttr(x+'.warTab',enList.index(txt))
    else :
-    cmds.warning(x+' warTag alreay exist.')
+    cmds.warning(x+' warTab alreay exist.')
 
  def addPosXY(self,*a):
   for x in cmds.ls(selection=1) :
@@ -74,12 +78,12 @@ class as_warAttr :
  def addAttachSide(self,*a):
   for x in cmds.ls(selection=1) :
    if cmds.objExists(x+'.warAttachSide') == 0 :
-    cmds.addAttr(x,longName='warAttachSide',attributeType='enum',enumName='top:bottom:left:right:')
+    cmds.addAttr(x,longName='warAttachSide',attributeType='enum',enumName='none:top:bottom:left:right:topLeft:topRight:bottomLeft:bottomRight:topToLeft:topToRight:bottomToLeft:bottomToRight:leftToTop:rightToTop:leftToBottom:rightToBottom')
 
  def addShape(self,*a):
   for x in cmds.ls(selection=1) :
    if cmds.objExists(x+'.warShape') == 0 :
-    cmds.addAttr(x,longName='warShape',attributeType='enum',enumName='rectangle:circle:triangleU:triangleB:triangleL:triangleR:diamond:trapezoidU:trapezoidD:hexagon:')
+    cmds.addAttr(x,longName='warShape',attributeType='enum',enumName='rect:circle:trigU:trigD:trigL:trigR:diamond:trapezoidU:trapezoidD:hexagon')
     
  def addWidthHeight(self,*a):
   for x in cmds.ls(selection=1) :
