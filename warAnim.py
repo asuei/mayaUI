@@ -24,7 +24,7 @@ class CustomButton(QtWidgets.QPushButton):
         super(CustomButton, self).__init__(text, parent)
         self.ns = ''
         ts = text.split(':')
-        print(ts)
+        #print(ts)
         if len(ts) >= 2 :
          self.setText(ts[-1])
          self.ns = ts[0]+':'
@@ -281,7 +281,7 @@ class warAnimUI(QtWidgets.QDialog):
     
     def updateTabs(self):
      selTxt = self.dropdown.currentText()
-     print('Start update '+selTxt+' tabs.')
+     #print('Start update '+selTxt+' tab.')
      topName = selTxt+':'+self.ctrlTop
      if selTxt == ':' : topName = self.ctrlTop
      allCrv = cmds.listRelatives(topName,allDescendents=1,type='nurbsCurve')
@@ -350,7 +350,7 @@ class warAnimUI(QtWidgets.QDialog):
          if eIndex > i :
           ctrls[i],ctrls[eIndex] = ctrls[eIndex],ctrls[i]
           j = j - 1
-     print(ctrls) # ctrl list after sorting
+     #print(ctrls) # ctrl list after sorting
      
      for i,x in enumerate(ctrls) :
       #print(x)
