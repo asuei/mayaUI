@@ -39,9 +39,12 @@ class CustomPolygonItem(QtWidgets.QGraphicsPolygonItem):
         
         self.setPen(QtGui.QPen(QtGui.QColor('gray'),0.5))
         
-        shape = cmds.getAttr(selObj+'.warShape',asString=1)
-        w = cmds.getAttr(selObj+'.warWidth')
-        h = cmds.getAttr(selObj+'.warHeight')
+        shape = 'rect' # default shape
+        if cmds.objExists(selObj+'.warShape') : shape = cmds.getAttr(selObj+'.warShape',asString=1)
+        w = 10
+        if cmds.objExists(selObj+'.warWidth') : w = cmds.getAttr(selObj+'.warWidth')
+        h = 10
+        if cmds.objExists(selObj+'.warHeight') : h = cmds.getAttr(selObj+'.warHeight')
         
         points = [(-1*w,-1*h),(-1*w,1*h),(1*w,1*h),(1*w,-1*h)]# default shape is rect
         if shape == 'circle' : points = self.circleShape(w,h)
@@ -223,19 +226,20 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         if action == actDef:
          selItem = self.scene().selectedItems()
          objList = [ x.selObj for x in selItem ]
-         print(objList)
-         for obj in objList :
-         #cb = cmds.channelBox('mainChannelBox',q=1,selectedMainAttributes=1)
-          la = cmds.listAttr(obj,keyable=1,unlocked=1)
-          for x in la :
-           if x == 'translateX' : cmds.setAttr(obj+'.'+x,0)
-           if x == 'translateY' : cmds.setAttr(obj+'.'+x,0)
-           if x == 'translateZ' : cmds.setAttr(obj+'.'+x,0)
-           if x == 'rotateX' : cmds.setAttr(obj+'.'+x,0)
-           if x == 'rotateY' : cmds.setAttr(obj+'.'+x,0)
-           if x == 'rotateZ' : cmds.setAttr(obj+'.'+x,0)
-           if x in ['scaleX','scaleY','scaleZ'] : cmds.setAttr(obj+'.'+x,1)
-          print('Set '+obj+' default value.')
+         #print(objList)
+         for obj in objList : self.setDefaultValue(obj)
+          
+    def setDefaultValue(self, obj):
+        la = cmds.listAttr(obj,keyable=1,unlocked=1)
+        for x in la :
+         if x == 'translateX' : cmds.setAttr(obj+'.'+x,0)
+         elif x == 'translateY' : cmds.setAttr(obj+'.'+x,0)
+         elif x == 'translateZ' : cmds.setAttr(obj+'.'+x,0)
+         elif x == 'rotateX' : cmds.setAttr(obj+'.'+x,0)
+         elif x == 'rotateY' : cmds.setAttr(obj+'.'+x,0)
+         elif x == 'rotateZ' : cmds.setAttr(obj+'.'+x,0)
+         elif x in ['scaleX','scaleY','scaleZ'] : cmds.setAttr(obj+'.'+x,1)
+        print('Set '+obj+' default value.')
         
 class warAnimUI(QtWidgets.QDialog):
     def __init__(self, parent=mayaMainWindow()):
@@ -244,34 +248,32 @@ class warAnimUI(QtWidgets.QDialog):
         self.setWindowTitle('warAnim')
         
         self.ctrlTop = 'ctrl_location'
-        #self.ctrlTop = 'MotionSystem' # advSkeleton
         self.dropdownList = cmds.ls(self.ctrlTop,'*:'+self.ctrlTop,showNamespace=1)[1::2]
+        if not self.dropdownList :
+         self.ctrlTop = 'MotionSystem' # advSkeleton
+         self.dropdownList = cmds.ls(self.ctrlTop,'*:'+self.ctrlTop,showNamespace=1)[1::2]
         
-        self.create_ui()
-        self.create_connections()
+        self.createUi()
+        self.connectDropdownChange()
         
-    def create_ui(self):
+    def createUi(self):
         vLayout = QtWidgets.QVBoxLayout(self)
         self.dropdown = QtWidgets.QComboBox()       
         #self.dropdown.addItems(["1", "2", "3", "4", "5"])
-        self.dropdown.addItems(self.dropdownList)
+        if self.dropdownList : self.dropdown.addItems(self.dropdownList)
         vLayout.addWidget(self.dropdown)
         
         self.toolBar = QtWidgets.QToolBar()
         self.toolBar.setIconSize(QtCore.QSize(24, 24))
-        emptyAction = QtWidgets.QPushButton('normal')
-        self.toolBar.addWidget(emptyAction)
-        emptyActionB = QtWidgets.QPushButton('spacial')
-        self.toolBar.addWidget(emptyActionB)
         vLayout.addWidget(self.toolBar)
         
         self.tab_widget = QtWidgets.QTabWidget()
         vLayout.addWidget(self.tab_widget)
-        self.updateTabs()
+        if self.dropdownList : self.updateTabs()
     
-        self.resize(400,550)
+        self.resize(410,550)
         
-    def create_connections(self):
+    def connectDropdownChange(self):
      self.dropdown.currentIndexChanged.connect(self.dropdownChange)
 
     def dropdownChange(self):
@@ -283,6 +285,10 @@ class warAnimUI(QtWidgets.QDialog):
      topName = selTxt+':'+self.ctrlTop
      if selTxt == ':' : topName = self.ctrlTop
      allCrv = cmds.listRelatives(topName,allDescendents=1,type='nurbsCurve')
+     if self.ctrlTop == 'MotionSystem' :
+      faceTopName = selTxt+':FaceMotionSystem'
+      faceCrv = cmds.listRelatives(faceTopName,allDescendents=1,type='nurbsCurve')
+      allCrv.extend(faceCrv)
      allCtrl = [ cmds.listRelatives(x,parent=1)[0] for x in allCrv ]
 
      allTabList = []
@@ -314,13 +320,14 @@ class warAnimUI(QtWidgets.QDialog):
       
       gScene = QtWidgets.QGraphicsScene()
       gView = CustomGraphicsView(gScene, self)
-      gSize = self.add_items(gScene,tabCtrl) 
+      gBorder = self.add_items(gScene,tabCtrl) # [+x(right),-x(left),+y(bottom),-y(top)]
       tab_layout.addWidget(gView)
-      #print(gSize)
-      gScene.setSceneRect(-gSize[0]/2,-gSize[1]/2,gSize[0],gSize[1])
-      #viewRect = gView.viewport().rect()
-      #sx = float(viewRect.width()) / float(gSize[0])
-      #sy = float(viewRect.height()) / float(gSize[1])
+      #print(gBorder)
+      gScene.setSceneRect(gBorder[1],gBorder[3],gBorder[0]+-gBorder[1],gBorder[2]+-gBorder[3])
+      gradient = QtGui.QLinearGradient(0,0,0,gBorder[3]+-gBorder[2])
+      gradient.setColorAt(0,QtGui.QColor(20,20,20))
+      gradient.setColorAt(1,QtGui.QColor(40,40,40))
+      gScene.setBackgroundBrush(QtGui.QBrush(gradient))
       gView.scale(1.2,1.2)
     
     def add_items(self,scene,ctrls):
@@ -328,7 +335,7 @@ class warAnimUI(QtWidgets.QDialog):
      ns = self.dropdown.currentText()
      if ns == ':' : ns = ''
      else : ns = ns + ':'
-     gWidth = 100 ; gHeight = 100 # default sSize
+     gBorder = [100,-100,100,-100] # default sSize
      
      ''' Start ctrl loop '''
      #print(ctrls) # ctrl list before sorting
@@ -390,7 +397,9 @@ class warAnimUI(QtWidgets.QDialog):
         if al in ['topToLeft','bottomToLeft'] :
          posX = acX - acw + w - 2
         cmds.setAttr(x+'.warPosX',posX)
-        if (posX+w+20)*2 > gWidth : gWidth = (posX+w+20)*2
+        xBorder = round((posX+w)*1.2)
+        if xBorder > 0 and xBorder > gBorder[0] : gBorder[0] = xBorder
+        if xBorder < 0 and xBorder < gBorder[1] : gBorder[1] = xBorder
         
        ''' Calculate Y '''
        if cmds.objExists(ac+'.warPosY'):
@@ -406,25 +415,14 @@ class warAnimUI(QtWidgets.QDialog):
         if al in ['leftToBottom','rightToBottom']:
          posY = acY + ach - h
         cmds.setAttr(x+'.warPosY',posY)
-        if (posY+h+20)*2 > gHeight : gHeight = (posY+h+20)*2
-         
-      ''' Start finding color  '''
-      s = cmds.listRelatives(x,shapes=1)[0]
-      if cmds.getAttr(s+'.overrideEnabled') :
-       ci = cmds.getAttr(s+'.overrideColor')
-       if cmds.getAttr(s+'.overrideRGBColors'):
-        pass
-      #print('add item '+x+' posY: '+str(posY))
-      poly = ''
-      if cmds.objExists(x+'.warShape'): poly = cmds.getAttr(x+'.warShape',asString=1)
+        yBorder = round((posY+h)*1.2)
+        if yBorder > 0 and yBorder > gBorder[2] : gBorder[2] = yBorder
+        if yBorder < 0 and yBorder < gBorder[3] : gBorder[3] = yBorder
       
-      #gItem = CustomRectItem(QtCore.QRectF(posX-w,posY-h,w*2,h*2),x)
       gItem = CustomPolygonItem(x)
-      #if poly == 'circle' :
-      # gItem = CustomPolygonItem(x)
       gItem.setPos(posX,posY)
       scene.addItem(gItem)
-     return [gWidth,gHeight] 
+     return gBorder
 
 def warAnim():
  global ui
