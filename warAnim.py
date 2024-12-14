@@ -3,6 +3,7 @@ import math
 from maya import cmds
 from maya import mel
 from maya import OpenMayaUI as omui 
+from maya import OpenMaya as om
 
 from PySide2 import QtWidgets, QtGui, QtCore
 from shiboken2 import wrapInstance
@@ -18,6 +19,41 @@ def mayaMainWindow():
     """Get the Maya main window as parent"""
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget) 
+    
+class CallbackManager:
+    callback_id = None
+    views = []
+    
+    @classmethod
+    def registerView(cls, view):
+        if view not in cls.views:
+         cls.views.append(view)
+         if len(cls.views) == 1:
+          cls.registerCallback()
+    
+    @classmethod
+    def unregisterView(cls, view):
+        if view in cls.views:
+         cls.views.remove(view)
+         if not cls.views:
+          cls.removeCallback()
+    
+    @classmethod
+    def registerCallback(cls):
+        if not cls.callback_id:
+         cls.callback_id = om.MEventMessage.addEventCallback("SelectionChanged",cls.updateViews)
+    
+    @classmethod
+    def removeCallback(cls):
+        if cls.callback_id:
+         om.MMessage.removeCallback(cls.callback_id)
+         cls.callback_id = None
+    
+    @classmethod
+    def updateViews(cls, *args):
+        selObj = cmds.ls(selection=True)
+        for view in cls.views:
+         view.updateSelection(selObj)
     
 class CustomButton(QtWidgets.QPushButton):
     def __init__(self, text, parent=None):
@@ -74,9 +110,7 @@ class CustomPolygonItem(QtWidgets.QGraphicsPolygonItem):
         else: self.setBrush(QtGui.QBrush(QtGui.QColor(colorName)))
         
         self.setFlags(
-         #QGraphicsRectItem.ItemIsMovable |
          QtWidgets.QGraphicsPolygonItem.ItemIsSelectable
-         #QGraphicsRectItem.ItemSendsGeometryChanges
         )
         self.selObj = selObj
         
@@ -131,7 +165,8 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         self._pan_start = None
         self._is_scaling = False
         self._scale_start = None
-        self.scene().selectionChanged.connect(self.selectItemChange)
+        self.scene().selectionChanged.connect(self.selectItemChange)   
+        CallbackManager.registerView(self)
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MiddleButton:
@@ -208,9 +243,6 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
         if itemsInRect:
          for item in itemsInRect:
           item.setSelected(True)
-        #else :
-        # area = rect.width() * rect.height()
-        # if area > 2 : cmds.select(cl=1)
          
     def selectItemChange(self):
         selItem = self.scene().selectedItems()
@@ -228,7 +260,17 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
          objList = [ x.selObj for x in selItem ]
          #print(objList)
          for obj in objList : self.setDefaultValue(obj)
-          
+     
+    def updateSelection(self,selObj):
+        items = self.items()[1:]
+        self.scene().clearSelection()
+        for x in selObj :
+         for item in items :
+          if item.selObj == x :
+           item.setSelected(True)
+        if len(selObj) == 0 : pass
+        pass
+     
     def setDefaultValue(self, obj):
         la = cmds.listAttr(obj,keyable=1,unlocked=1)
         for x in la :
@@ -240,6 +282,10 @@ class CustomGraphicsView(QtWidgets.QGraphicsView):
          elif x == 'rotateZ' : cmds.setAttr(obj+'.'+x,0)
          elif x in ['scaleX','scaleY','scaleZ'] : cmds.setAttr(obj+'.'+x,1)
         print('Set '+obj+' default value.')
+        
+    def closeEvent(self, event):
+        CallbackManager.unregisterView(self)
+        super(CustomGraphicsView, self).closeEvent(event)
         
 class warAnimUI(QtWidgets.QDialog):
     def __init__(self, parent=mayaMainWindow()):
@@ -255,7 +301,9 @@ class warAnimUI(QtWidgets.QDialog):
         
         self.createUi()
         self.connectDropdownChange()
+        #self.selCallback = om.MEventMessage.addEventCallback("SelectionChanged",self.sceneSelChange)
         
+    
     def createUi(self):
         vLayout = QtWidgets.QVBoxLayout(self)
         self.dropdown = QtWidgets.QComboBox()       
@@ -319,8 +367,8 @@ class warAnimUI(QtWidgets.QDialog):
         if tab == x : tabCtrl.append(y)
       
       gScene = QtWidgets.QGraphicsScene()
-      gView = CustomGraphicsView(gScene, self)
-      gBorder = self.add_items(gScene,tabCtrl) # [+x(right),-x(left),+y(bottom),-y(top)]
+      gView = CustomGraphicsView(gScene,self)
+      gBorder = self.addItems(gScene,tabCtrl) # [+x(right),-x(left),+y(bottom),-y(top)]
       tab_layout.addWidget(gView)
       #print(gBorder)
       gScene.setSceneRect(gBorder[1],gBorder[3],gBorder[0]+-gBorder[1],gBorder[2]+-gBorder[3])
@@ -330,7 +378,7 @@ class warAnimUI(QtWidgets.QDialog):
       gScene.setBackgroundBrush(QtGui.QBrush(gradient))
       gView.scale(1.2,1.2)
     
-    def add_items(self,scene,ctrls):
+    def addItems(self,scene,ctrls):
      ci = 5 # default color index
      ns = self.dropdown.currentText()
      if ns == ':' : ns = ''
@@ -423,6 +471,10 @@ class warAnimUI(QtWidgets.QDialog):
       gItem.setPos(posX,posY)
       scene.addItem(gItem)
      return gBorder
+     
+    def closeEvent(self, event):
+        #if self.selCallback: om.MMessage.removeCallback(self.selCallback)
+        event.accept()
 
 def warAnim():
  global ui
