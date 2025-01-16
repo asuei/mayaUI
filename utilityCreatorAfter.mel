@@ -407,20 +407,23 @@ global proc uca_poc(){
   else $sll[0]= "" ;
  }else if($nt=="nurbsCurve") $sll[0] = $sll[0] ;
  else $sll[0]= "" ;
+ string $locList[] ;
  if($sll[0]!=""){
   $i = 0 ;
   while($i<$n){
-   $pocN = ("poc_"+$sls[0]+$i) ;
-   createNode -name $pocN pointOnCurveInfo ;
-   connectAttr ($sll[0]+".worldSpace[0]") ($pocN+".inputCurve") ;
-   setAttr ($pocN+".turnOnPercentage") 1 ;
-   if($n==1) setAttr ($pocN+".parameter") ((1.0 /($n))*$i) ;
-   else setAttr ($pocN+".parameter") ((1.0 /($n-1))*$i) ;
    $loc = ` spaceLocator ` ; 
-   connectAttr ($pocN+".position") ($loc[0]+".translate") ;
+   $poc = ("poc_"+$loc[0]) ;
+   $locList[size($locList)] = $loc[0] ;
+   createNode -name $poc pointOnCurveInfo ;
+   connectAttr ($sll[0]+".worldSpace[0]") ($poc+".inputCurve") ;
+   setAttr ($poc+".turnOnPercentage") 1 ;
+   if($n==1) setAttr ($poc+".parameter") ((1.0 /($n))*$i) ;
+   else setAttr ($poc+".parameter") ((1.0 /($n-1))*$i) ;
+   connectAttr ($poc+".position") ($loc[0]+".translate") ;
    $i++ ;
+   }
   }
- }
+  select -r $locList ;
  }
 }
 
